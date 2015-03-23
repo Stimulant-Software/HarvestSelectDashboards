@@ -1,0 +1,91 @@
+﻿body { box-sizing: border-box; }
+header { padding: 15px 0; }
+header img { width: 400px; }
+
+.login .form-group { width: 400px; margin: 10px auto; }
+.login .help-block { display: none; }
+.login .has-success input, .login .btn, .login .has-success input:-webkit-autofill { background-color: #a1eca7; }
+
+.portal ul li  { text-align: center; }
+.portal ul li a { padding: 110px 0 30px; height: 140px; width: 180px; display: inline-block; border: 3px solid #020057; color: #020057; border-radius: 30px; text-transform: uppercase; background-repeat: no-repeat; background-position: center 15px; }
+.portal ul li a:hover { text-decoration: none; font-weight: bold; }
+.portal .yields a { background-image: url('../img/farm-yields.png'); background-size: 100px auto; }
+.portal .shift a { background-image: url('../img/shift-end.png'); background-size: 100px auto; }
+
+/* Progress graphic */
+.windows8 { position: fixed; width: 90px; height: 90px; margin: 0 auto; z-index: 10000; }
+form .windows8 { position: absolute !important; }
+.windows8 .wBall { position: absolute; width: 86px; height: 86px; opacity: 0; -moz-transform: rotate(225deg); -moz-animation: orbit 7.15s infinite; -webkit-transform: rotate(225deg); -webkit-animation: orbit 7.15s infinite; transform: rotate(225deg); animation: orbit 7.15s infinite; }
+.windows8 .wBall .wInnerBall{ position: absolute; width: 11px; height: 11px; background: #000; left:0; top:0; -moz-border-radius: 11px; -webkit-border-radius: 11px; border-radius: 11px; }
+.windows8 #wBall_1 { -moz-animation-delay: 1.56s; -webkit-animation-delay: 1.56s; animation-delay: 1.56s; }
+.windows8 #wBall_2 { -moz-animation-delay: 0.31s; -webkit-animation-delay: 0.31s; animation-delay: 0.31s; }
+.windows8 #wBall_3 { -moz-animation-delay: 0.62s; -webkit-animation-delay: 0.62s; animation-delay: 0.62s; }
+.windows8 #wBall_4 { -moz-animation-delay: 0.94s; -webkit-animation-delay: 0.94s; animation-delay: 0.94s; }
+.windows8 #wBall_5 { -moz-animation-delay: 1.25s; -webkit-animation-delay: 1.25s; animation-delay: 1.25s; }
+@-moz-keyframes orbit {
+    0% { opacity: 1; z-index:99; -moz-transform: rotate(180deg); -moz-animation-timing-function: ease-out; }
+    7% { opacity: 1; -moz-transform: rotate(300deg); -moz-animation-timing-function: linear; -moz-origin:0%; }
+    30% { opacity: 1; -moz-transform:rotate(410deg); -moz-animation-timing-function: ease-in-out; -moz-origin:7%; }
+    39% { opacity: 1; -moz-transform: rotate(645deg); -moz-animation-timing-function: linear; -moz-origin:30%; }
+    70% { opacity: 1; -moz-transform: rotate(770deg); -moz-animation-timing-function: ease-out; -moz-origin:39%; }
+    75% { opacity: 1; -moz-transform: rotate(900deg); -moz-animation-timing-function: ease-out; -moz-origin:70%; }
+    76% { opacity: 0; -moz-transform:rotate(900deg); }
+    100% { opacity: 0; -moz-transform: rotate(900deg); }
+}
+@-webkit-keyframes orbit {
+    0% {
+        opacity: 1;
+        z-index:99;
+        -webkit-transform: rotate(180deg);
+        -webkit-animation-timing-function: ease-out;
+    }
+    7% {
+        opacity: 1;
+        -webkit-transform: rotate(300deg);
+        -webkit-animation-timing-function: linear;
+        -webkit-origin:0%;
+    }
+    30% {
+        opacity: 1;
+        -webkit-transform:rotate(410deg);
+        -webkit-animation-timing-function: ease-in-out;
+        -webkit-origin:7%;
+    }
+    39% {
+        opacity: 1;
+        -webkit-transform: rotate(645deg);
+        -webkit-animation-timing-function: linear;
+        -webkit-origin:30%;
+    }
+    70% {
+        opacity: 1;
+        -webkit-transform: rotate(770deg);
+        -webkit-animation-timing-function: ease-out;
+        -webkit-origin:39%;
+    }
+    75% {
+        opacity: 1;
+        -webkit-transform: rotate(900deg);
+        -webkit-animation-timing-function: ease-out;
+        -webkit-origin:70%;
+    }
+    76% {
+        opacity: 0;
+        -webkit-transform:rotate(900deg);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: rotate(900deg);
+    }
+}
+
+@keyframes orbit {
+    0% { opacity: 1; z-index:99; transform: rotate(180deg); animation-timing-function: ease-out; }
+    7% { opacity: 1; transform: rotate(300deg); animation-timing-function: linear; origin:0%; }
+    30% { opacity: 1; transform:rotate(410deg); animation-timing-function: ease-in-out; origin:7%; }
+    39% { opacity: 1; transform: rotate(645deg); animation-timing-function: linear; origin:30%; }
+    70% { opacity: 1; transform: rotate(770deg); animation-timing-function: ease-out; origin:39%; }
+    75% { opacity: 1; transform: rotate(900deg); animation-timing-function: ease-out; origin:70%; }
+    76% { opacity: 0; transform:rotate(900deg); }
+    100% { opacity: 0; transform: rotate(900deg); }
+}
