@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Harvest Select Dashboards</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="css/HarvestSelectDashboards.css">
+    </head>
+    <body class="shift-end">
+        <header class="container text-center">
+            <div class="pull-left">
+				<img src="img/logo.gif" alt="Harvest Select Logo" />
+			</div>
+			<div class="pull-right">
+				<span>Shift End Times</span><img src="img/shift-end.png" alt="Shift End Times icon" />
+			</div>
+        </header>
+        <section id="mainContent" class="container">
+			<section class="row date-select">
+				<!-- pull in string of dates - need range, method -->
+				<select id="shiftDate"><option>Mar 1, 2015</option><option>Mar 2, 2015</option></select>
+			</section>
+			<section class="row fields">
+				<div class="col-xs-12 col-md-5 input-group">
+					<label>Reg Employees Late</label><input type="number" id="regEmpLate">
+					<label>Reg Employees Out</label><input type="number" id="regEmpOut">
+					<label>Reg Employees Left Early</label><input type="number" id="regEmpLeftEarly">
+					<label>Temp Svc Employees Out</label><input type="number" id="tempEmpOut">
+					<label>Inmate Employees Left Early</label><input type="number" id="inmateEmpLeftEarly">
+				</div>
+				<div class="col-xs-12 col-md-5 input-group">
+					<label>Finished Kill</label><input type="number" id="finKill">
+					<label>Finished Fillet</label><input type="number" id="finFillet">
+					<label>Finished Skinning</label><input type="number" id="finSkinned">
+					<label>Day Shift Finished Freezing</label><input type="number" id="dayFreeze">
+					<label>Night Shift Finished Freezing</label><input type="number" id="nightFreeze">
+				</div>
+				<div class="col-xs-12 col-md-5 input-group">
+					<label>Day Shift Froze</label><input type="number" id="dayFroze">
+					<label>Night Shift Froze</label><input type="number" id="nightFroze">
+					<label>Fillet Scale Reading</label><input type="number" id="filletScale">
+				</div>
+				<div class="col-xs-12 col-md-5 input-group no-border">
+					<label>Downtime in Minutes</label><input type="number" id="downtimeMin">
+				</div>
+			</section>
+			<section class="row buttons">
+				<a href="#" class="reset btn pull-left">Clear Page</a>
+				<a href="#" class="save btn pull-right">Save</a>
+			</section>
+        </section>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="scripts/HarvestSelectDashboards.js"></script>
+    </body>
+</html>

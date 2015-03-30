@@ -9,6 +9,8 @@ $.ajaxSetup({ contentType: 'application/json; charset=utf-8', data: data, error:
 
 $(function(){
 	if($('.login').length>0) login();
+	if($('.farm-yields').length>0) farmYields();
+	if($('.shift-end').length>0) shiftEnd();
 });
 
 /* Login page */
@@ -43,19 +45,19 @@ function login() {
 	});
 	
 	rememberCheck();
-    var passbox = $('#user input'), userbox = $('#pass input');
+    var passbox = $('#password'), userbox = $('#username');
     // LOGIN / KEY CHECK
     // Cookie is created to keep user/pass filled until browser is closed OR permanently if the checkbox is checked.
     // User Roles are added as classes to the BODY tag; elements are hidden appropriately through CSS.
     $('#login').unbind().click(function(e) {
         e.preventDefault();
         var username = $(userbox).val(), password = $(passbox).val(), dto = { "UserName": username, "Password": password }, data = JSON.stringify(dto);
-		showProgress('#main_content > form', 'login');
+		showProgress('body');
 		$.ajax('../api/Login/ValidateLogin', {
 			type: 'POST', data: data,
 			statusCode: {
 				200: function (msg) {
-					$('#username, #password').val(""); startTimer(msg.Key); localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID, companyID = msg.CompanyId; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription + " "; } if (supports_html5_storage()) { localStorage['CTuser'] = username; localStorage['CTpass'] = password; localStorage['CTuserRole'] = userRoles; localStorage['CTuserID'] = userID; localStorage['CTcompanyID'] = companyID; if ($('#rememberMe').is(':checked')) { localStorage['CTremember'] = true } else { localStorage['CTremember'] = false; } } else { createRemember('CTuser', username); createRemember('CTpass', password); createRemember('CTuserRole', userRoles); createRemember('CTuserID', userID); createRemember('CT_key', _key); createRemember('CT_company', companyID); }
+					$('#username, #password').val(""); /* startTimer(msg.Key); */ localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID, companyID = msg.CompanyId; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription + " "; } if (supports_html5_storage()) { localStorage['CTuser'] = username; localStorage['CTpass'] = password; localStorage['CTuserRole'] = userRoles; localStorage['CTuserID'] = userID; localStorage['CTcompanyID'] = companyID; if ($('#rememberMe').is(':checked')) { localStorage['CTremember'] = true } else { localStorage['CTremember'] = false; } } else { createRemember('CTuser', username); createRemember('CTpass', password); createRemember('CTuserRole', userRoles); createRemember('CTuserID', userID); createRemember('CT_key', _key); createRemember('CT_company', companyID); }
 					window.location.href = "index.html";
 				}, 404: function () {
 					$.when(hideProgress('login')).then(function () { alert("Invalid login credentials: " + username + ":" + password + ". Please enter your information again."); });
@@ -78,7 +80,7 @@ function supports_html5_storage() { try { return 'localStorage' in window && win
 // Key check for security/validation
 function checkKey() { if (!_key) { alert("Session key is undefined; please log in."); window.location.href = "login.html"; } }
 
-function refreshKey(username, password) { dto = { "UserName": username, "Password": password }, data = JSON.stringify(dto); $.ajax('../api/Login/ValidateLogin', { type: 'POST', data: data, statusCode: { 200: function (msg) { _key = msg.Key; localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription; } if (!supports_html5_storage()) { createRemember('CT_key', _key); } hideProgress(); startTimer(_key); } }, 404: function () { hideProgress(); alert('Your user credentials are not recognized. Please login again.'); window.location.href = "login.html"; }, 500: function (msg) { $.when(hideProgress()).then(function () { alert("Server error. Please notify support. (" + msg.responseJSON.ExceptionMessage + ")"); window.location.href = "login.html"; console.log(msg); }); } }); }
+function refreshKey(username, password) { dto = { "UserName": username, "Password": password }, data = JSON.stringify(dto); $.ajax('../api/Login/ValidateLogin', { type: 'POST', data: data, statusCode: { 200: function (msg) { _key = msg.Key; localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription; } if (!supports_html5_storage()) { createRemember('CT_key', _key); } hideProgress(); /* startTimer(_key); */ } }, 404: function () { hideProgress(); alert('Your user credentials are not recognized. Please login again.'); window.location.href = "login.html"; }, 500: function (msg) { $.when(hideProgress()).then(function () { alert("Server error. Please notify support. (" + msg.responseJSON.ExceptionMessage + ")"); window.location.href = "login.html"; console.log(msg); }); } }); }
 
 // Cookie check (for 'remember me' box)
 function rememberCheck() { var u = supports_html5_storage() ? localStorage['CTuser'] : readRemember('CTuser'), p = supports_html5_storage() ? localStorage['CTpass'] : readRemember('CTpass'); if (u && p) { $('#username').val(u); $('#password').val(p); $('#rememberMe').attr('checked', true); } }
@@ -94,3 +96,41 @@ function hideProgress(classIdentifier) { var bgElement = "#lightboxBG." + classI
 
 function centerProgress(container) { if (container == 'body') { container = window }; var containerHeight = $(container).innerHeight(), containerWidth = $(container).innerWidth(), modalHeight = $('#progressBar').innerHeight(), modalWidth = $('#progressBar').innerWidth(); var modalTop = (containerHeight - modalHeight) / 2, modalLeft = (containerWidth - modalWidth) / 2; $('#progressBar').css({ 'top': modalTop, 'left': modalLeft }); }
 
+/* FARM YIELDS */
+function farmYields() {
+	var i=1;
+	bindYieldButtons();
+	
+	function bindYieldButtons() {
+		$('.data .add-row').unbind().click(function(e){
+			e.preventDefault();
+			// TO DO: add validation
+			$(this).parent().parent().addClass('complete');
+			
+			var newRowHtml = '<section class="row row'+i+' data"><div class="col-xs-4"><select id="farms'+i+'"><option>(Farm)</option><option>Inverness</option></select></div><div class="col-xs-3"><select id="ponds'+i+'"><option>(Pond)</option><option>I-1</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds'+i+'"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+			
+			$('#rowContainer').append(newRowHtml);
+			i=i++;
+			bindYieldButtons();
+		});
+	
+		$('.data .delete-row').unbind().click(function(e){
+			e.preventDefault();
+			// TO DO: prevent removing sole empty row or replace with empty row
+			$(this).parent().parent().remove();
+			if(!$('.data').length>0) {
+				// TO DO: need to call farmDDL, pondDDL and insert into code - before? After?
+				var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0"><option>(Farm)</option><option>Inverness</option></select></div><div class="col-xs-3"><select id="ponds0"><option>(Pond)</option><option>I-1</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+			
+				$('#rowContainer').append(newRowHtml);
+				i = 1;
+				bindYieldButtons();
+			}
+		})
+	}
+}
+
+/* SHIFT END */
+function shiftEnd() {
+	
+}
