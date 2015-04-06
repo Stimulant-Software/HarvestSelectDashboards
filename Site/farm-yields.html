@@ -10,7 +10,7 @@
     <body class="farm-yields">
         <header class="container text-center">
             <div class="pull-left">
-				<img src="img/logo.gif" alt="Harvest Select Logo" />
+                <a href="index.html"><img src="img/logo.gif" alt="Harvest Select Logo" /></a>
 			</div>
 			<div class="pull-right">
 				<span>Farm Yields</span><img src="img/farm-yields.png" alt="Farm Yields icon" />
@@ -21,16 +21,7 @@
 				<!-- pull in string of dates - need range, method -->
 				<select id="shiftDate"><option>Mar 1, 2015</option><option>Mar 2, 2015</option></select>
 			</section>
-			<section id="rowContainer">
-			<!-- Will have to build with JS to add id fields -->
-				<section class="row row0 data">
-					<div class="col-xs-4"><select id="farms0"><option>(Farm)</option><option>Inverness</option></select></div>
-					<div class="col-xs-3"><select id="ponds0"><option>(Pond)</option><option>I-1</option></select></div>
-					<div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0"></div>
-					<div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div>
-					<div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div>
-				</section>
-			</section>
+			<section id="rowContainer"></section>
 			<section class="row buttons">
 				<a href="#" class="reset btn pull-left">Clear Page</a>
 				<a href="#" class="save btn pull-right">Save</a>

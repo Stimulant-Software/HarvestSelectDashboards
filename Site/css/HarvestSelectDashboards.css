@@ -13,6 +13,7 @@ header span { font-weight: bold; font-size: 1.5em; text-transform: uppercase; }
 .portal .yields a { background-image: url('../img/farm-yields.png'); background-size: 100px auto; }
 .portal .shift a { background-image: url('../img/shift-end.png'); background-size: 100px auto; }
 
+input:disabled, select:disabled { background-color: #acacac; }
 .date-select { margin: 10px 0; text-align: center; padding: 10px; }
 select { font-size: 1.3em; padding: 10px; background-color: yellow; }
 label { width: 80%; font-size: 1.2em; margin-bottom: 10px; }

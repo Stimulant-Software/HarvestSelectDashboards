@@ -8,7 +8,8 @@ $.ajaxSetup({ contentType: 'application/json; charset=utf-8', data: data, error:
 
 
 $(function(){
-	if($('.login').length>0) login();
+    var currentPage = $(location).attr('href');
+    if (currentPage.indexOf("login") > -1) { login(); } else { checkKey(); }
 	if($('.farm-yields').length>0) farmYields();
 	if($('.shift-end').length>0) shiftEnd();
 });
@@ -98,37 +99,57 @@ function centerProgress(container) { if (container == 'body') { container = wind
 
 /* FARM YIELDS */
 function farmYields() {
-	var i=1;
+    var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+
+    $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
+    var i = 1;
 	bindYieldButtons();
-	
-	function bindYieldButtons() {
-		$('.data .add-row').unbind().click(function(e){
-			e.preventDefault();
-			// TO DO: add validation
-			$(this).parent().parent().addClass('complete');
-			
-			var newRowHtml = '<section class="row row'+i+' data"><div class="col-xs-4"><select id="farms'+i+'"><option>(Farm)</option><option>Inverness</option></select></div><div class="col-xs-3"><select id="ponds'+i+'"><option>(Pond)</option><option>I-1</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds'+i+'"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
-			
-			$('#rowContainer').append(newRowHtml);
-			i=i++;
-			bindYieldButtons();
-		});
-	
-		$('.data .delete-row').unbind().click(function(e){
-			e.preventDefault();
-			// TO DO: prevent removing sole empty row or replace with empty row
-			$(this).parent().parent().remove();
-			if(!$('.data').length>0) {
-				// TO DO: need to call farmDDL, pondDDL and insert into code - before? After?
-				var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0"><option>(Farm)</option><option>Inverness</option></select></div><div class="col-xs-3"><select id="ponds0"><option>(Pond)</option><option>I-1</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
-			
-				$('#rowContainer').append(newRowHtml);
-				i = 1;
-				bindYieldButtons();
-			}
-		})
-	}
 }
+
+function bindYieldButtons() {
+    $('.farmDDL').change(function () {
+        var rowID = $("select option:selected").val();
+        loadPondsDDL(rowID);
+    });
+
+    $('.pondDDL').change(function () {
+        $(this).parent().next().find('input').attr('disabled', false);
+    });
+
+    $('.data .add-row').unbind().click(function (e) {
+        e.preventDefault();
+        // TO DO: add validation
+        $(this).parent().parent().addClass('complete');
+
+        newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+
+        $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); console.log("!"); });
+        i = i++;
+        bindYieldButtons();
+    });
+
+    $('.data .delete-row').unbind().click(function (e) {
+        e.preventDefault();
+        // TO DO: prevent removing sole empty row or replace with empty row
+        $(this).parent().parent().remove();
+        if (!$('.data').length > 0) {
+            // TO DO: need to call farmDDL, pondDDL and insert into code - before? After?
+            var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+
+            $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
+            i = 1;
+            bindYieldButtons();
+        }
+    })
+}
+
+function loadFarmsDDL(rowID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
+
+function loadFarmsDDL(rowID, farmID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
+
+function loadPondsDDL(rowID) { var ddlHtml = '<option value="" selected="selected">Select Pond</option>', searchQuery = { "key": _key, "userID": userID, "farmID": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } })).then(function () { $('#ponds' + rowID).attr('disabled', false).empty().html(ddlHtml); }); }
+
+function loadPondsDDL(rowID, pondID) { var ddlHtml = '<option value="" selected="selected">Select Pond</option>', searchQuery = { "key": _key, "userID": userID, "farmID": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).attr('disabled', false).empty().html(ddlHtml); }); }
 
 /* SHIFT END */
 function shiftEnd() {
