@@ -12,20 +12,22 @@ namespace SGApp.Models.EF
     using System;
     using System.Collections.Generic;
     
-    public partial class Status
+    public partial class Pond
     {
-        public Status()
+        public Pond()
         {
-            this.Users = new HashSet<User>();
-            this.Farms = new HashSet<Farm>();
-            this.Ponds = new HashSet<Pond>();
+            this.FarmYields = new HashSet<FarmYield>();
         }
     
+        public int PondId { get; set; }
+        public int FarmId { get; set; }
+        public string PondName { get; set; }
         public int StatusId { get; set; }
-        public string StatusName { get; set; }
+        public decimal Size { get; set; }
+        public int SortOrder { get; set; }
     
-        public virtual ICollection<User> Users { get; set; }
-        public virtual ICollection<Farm> Farms { get; set; }
-        public virtual ICollection<Pond> Ponds { get; set; }
+        public virtual Farm Farm { get; set; }
+        public virtual ICollection<FarmYield> FarmYields { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

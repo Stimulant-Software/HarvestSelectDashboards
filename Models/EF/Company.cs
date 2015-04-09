@@ -17,6 +17,7 @@ namespace SGApp.Models.EF
         public Company()
         {
             this.Users = new HashSet<User>();
+            this.Farms = new HashSet<Farm>();
         }
     
         public int CompanyId { get; set; }
@@ -29,5 +30,6 @@ namespace SGApp.Models.EF
         public string Phone { get; set; }
     
         public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<Farm> Farms { get; set; }
     }
 }
