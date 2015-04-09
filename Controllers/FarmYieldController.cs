@@ -111,6 +111,62 @@ namespace SGApp.Controllers
             contact.ProcessRecord(cqDto);
             return pr.Validate(contact);
         }
+
+        internal HttpResponseMessage FarmYields(HttpRequestMessage request, FarmYieldDTO cqDTO)
+        {
+            string key;
+            var aur = new AppUserRepository();
+            var companyId = 0;
+            var userId = aur.ValidateUser(cqDTO.Key, out key, ref companyId);
+            if (userId > 0)
+            {
+                var ur = new FarmYieldRepository();
+                var u = new FarmYield();
+                var predicate = ur.GetPredicate(cqDTO, u, companyId);
+                var data = ur.GetByPredicate(predicate);
+                var col = new Collection<Dictionary<string, string>>();
+
+                foreach (var item in data)
+                {
+
+                    var dic = new Dictionary<string, string>();
+
+                    dic.Add("YieldId", item.YieldID.ToString());
+                    dic.Add("PondID", item.PondID.ToString());
+                    dic.Add("PondName", item.Pond.PondName);
+                    dic.Add("YieldDate", item.YieldDate.ToShortDateString());
+                    dic.Add("PoundsYielded", item.PoundsYielded.ToString());
+                    col.Add(dic);
+                    var ufdic = new Dictionary<string, string>();
+
+
+                }
+
+                var retVal = new GenericDTO
+                {
+                    Key = key,
+                    ReturnData = col
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, retVal);
+            }
+            var message = "validation failed";
+            return request.CreateResponse(HttpStatusCode.NotFound, message);
+
+        }
+
+
+
+
+        [HttpPost]
+        public HttpResponseMessage FarmYields([FromBody] FarmYieldDTO cqDTO)
+        {
+            return FarmYields(Request, cqDTO);
+        }
+        [HttpPost]
+        public HttpResponseMessage FarmYieldList([FromBody] FarmYieldDTO cqDTO)
+        {
+            return FarmYields(Request, cqDTO);
+        }
     }
 
 }

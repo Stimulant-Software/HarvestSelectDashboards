@@ -111,6 +111,72 @@ namespace SGApp.Controllers
             contact.ProcessRecord(cqDto);
             return pr.Validate(contact);
         }
+
+        internal HttpResponseMessage ShiftEnds(HttpRequestMessage request, ShiftEndDTO cqDTO)
+        {
+            string key;
+            var aur = new AppUserRepository();
+            var companyId = 0;
+            var userId = aur.ValidateUser(cqDTO.Key, out key, ref companyId);
+            if (userId > 0)
+            {
+                var ur = new ShiftEndRepository();
+                var u = new ShiftEnd();
+                var predicate = ur.GetPredicate(cqDTO, u, companyId);
+                var data = ur.GetByPredicate(predicate);
+                var col = new Collection<Dictionary<string, string>>();
+
+                foreach (var item in data)
+                {
+
+                    var dic = new Dictionary<string, string>();
+
+                    dic.Add("ShiftEndID", item.ShiftEndID.ToString());
+                    dic.Add("DayFinishedFreezing", item.DayFinishedFreezing.ToString());
+                    dic.Add("DayShiftFroze", item.DayShiftFroze.ToString());
+                    dic.Add("FilletScaleReading", item.FilletScaleReading.ToString());
+                    dic.Add("FinishedFillet", item.FinishedFillet.ToString());
+                    dic.Add("FinishedKill", item.FinishedKill.ToString());
+                    dic.Add("FinishedSkinning", item.FinishedSkinning.ToString());
+                    dic.Add("InmateLeftEarly", item.InmateLeftEarly.ToString());
+                    dic.Add("NightFinishedFreezing", item.NightFinishedFreezing.ToString());
+                    dic.Add("NightShiftFroze", item.NightShiftFroze.ToString());
+                    dic.Add("RegEmpLate", item.RegEmpLate.ToString());
+                    dic.Add("RegEmpOut", item.RegEmpOut.ToString());
+                    dic.Add("RegEmplLeftEarly", item.RegEmplLeftEarly.ToString());
+                    dic.Add("ShiftDate", item.ShiftDate.ToString());
+                    dic.Add("TempEmpOut", item.TempEmpOut.ToString());
+                    col.Add(dic);
+                    var ufdic = new Dictionary<string, string>();
+
+
+                }
+
+                var retVal = new GenericDTO
+                {
+                    Key = key,
+                    ReturnData = col
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, retVal);
+            }
+            var message = "validation failed";
+            return request.CreateResponse(HttpStatusCode.NotFound, message);
+
+        }
+
+
+
+
+        [HttpPost]
+        public HttpResponseMessage ShiftEnds([FromBody] ShiftEndDTO cqDTO)
+        {
+            return ShiftEnds(Request, cqDTO);
+        }
+        [HttpPost]
+        public HttpResponseMessage ShiftEndList([FromBody] ShiftEndDTO cqDTO)
+        {
+            return ShiftEnds(Request, cqDTO);
+        }
     }
 
 }
