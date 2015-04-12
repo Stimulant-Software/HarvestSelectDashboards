@@ -54,5 +54,58 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Farms">
+      <EntityTypeMapping TypeName="AppModel.Farm">
+        <MappingFragment StoreEntitySet="Farms">
+          <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+          <ScalarProperty Name="FarmName" ColumnName="FarmName" />
+          <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+          <ScalarProperty Name="FarmId" ColumnName="FarmId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FarmYields">
+      <EntityTypeMapping TypeName="AppModel.FarmYield">
+        <MappingFragment StoreEntitySet="FarmYields">
+          <ScalarProperty Name="PoundsYielded" ColumnName="PoundsYielded" />
+          <ScalarProperty Name="PondID" ColumnName="PondID" />
+          <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
+          <ScalarProperty Name="YieldID" ColumnName="YieldID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Ponds">
+      <EntityTypeMapping TypeName="AppModel.Pond">
+        <MappingFragment StoreEntitySet="Ponds">
+          <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+          <ScalarProperty Name="Size" ColumnName="Size" />
+          <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+          <ScalarProperty Name="PondName" ColumnName="PondName" />
+          <ScalarProperty Name="FarmId" ColumnName="FarmId" />
+          <ScalarProperty Name="PondId" ColumnName="PondId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ShiftEnds">
+      <EntityTypeMapping TypeName="AppModel.ShiftEnd">
+        <MappingFragment StoreEntitySet="ShiftEnd">
+          <ScalarProperty Name="FilletScaleReading" ColumnName="FilletScaleReading" />
+          <ScalarProperty Name="NightShiftFroze" ColumnName="NightShiftFroze" />
+          <ScalarProperty Name="DayShiftFroze" ColumnName="DayShiftFroze" />
+          <ScalarProperty Name="NightFinishedFreezing" ColumnName="NightFinishedFreezing" />
+          <ScalarProperty Name="DayFinishedFreezing" ColumnName="DayFinishedFreezing" />
+          <ScalarProperty Name="FinishedSkinning" ColumnName="FinishedSkinning" />
+          <ScalarProperty Name="FinishedFillet" ColumnName="FinishedFillet" />
+          <ScalarProperty Name="FinishedKill" ColumnName="FinishedKill" />
+          <ScalarProperty Name="InmateLeftEarly" ColumnName="InmateLeftEarly" />
+          <ScalarProperty Name="TempEmpOut" ColumnName="TempEmpOut" />
+          <ScalarProperty Name="RegEmplLeftEarly" ColumnName="RegEmplLeftEarly" />
+          <ScalarProperty Name="RegEmpOut" ColumnName="RegEmpOut" />
+          <ScalarProperty Name="RegEmpLate" ColumnName="RegEmpLate" />
+          <ScalarProperty Name="ShiftDate" ColumnName="ShiftDate" />
+          <ScalarProperty Name="ShiftEndID" ColumnName="ShiftEndID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

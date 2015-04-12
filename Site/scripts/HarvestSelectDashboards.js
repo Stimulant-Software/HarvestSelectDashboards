@@ -16,37 +16,38 @@ $(function(){
 
 /* Login page */
 function login() {
-	$('.login form div, .login form button').hide();
-	$('.login form #user').fadeIn(250);
-	$('#user input').unbind().focus(function(){
-		$('#user').removeClass('has-success, has-error');
-		$('#user .help-block').hide();
-	});
-	$('#user input').unbind().focusout(function(){
-		if($(this).val() != '') {
-			$('#pass').fadeIn(250);
-			$('#user').addClass('has-success');
-		} else {
-			$('#user').addClass('has-error');
-			$('#user .help-block').show();
-		}
-	});
-	$('#pass input').unbind().focus(function(){
-		$('#pass').removeClass('has-success, has-error');
-		$('#pass .help-block').hide();
-	});
-	$('#pass input').unbind().focusout(function(){
-		if($(this).val() != '') {
-			$('#remember, #login').fadeIn(250);
-			$('#pass').addClass('has-success');
-		} else {
-			$('#pass').addClass('has-error');
-			$('#pass .help-block').show();
-		}
-	});
+    if (!rememberCheck()) {
+        $('.login form div, .login form button').hide();
+        $('.login form #user').fadeIn(250);
+        $('#user input').unbind().focus(function(){
+            $('#user').removeClass('has-success, has-error');
+            $('#user .help-block').hide();
+        });
+        $('#user input').unbind().focusout(function(){
+            if($(this).val() != '') {
+                $('#pass').fadeIn(250);
+                $('#user').addClass('has-success');
+            } else {
+                $('#user').addClass('has-error');
+                $('#user .help-block').show();
+            }
+        });
+        $('#pass input').unbind().focus(function(){
+            $('#pass').removeClass('has-success, has-error');
+            $('#pass .help-block').hide();
+        });
+        $('#pass input').unbind().focusout(function(){
+            if($(this).val() != '') {
+                $('#remember, #login').fadeIn(250);
+                $('#pass').addClass('has-success');
+            } else {
+                $('#pass').addClass('has-error');
+                $('#pass .help-block').show();
+            }
+        });
+    }
 	
-	rememberCheck();
-    var passbox = $('#password'), userbox = $('#username');
+	var passbox = $('#password'), userbox = $('#username');
     // LOGIN / KEY CHECK
     // Cookie is created to keep user/pass filled until browser is closed OR permanently if the checkbox is checked.
     // User Roles are added as classes to the BODY tag; elements are hidden appropriately through CSS.
@@ -84,7 +85,7 @@ function checkKey() { if (!_key) { alert("Session key is undefined; please log i
 function refreshKey(username, password) { dto = { "UserName": username, "Password": password }, data = JSON.stringify(dto); $.ajax('../api/Login/ValidateLogin', { type: 'POST', data: data, statusCode: { 200: function (msg) { _key = msg.Key; localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription; } if (!supports_html5_storage()) { createRemember('CT_key', _key); } hideProgress(); /* startTimer(_key); */ } }, 404: function () { hideProgress(); alert('Your user credentials are not recognized. Please login again.'); window.location.href = "login.html"; }, 500: function (msg) { $.when(hideProgress()).then(function () { alert("Server error. Please notify support. (" + msg.responseJSON.ExceptionMessage + ")"); window.location.href = "login.html"; console.log(msg); }); } }); }
 
 // Cookie check (for 'remember me' box)
-function rememberCheck() { var u = supports_html5_storage() ? localStorage['CTuser'] : readRemember('CTuser'), p = supports_html5_storage() ? localStorage['CTpass'] : readRemember('CTpass'); if (u && p) { $('#username').val(u); $('#password').val(p); $('#rememberMe').attr('checked', true); } }
+function rememberCheck() { var u = supports_html5_storage() ? localStorage['CTuser'] : readRemember('CTuser'), p = supports_html5_storage() ? localStorage['CTpass'] : readRemember('CTpass'); if (u && p) { $('#username').val(u); $('#password').val(p); $('#remember input').attr('checked', true); return true; } }
 
 function createRemember(name, value) { var expires = ";expires=0"; if ($('#rememberMe').is(':checked')) { var date = new Date(); date.setTime(date.getTime() + (31 * 24 * 60 * 60 * 1000)); var expires = ";expires=" + date.toGMTString(); } document.cookie = name + "=" + value + expires; }
 
@@ -98,12 +99,70 @@ function hideProgress(classIdentifier) { var bgElement = "#lightboxBG." + classI
 function centerProgress(container) { if (container == 'body') { container = window }; var containerHeight = $(container).innerHeight(), containerWidth = $(container).innerWidth(), modalHeight = $('#progressBar').innerHeight(), modalWidth = $('#progressBar').innerWidth(); var modalTop = (containerHeight - modalHeight) / 2, modalLeft = (containerWidth - modalWidth) / 2; $('#progressBar').css({ 'top': modalTop, 'left': modalLeft }); }
 
 /* FARM YIELDS */
+var i;
 function farmYields() {
-    var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+    var date, addOrEdit;
 
-    $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
-    var i = 1;
-	bindYieldButtons();
+    $('.row.buttons').hide();
+    $('#shiftDate').click(function () {
+        $('#calendarModal').modal();
+        $('#calendarModal .modal-body').fullCalendar({
+            dayClick: function () {
+                $('#rowContainer').empty();
+                date = $(this).data('date');
+
+                // TODO: add edit function, detected by existing data in calendar
+                // this assumes new/add:
+                addOrEdit = "-1";
+                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+
+                $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); $('.row.buttons').show(); });
+                i = 1;
+                bindYieldButtons();
+
+                $('#calendarModal').modal('hide');
+            }
+        });
+    });
+
+    $('.buttons .reset').unbind().click(function (e) {
+        e.preventDefault();
+        if (window.confirm("This will permanently delete any information you have entered and not saved.")) {
+            document.location.reload(true);
+        }
+    });
+
+    $('.buttons .save').unbind().click(function (e) {
+        e.preventDefault();
+        //dic.Add("PondID", item.PondID.ToString());
+        //dic.Add("PondName", item.Pond.PondName);
+        //dic.Add("PoundsYielded", item.PoundsYielded.ToString());
+        var pondYields = new Array(), arrayCount = 0;
+        $('.row.data').each(function () {
+            if($(this).find('.pondsDDL').val("")) {
+                //skip - probably empty unused last row
+            } else {
+                pondYields(arrayCount) = [$(this).find('.pondsDDL').selected(value), $(this).find('#pounds' + arrayCount).val()];
+                arrayCount++;
+            }
+            console.log(pondYields);
+        });
+        var searchQuery = { "key": _key, "userID": userID, "YieldDate": date, "YieldId": addOrEdit, "Yields": pondYields }, data = JSON.stringify(searchQuery);
+        $.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
+            type: 'POST',
+            data: data,
+            success: function (msg) {
+                localStorage['CT_key'] = msg['Key'];
+                /*startTimer(msg['Key']);*/
+                farmList = msg['ReturnData'];
+                for (var i = 0; i < farmList.length; ++i) {
+                    if (farmList[i].StatusId == "1") {
+                        ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>';
+                    }
+                }
+            }
+        })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); });
+    });
 }
 
 function bindYieldButtons() {
@@ -116,12 +175,18 @@ function bindYieldButtons() {
         $(this).parent().next().find('input').attr('disabled', false);
     });
 
+    $('.pounds').unbind().focusout(function () {
+        if (!$(this).val()=="") {
+            $(this).parent().parent().find('.add-row, .delete-row').fadeIn(250);
+        } 
+    });
+
     $('.data .add-row').unbind().click(function (e) {
         e.preventDefault();
         // TO DO: add validation
         $(this).parent().parent().addClass('complete');
 
-        newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+        newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
         $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); console.log("!"); });
         i = i++;
@@ -134,7 +199,7 @@ function bindYieldButtons() {
         $(this).parent().parent().remove();
         if (!$('.data').length > 0) {
             // TO DO: need to call farmDDL, pondDDL and insert into code - before? After?
-            var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+            var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
             $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
             i = 1;
@@ -153,5 +218,24 @@ function loadPondsDDL(rowID, pondID) { var ddlHtml = '<option value="" selected=
 
 /* SHIFT END */
 function shiftEnd() {
-	
+    $('#shiftDate').click(function () {
+        $('#calendarModal .modal-body').fullCalendar({
+            dayClick: function () {
+                $('#rowContainer').empty();
+                //add edit function, detected by existing data in calendar
+                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+
+                $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); });
+                var i = 1;
+                bindYieldButtons();
+            }
+        });
+    });
+
+    $('.buttons .reset').unbind().click(function (e) {
+        e.preventDefault();
+        if (window.confirm("This will permanently delete any information you have entered and not saved.")) {
+            document.location.reload(true);
+        }
+    });
 }
