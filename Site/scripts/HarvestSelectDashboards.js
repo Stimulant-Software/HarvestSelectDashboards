@@ -99,9 +99,8 @@ function hideProgress(classIdentifier) { var bgElement = "#lightboxBG." + classI
 function centerProgress(container) { if (container == 'body') { container = window }; var containerHeight = $(container).innerHeight(), containerWidth = $(container).innerWidth(), modalHeight = $('#progressBar').innerHeight(), modalWidth = $('#progressBar').innerWidth(); var modalTop = (containerHeight - modalHeight) / 2, modalLeft = (containerWidth - modalWidth) / 2; $('#progressBar').css({ 'top': modalTop, 'left': modalLeft }); }
 
 /* FARM YIELDS */
-var i;
 function farmYields() {
-    var date, addOrEdit;
+    var date, addOrEdit, i;
 
     $('.row.buttons').hide();
     $('#shiftDate').click(function () {
@@ -155,79 +154,78 @@ function farmYields() {
                 localStorage['CT_key'] = msg['Key'];
                 /*startTimer(msg['Key']);*/
                 farmList = msg['ReturnData'];
-                for (var i = 0; i < farmList.length; ++i) {
-                    if (farmList[i].StatusId == "1") {
-                        ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>';
-                    }
-                }
+                alert("Your data was successfully added.")
             }
         })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); });
     });
-}
 
-function bindYieldButtons() {
-    $('.farmDDL').change(function () {
-        var rowID = $("select option:selected").val();
-        loadPondsDDL(rowID);
-    });
+    function bindYieldButtons() {
+        $('.farmDDL').change(function () {
+            var rowID = $("select option:selected").val();
+            loadPondsDDL(rowID);
+        });
 
-    $('.pondDDL').change(function () {
-        $(this).parent().next().find('input').attr('disabled', false);
-    });
+        $('.pondDDL').change(function () {
+            $(this).parent().next().find('input').attr('disabled', false);
+        });
 
-    $('.pounds').unbind().focusout(function () {
-        if (!$(this).val()=="") {
-            $(this).parent().parent().find('.add-row, .delete-row').fadeIn(250);
-        } 
-    });
+        $('.pounds').unbind().focusout(function () {
+            if (!$(this).val() == "") {
+                $(this).parent().parent().find('.add-row, .delete-row').fadeIn(250);
+            }
+        });
 
-    $('.data .add-row').unbind().click(function (e) {
-        e.preventDefault();
-        // TO DO: add validation
-        $(this).parent().parent().addClass('complete');
+        $('.data .add-row').unbind().click(function (e) {
+            e.preventDefault();
+            // TO DO: add validation
+            $(this).parent().parent().addClass('complete');
 
-        newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+            newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
-        $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); console.log("!"); });
-        i = i++;
-        bindYieldButtons();
-    });
-
-    $('.data .delete-row').unbind().click(function (e) {
-        e.preventDefault();
-        // TO DO: prevent removing sole empty row or replace with empty row
-        $(this).parent().parent().remove();
-        if (!$('.data').length > 0) {
-            // TO DO: need to call farmDDL, pondDDL and insert into code - before? After?
-            var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
-
-            $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
-            i = 1;
+            $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); console.log("!"); });
+            i = i++;
             bindYieldButtons();
-        }
-    })
+        });
+
+        $('.data .delete-row').unbind().click(function (e) {
+            e.preventDefault();
+            // TO DO: prevent removing sole empty row or replace with empty row
+            $(this).parent().parent().remove();
+            if (!$('.data').length > 0) {
+                // TO DO: need to call farmDDL, pondDDL and insert into code - before? After?
+                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+
+                $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
+                i = 1;
+                bindYieldButtons();
+            }
+        })
+    }
+
+    function loadFarmsDDL(rowID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
+
+    function loadFarmsDDL(rowID, farmID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
+
+    function loadPondsDDL(rowID) { var ddlHtml = '<option value="" selected="selected">Select Pond</option>', searchQuery = { "key": _key, "userID": userID, "farmID": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } })).then(function () { $('#ponds' + rowID).attr('disabled', false).empty().html(ddlHtml); }); }
+
+    function loadPondsDDL(rowID, pondID) { var ddlHtml = '<option value="" selected="selected">Select Pond</option>', searchQuery = { "key": _key, "userID": userID, "farmID": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).attr('disabled', false).empty().html(ddlHtml); }); }
 }
-
-function loadFarmsDDL(rowID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
-
-function loadFarmsDDL(rowID, farmID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
-
-function loadPondsDDL(rowID) { var ddlHtml = '<option value="" selected="selected">Select Pond</option>', searchQuery = { "key": _key, "userID": userID, "farmID": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } })).then(function () { $('#ponds' + rowID).attr('disabled', false).empty().html(ddlHtml); }); }
-
-function loadPondsDDL(rowID, pondID) { var ddlHtml = '<option value="" selected="selected">Select Pond</option>', searchQuery = { "key": _key, "userID": userID, "farmID": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).attr('disabled', false).empty().html(ddlHtml); }); }
 
 /* SHIFT END */
 function shiftEnd() {
+    $('.row.fields, .row.buttons').hide();
+    var date, addOrEdit;
     $('#shiftDate').click(function () {
         $('#calendarModal .modal-body').fullCalendar({
             dayClick: function () {
                 $('#rowContainer').empty();
-                //add edit function, detected by existing data in calendar
-                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+                date = $(this).data('date');
 
-                $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); });
-                var i = 1;
-                bindYieldButtons();
+                // TODO: add edit function, detected by existing data in calendar
+                // this assumes new/add:
+                addOrEdit = "-1";
+                $('#calendarModal').modal('hide');
+                $('.row.fields, .row.buttons').fadeIn(250);
             }
         });
     });
@@ -237,5 +235,21 @@ function shiftEnd() {
         if (window.confirm("This will permanently delete any information you have entered and not saved.")) {
             document.location.reload(true);
         }
+    });
+
+    $('.buttons .save').unbind().click(function (e) {
+        e.preventDefault();
+        // Harper TODO - you need to add a column / call in API for "DoownTimeMinutes"
+        var searchQuery = { "key": _key, "userID": userID, "ShiftDate": date, "ShiftEndID": addOrEdit, "Day Finished Feeding": $('#dayFreeze').val(), "DayShiftFroze": $('#dayFroze').val(), "FilletScaleReading": $('#filletScale').val() , "FinishedFillet": $('#finFillet').val(), "FinishedKill": $('#finKill').val(), "FinishedSkinning": $('#finSkinned').val(), "InmateLeftEarly": $('#inmateEmpLeftEarly').val() , "NightFinishedFreezing": $('#nightFreeze').val(), "NightShiftFroze": $('#nightFroze').val(), "RegEmpLate": $('#regEmpLate').val(), "RegEmpOut": $('#regEmpOut').val() , "RegEmplLeftEarly": $('#regEmpLeftEarly').val(), "TempEmpOut": $('#tempEmpOut').val(), "DowntimeMinutes": $('#downtimeMin').val() }, data = JSON.stringify(searchQuery);
+        $.when($.ajax('../api/ShiftTime/ShiftTimeAddOrEdit', {
+            type: 'POST',
+            data: data,
+            success: function (msg) {
+                localStorage['CT_key'] = msg['Key'];
+                /*startTimer(msg['Key']);*/
+                farmList = msg['ReturnData'];
+                alert("Your information was successfully recorded.");
+            }
+        })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); });
     });
 }
