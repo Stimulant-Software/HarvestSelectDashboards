@@ -22,6 +22,7 @@ namespace SGApp.Models.Validation
         public decimal DayShiftFroze { get; set; }
         public decimal NightShiftFroze { get; set; }
         public decimal FilletScaleReading { get; set; }
+        public int DowntimeMinutes { get; set; }
 
 
 

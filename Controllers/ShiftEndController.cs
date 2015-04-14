@@ -134,6 +134,7 @@ namespace SGApp.Controllers
                     dic.Add("ShiftEndID", item.ShiftEndID.ToString());
                     dic.Add("DayFinishedFreezing", item.DayFinishedFreezing.ToString());
                     dic.Add("DayShiftFroze", item.DayShiftFroze.ToString());
+                    dic.Add("DowntimeMinutes", item.DowntimeMinutes.ToString());
                     dic.Add("FilletScaleReading", item.FilletScaleReading.ToString());
                     dic.Add("FinishedFillet", item.FinishedFillet.ToString());
                     dic.Add("FinishedKill", item.FinishedKill.ToString());

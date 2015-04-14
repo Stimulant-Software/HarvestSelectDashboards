@@ -15,14 +15,14 @@
         <AssociationConnector Association="AppModel.FK_Users_Status" />
         <AssociationConnector Association="AppModel.FK_UserRoles_User" />
         <EntityTypeShape EntityType="AppModel.Farm" Width="1.5" PointX="4.63389459095611" PointY="5.1393332952351" />
-        <EntityTypeShape EntityType="AppModel.FarmYield" Width="1.5" PointX="1.8733400934717337" PointY="25.625538018357727" />
+        <EntityTypeShape EntityType="AppModel.FarmYield" Width="1.5" PointX="2.5" PointY="8.5" />
         <EntityTypeShape EntityType="AppModel.Pond" Width="1.5" PointX="1.2548556855203843" PointY="4.3852266093647234" />
-        <EntityTypeShape EntityType="AppModel.ShiftEnd" Width="1.5" PointX="9.9324127537814952" PointY="28.716162203213276" />
         <AssociationConnector Association="AppModel.FK_Farms_Companies" />
         <AssociationConnector Association="AppModel.FK_Farms_Statuses" />
         <AssociationConnector Association="AppModel.FK_Ponds_Farms" />
         <AssociationConnector Association="AppModel.FK_FarmYields_Ponds" />
         <AssociationConnector Association="AppModel.FK_Ponds_Statuses" />
+        <EntityTypeShape EntityType="AppModel.ShiftEnd" Width="1.5" PointX="1.3233827619456604" PointY="11.226545339090073" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

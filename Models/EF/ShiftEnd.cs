@@ -29,5 +29,6 @@ namespace SGApp.Models.EF
         public Nullable<decimal> DayShiftFroze { get; set; }
         public Nullable<decimal> NightShiftFroze { get; set; }
         public Nullable<decimal> FilletScaleReading { get; set; }
+        public Nullable<int> DowntimeMinutes { get; set; }
     }
 }

@@ -120,6 +120,7 @@
           <Property Name="DayShiftFroze" Type="decimal" Scale="2" />
           <Property Name="NightShiftFroze" Type="decimal" Scale="2" />
           <Property Name="FilletScaleReading" Type="decimal" Scale="2" />
+          <Property Name="DowntimeMinutes" Type="int" />
         </EntityType>
         <EntityType Name="Statuses">
           <Key>
@@ -286,7 +287,6 @@
           <EntitySet Name="Farms" EntityType="AppModel.Farm" />
           <EntitySet Name="FarmYields" EntityType="AppModel.FarmYield" />
           <EntitySet Name="Ponds" EntityType="AppModel.Pond" />
-          <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
           <AssociationSet Name="FK_Farms_Companies" Association="AppModel.FK_Farms_Companies">
             <End Role="Company" EntitySet="Companies" />
             <End Role="Farm" EntitySet="Farms" />
@@ -307,6 +307,7 @@
             <End Role="Status" EntitySet="Statuses" />
             <End Role="Pond" EntitySet="Ponds" />
           </AssociationSet>
+          <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
           </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -451,26 +452,6 @@
           <NavigationProperty Name="FarmYields" Relationship="AppModel.FK_FarmYields_Ponds" FromRole="Pond" ToRole="FarmYield" />
           <NavigationProperty Name="Status" Relationship="AppModel.FK_Ponds_Statuses" FromRole="Pond" ToRole="Status" />
         </EntityType>
-        <EntityType Name="ShiftEnd">
-          <Key>
-            <PropertyRef Name="ShiftEndID" />
-          </Key>
-          <Property Type="Int32" Name="ShiftEndID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="DateTime" Name="ShiftDate" Nullable="false" Precision="3" />
-          <Property Type="Int32" Name="RegEmpLate" />
-          <Property Type="Int32" Name="RegEmpOut" />
-          <Property Type="Int32" Name="RegEmplLeftEarly" />
-          <Property Type="Int32" Name="TempEmpOut" />
-          <Property Type="Int32" Name="InmateLeftEarly" />
-          <Property Type="DateTime" Name="FinishedKill" Precision="3" />
-          <Property Type="DateTime" Name="FinishedFillet" Precision="3" />
-          <Property Type="DateTime" Name="FinishedSkinning" Precision="3" />
-          <Property Type="DateTime" Name="DayFinishedFreezing" Precision="3" />
-          <Property Type="DateTime" Name="NightFinishedFreezing" Precision="3" />
-          <Property Type="Decimal" Name="DayShiftFroze" Precision="18" Scale="2" />
-          <Property Type="Decimal" Name="NightShiftFroze" Precision="18" Scale="2" />
-          <Property Type="Decimal" Name="FilletScaleReading" Precision="18" Scale="2" />
-        </EntityType>
         <Association Name="FK_Farms_Companies">
           <End Type="AppModel.Company" Role="Company" Multiplicity="1" />
           <End Type="AppModel.Farm" Role="Farm" Multiplicity="*" />
@@ -531,6 +512,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ShiftEnd">
+          <Key>
+            <PropertyRef Name="ShiftEndID" />
+          </Key>
+          <Property Type="Int32" Name="ShiftEndID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="ShiftDate" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="RegEmpLate" />
+          <Property Type="Int32" Name="RegEmpOut" />
+          <Property Type="Int32" Name="RegEmplLeftEarly" />
+          <Property Type="Int32" Name="TempEmpOut" />
+          <Property Type="Int32" Name="InmateLeftEarly" />
+          <Property Type="DateTime" Name="FinishedKill" Precision="3" />
+          <Property Type="DateTime" Name="FinishedFillet" Precision="3" />
+          <Property Type="DateTime" Name="FinishedSkinning" Precision="3" />
+          <Property Type="DateTime" Name="DayFinishedFreezing" Precision="3" />
+          <Property Type="DateTime" Name="NightFinishedFreezing" Precision="3" />
+          <Property Type="Decimal" Name="DayShiftFroze" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="NightShiftFroze" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="FilletScaleReading" Precision="18" Scale="2" />
+          <Property Type="Int32" Name="DowntimeMinutes" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -625,6 +627,7 @@
           <EntitySetMapping Name="ShiftEnds">
             <EntityTypeMapping TypeName="AppModel.ShiftEnd">
               <MappingFragment StoreEntitySet="ShiftEnd">
+                <ScalarProperty Name="DowntimeMinutes" ColumnName="DowntimeMinutes" />
                 <ScalarProperty Name="FilletScaleReading" ColumnName="FilletScaleReading" />
                 <ScalarProperty Name="NightShiftFroze" ColumnName="NightShiftFroze" />
                 <ScalarProperty Name="DayShiftFroze" ColumnName="DayShiftFroze" />
