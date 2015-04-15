@@ -113,12 +113,13 @@ function farmYields() {
                 // TODO: add edit function, detected by existing data in calendar
                 // this assumes new/add:
                 addOrEdit = "-1";
-                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
                 $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); $('.row.buttons').show(); });
                 i = 1;
                 bindYieldButtons();
 
+                $('.date-select').append("<h3><strong>"+ date + "</strong></h3>");
                 $('#calendarModal').modal('hide');
             }
         });
@@ -136,19 +137,20 @@ function farmYields() {
         //dic.Add("PondID", item.PondID.ToString());
         //dic.Add("PondName", item.Pond.PondName);
         //dic.Add("PoundsYielded", item.PoundsYielded.ToString());
-        var pondYields = new Array(), arrayCount = 0;
+        var pondYields = [], arrayCount = 0;
         $('.row.data').each(function () {
-            if($(this).find('.pondsDDL').val("")) {
-                //skip - probably empty unused last row
+            if($(this).find('.pounds').val()=="") {
+                console.log("skipped");
             } else {
-                pondYields(arrayCount) = [$(this).find('.pondsDDL').selected(value), $(this).find('#pounds' + arrayCount).val()];
+                console.log($(this).find('.pondsDDL').val());
+                pondYields[arrayCount] = [$(this).find('.pondsDDL').val(), $(this).find('#pounds' + arrayCount).val()];
                 arrayCount++;
             }
             console.log(pondYields);
         });
-        var searchQuery = { "Key": _key, "userID": userID, "YieldDate": date, "YieldId": addOrEdit, "Yields": pondYields }, data = JSON.stringify(searchQuery);
+        var searchQuery = { "Key": _key, "YieldDate": date, "YieldId": addOrEdit, "Yields": pondYields }, data = JSON.stringify(searchQuery);
         $.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
-            type: 'POST',
+            type: 'PUT',
             data: data,
             success: function (msg) {
                 localStorage['CT_key'] = msg['Key'];
@@ -161,11 +163,11 @@ function farmYields() {
 
     function bindYieldButtons() {
         $('.farmDDL').change(function () {
-            var rowID = $("select option:selected").val();
+            var rowID = $(this).attr('id').replace('farms', ''), farmID = $("select option:selected").val();
             loadPondsDDL(rowID);
         });
 
-        $('.pondDDL').change(function () {
+        $('.pondsDDL').change(function () {
             $(this).parent().next().find('input').attr('disabled', false);
         });
 
@@ -180,7 +182,7 @@ function farmYields() {
             // TO DO: add validation
             $(this).parent().parent().addClass('complete');
 
-            newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+            newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
             $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); console.log("!"); });
             i = i++;
@@ -192,8 +194,7 @@ function farmYields() {
             // TO DO: prevent removing sole empty row or replace with empty row
             $(this).parent().parent().remove();
             if (!$('.data').length > 0) {
-                // TO DO: need to call farmDDL, pondDDL and insert into code - before? After?
-                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
                 $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
                 i = 1;
@@ -202,13 +203,9 @@ function farmYields() {
         })
     }
 
-    function loadFarmsDDL(rowID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "Key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
+    function loadFarmsDDL(rowID, farmID) { var ddlHtml = '<option value="">Select Farm</option>', searchQuery = { "Key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (typeof farmID !== "undefined" && farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
 
-    function loadFarmsDDL(rowID, farmID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "Key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
-
-    function loadPondsDDL(rowID) { var ddlHtml = '<option value="" selected="selected">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": rowID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } })).then(function () { $('#ponds' + rowID).attr('disabled', false).empty().html(ddlHtml); }); }
-
-    function loadPondsDDL(rowID, pondID) { var ddlHtml = '<option value="" selected="selected">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": rowID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).attr('disabled', false).empty().html(ddlHtml); }); }
+    function loadPondsDDL(rowID, farmID, pondID) { var ddlHtml = '<option value="">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (typeof pondID !== "undefined" && pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).empty().html(ddlHtml).attr('disabled', false); }); }
 }
 
 /* SHIFT END */
