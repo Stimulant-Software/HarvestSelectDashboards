@@ -217,7 +217,7 @@ function shiftEnd() {
             dayClick: function () {
                 $('#rowContainer').empty();
                 date = $(this).data('date');
-
+                $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
                 // TODO: add edit function, detected by existing data in calendar
                 // this assumes new/add:
                 addOrEdit = "-1";
@@ -238,8 +238,8 @@ function shiftEnd() {
         e.preventDefault();
         // Harper TODO - you need to add a column / call in API for "DoownTimeMinutes"
         var searchQuery = { "Key": _key, "userID": userID, "ShiftDate": date, "ShiftEndID": addOrEdit, "DayFinishedFreezing": $('#dayFreeze').val(), "DayShiftFroze": $('#dayFroze').val(), "FilletScaleReading": $('#filletScale').val() , "FinishedFillet": $('#finFillet').val(), "FinishedKill": $('#finKill').val(), "FinishedSkinning": $('#finSkinned').val(), "InmateLeftEarly": $('#inmateEmpLeftEarly').val() , "NightFinishedFreezing": $('#nightFreeze').val(), "NightShiftFroze": $('#nightFroze').val(), "RegEmpLate": $('#regEmpLate').val(), "RegEmpOut": $('#regEmpOut').val() , "RegEmplLeftEarly": $('#regEmpLeftEarly').val(), "TempEmpOut": $('#tempEmpOut').val(), "DowntimeMinutes": $('#downtimeMin').val() }, data = JSON.stringify(searchQuery);
-        $.when($.ajax('../api/ShiftTime/ShiftTimeAddOrEdit', {
-            type: 'POST',
+        $.when($.ajax('../api/ShiftEnd/ShiftEndAddOrEdit', {
+            type: 'PUT',
             data: data,
             success: function (msg) {
                 localStorage['CT_key'] = msg['Key'];
