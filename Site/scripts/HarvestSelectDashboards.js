@@ -104,6 +104,18 @@ function farmYields() {
 
     $('.row.buttons').hide();
     $('#shiftDate').click(function () {
+        var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery);
+        $.ajax('../api/FarmYield/FarmYieldList', {
+            type: 'POST',
+            data: data,
+            success: function (msg) {
+                localStorage['CT_key'] = msg['Key'];
+                /*startTimer(msg['Key']);*/
+                yieldList = msg['ReturnData'];
+                console.log(yieldList);
+            }
+        })
+
         $('#calendarModal').modal();
         $('#calendarModal .modal-body').fullCalendar({
             dayClick: function () {
