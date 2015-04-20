@@ -89,6 +89,7 @@
     <EntitySetMapping Name="ShiftEnds">
       <EntityTypeMapping TypeName="AppModel.ShiftEnd">
         <MappingFragment StoreEntitySet="ShiftEnd">
+          <ScalarProperty Name="DowntimeMinutes" ColumnName="DowntimeMinutes" />
           <ScalarProperty Name="FilletScaleReading" ColumnName="FilletScaleReading" />
           <ScalarProperty Name="NightShiftFroze" ColumnName="NightShiftFroze" />
           <ScalarProperty Name="DayShiftFroze" ColumnName="DayShiftFroze" />

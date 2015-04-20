@@ -115,6 +115,7 @@
     <Property Name="DayShiftFroze" Type="decimal" Scale="2" />
     <Property Name="NightShiftFroze" Type="decimal" Scale="2" />
     <Property Name="FilletScaleReading" Type="decimal" Scale="2" />
+    <Property Name="DowntimeMinutes" Type="int" />
   </EntityType>
   <EntityType Name="Statuses">
     <Key>

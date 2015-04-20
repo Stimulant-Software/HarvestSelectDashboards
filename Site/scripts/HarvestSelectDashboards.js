@@ -125,42 +125,6 @@ function farmYields() {
         });
     });
 
-    $('.buttons .reset').unbind().click(function (e) {
-        e.preventDefault();
-        if (window.confirm("This will permanently delete any information you have entered and not saved.")) {
-            document.location.reload(true);
-        }
-    });
-
-    $('.buttons .save').unbind().click(function (e) {
-        e.preventDefault();
-        //dic.Add("PondID", item.PondID.ToString());
-        //dic.Add("PondName", item.Pond.PondName);
-        //dic.Add("PoundsYielded", item.PoundsYielded.ToString());
-        var pondYields = [], arrayCount = 0;
-        $('.row.data').each(function () {
-            if($(this).find('.pounds').val()=="") {
-                console.log("skipped");
-            } else {
-                console.log($(this).find('.pondsDDL').val());
-                pondYields[arrayCount] = [$(this).find('.pondsDDL').val(), $(this).find('#pounds' + arrayCount).val()];
-                arrayCount++;
-            }
-            console.log(pondYields);
-        });
-        var searchQuery = { "Key": _key, "YieldDate": date, "YieldId": addOrEdit, "Yields": pondYields }, data = JSON.stringify(searchQuery);
-        $.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
-            type: 'PUT',
-            data: data,
-            success: function (msg) {
-                localStorage['CT_key'] = msg['Key'];
-                /*startTimer(msg['Key']);*/
-                farmList = msg['ReturnData'];
-                alert("Your data was successfully added.")
-            }
-        })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); });
-    });
-
     function bindYieldButtons() {
         $('.farmDDL').change(function () {
             var rowID = $(this).attr('id').replace('farms', ''), farmID = $("select option:selected").val();
@@ -179,14 +143,25 @@ function farmYields() {
 
         $('.data .add-row').unbind().click(function (e) {
             e.preventDefault();
-            // TO DO: add validation
-            $(this).parent().parent().addClass('complete');
+            var pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('#pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldId": addOrEdit, "PondID": pondID, "PoundsYielded": pondYield }, data = JSON.stringify(searchQuery);
+			$.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
+				type: 'PUT',
+				data: data,
+				success: function (msg) {
+					localStorage['CT_key'] = msg['Key'];
+					/*startTimer(msg['Key']);*/
+					yieldList = msg['ReturnData'];
+					console.log(yieldList);
+					$(this).parent().parent().addClass('complete');
+				}
+			})).then(function () { 
+				newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
-            newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
-
-            $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); console.log("!"); });
-            i = i++;
-            bindYieldButtons();
+				$.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); });
+				i = i++;
+				bindYieldButtons();
+			});
+            
         });
 
         $('.data .delete-row').unbind().click(function (e) {
