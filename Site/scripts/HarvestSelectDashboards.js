@@ -114,7 +114,7 @@ function farmYields() {
                 yieldList = msg['ReturnData'];
                 console.log(yieldList);
             }
-        })
+        });
 
         $('#calendarModal').modal();
         $('#calendarModal .modal-body').fullCalendar({
@@ -200,7 +200,32 @@ function shiftEnd() {
     $('.row.fields, .row.buttons').hide();
     var date, addOrEdit;
     $('#shiftDate').click(function () {
+        var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), shiftEnds = [];
+        ;
+        $.ajax('../api/ShiftEnd/ShiftEndList', {
+            type: 'POST',
+            data: data,
+            success: function (msg) {
+                localStorage['CT_key'] = msg['Key'];
+                /*startTimer(msg['Key']);*/
+                shiftEndList = msg['ReturnData'];
+                console.log(shiftEndList);
+                for (var i = 0; i < shiftEndList.length; i++) {
+                    var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
+                    shiftEnds.push(shiftDate);
+                }
+                console.log(shiftEnds);
+            }
+        });
         $('#calendarModal .modal-body').fullCalendar({
+            eventSources: [
+                {
+                    events: shiftEnds,
+                    allDayDefault: true,
+                    color: 'yellow',   // an option!
+                    textColor: 'black' // an option!
+                }
+            ],
             dayClick: function () {
                 $('#rowContainer').empty();
                 date = $(this).data('date');
