@@ -8,6 +8,8 @@ namespace SGApp.DTOs
         public string Key { get; set; }
         public string ShiftEndID { get; set; }
         public string ShiftDate { get; set; }
+        public string Start_ShiftDate { get; set; }
+        public string End_ShiftDate { get; set; }
         public string RegEmpLate { get; set; }
         public string RegEmpOut { get; set; }
         public string RegEmplLeftEarly { get; set; }

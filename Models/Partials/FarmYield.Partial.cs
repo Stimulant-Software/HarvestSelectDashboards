@@ -8,7 +8,7 @@ namespace SGApp.Models.EF
 
         public override string KeyName()
         {
-            return "YieldId";
+            return "YieldID";
         }
 
         public override System.Type GetDataType(string fieldName)

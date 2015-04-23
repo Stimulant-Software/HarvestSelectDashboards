@@ -25,7 +25,9 @@ namespace SGApp.Repository.Application
 
         protected override FarmYield DeleteRecord(FarmYield entity)
         {
-            throw new System.NotImplementedException();
+            DbContext.FarmYields.Remove(entity);
+            DbContext.SaveChanges();
+            return entity;
         }
 
         protected override FarmYield InsertRecord(FarmYield entity)

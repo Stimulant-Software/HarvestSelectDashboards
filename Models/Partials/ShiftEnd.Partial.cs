@@ -8,7 +8,7 @@ namespace SGApp.Models.EF
 
         public override string KeyName()
         {
-            return "ShiftEndId";
+            return "ShiftEndID";
         }
 
         public override System.Type GetDataType(string fieldName)

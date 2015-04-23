@@ -94,14 +94,22 @@ namespace SGApp.Controllers
             var user = new FarmYield();
             user = ur.GetById(contactId);
 
-
+            
             var validationErrors = GetValidationErrors(ur, user, cqDto, FarmYieldId, userId);
             if (validationErrors.Any())
             {
                 return ProcessValidationErrors(request, validationErrors, key);
             }
 
-            ur.Save(user);
+            if (cqDto.Remove != null && int.Parse(cqDto.Remove) == 1)
+            {
+                ur.Delete(user);
+            }
+            else
+            {
+                ur.Save(user);
+            }
+            
             cqDto.Key = key;
             return request.CreateResponse(HttpStatusCode.Accepted, cqDto);
 

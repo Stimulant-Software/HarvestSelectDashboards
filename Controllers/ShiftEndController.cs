@@ -122,6 +122,11 @@ namespace SGApp.Controllers
             {
                 var ur = new ShiftEndRepository();
                 var u = new ShiftEnd();
+                if (cqDTO.ShiftDate != null)
+                {
+                    cqDTO.Start_ShiftDate = DateTime.Parse(cqDTO.ShiftDate).ToString();
+                    cqDTO.End_ShiftDate = DateTime.Parse(cqDTO.ShiftDate).AddDays(1).ToString();
+                }
                 var predicate = ur.GetPredicate(cqDTO, u, companyId);
                 var data = ur.GetByPredicate(predicate);
                 var col = new Collection<Dictionary<string, string>>();

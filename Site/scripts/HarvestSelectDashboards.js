@@ -125,12 +125,12 @@ function farmYields() {
                 // TODO: add edit function, detected by existing data in calendar
                 // this assumes new/add:
                 addOrEdit = "-1";
-                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+                var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
                 $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); $('.row.buttons').show(); });
                 i = 1;
                 bindYieldButtons();
-
+                $('.date-select h3').remove();
                 $('.date-select').append("<h3><strong>"+ date + "</strong></h3>");
                 $('#calendarModal').modal('hide');
             }
@@ -149,28 +149,39 @@ function farmYields() {
 
         $('.pounds').unbind().focusout(function () {
             if (!$(this).val() == "") {
-                $(this).parent().parent().find('.add-row, .delete-row').fadeIn(250);
+                $(this).parent().parent().find('.add-row').fadeIn(250);
             }
         });
 
         $('.data .add-row').unbind().click(function (e) {
             e.preventDefault();
-            var pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('#pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldId": addOrEdit, "PondID": pondID, "PoundsYielded": pondYield }, data = JSON.stringify(searchQuery);
-			$.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
+            
+            var Remove = "0", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldId": addOrEdit, "PondID": pondID, "PoundsYielded": pondYield, "Remove": Remove }, data = JSON.stringify(searchQuery);
+            $(this).parent().parent().find('.add-row').fadeOut(250);
+            $(this).parent().parent().find('.delete-row').fadeIn(250);
+            i = parseInt($(this).parent().parent().attr('data-rownum')) + 1;
+            var justadded = ".row" + (i - 1);
+            $.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
 				type: 'PUT',
 				data: data,
 				success: function (msg) {
 					localStorage['CT_key'] = msg['Key'];
 					/*startTimer(msg['Key']);*/
-					yieldList = msg['ReturnData'];
+					yieldID = msg['YieldID'];
 					console.log(yieldList);
 					$(this).parent().parent().addClass('complete');
+					$(justadded).attr('data-yieldid', yieldID);
+					addOrEdit = yieldID;
+					
 				}
-			})).then(function () { 
-				newRowHtml = '<section class="row row' + i + ' data"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+			})).then(function () {
+			    
+			    
+			    
+			    newRowHtml = '<section class="row row' + i + ' data" data-rownum="' + i + '"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
 				$.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); });
-				i = i++;
+				
 				bindYieldButtons();
 			});
             
@@ -179,14 +190,27 @@ function farmYields() {
         $('.data .delete-row').unbind().click(function (e) {
             e.preventDefault();
             // TO DO: prevent removing sole empty row or replace with empty row
+            var Remove = "1", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldId": $(this).parent().parent().attr('data-yieldid'), "PondID": pondID, "PoundsYielded": pondYield, "Remove": Remove }, data = JSON.stringify(searchQuery);
             $(this).parent().parent().remove();
-            if (!$('.data').length > 0) {
-                var newRowHtml = '<section class="row row0 data"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+            $.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
+                type: 'PUT',
+                data: data,
+                success: function (msg) {
+                    localStorage['CT_key'] = msg['Key'];
+                    /*startTimer(msg['Key']);*/
+                    yieldList = msg['ReturnData'];
+                    
+                }
+            })).then(function () {
+                
+                if (!$('.data').length > 0) {
+                    var newRowHtml = '<section class="row row0 data" data-rownum="0"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
-                $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
-                i = 1;
-                bindYieldButtons();
-            }
+                    $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
+                    i = 1;
+                    bindYieldButtons();
+                }
+            });
         })
     }
 
@@ -201,8 +225,8 @@ function shiftEnd() {
     var date, addOrEdit;
     $('#shiftDate').click(function () {
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), shiftEnds = [];
-        ;
-        $.ajax('../api/ShiftEnd/ShiftEndList', {
+        
+        $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
             type: 'POST',
             data: data,
             success: function (msg) {
@@ -216,27 +240,57 @@ function shiftEnd() {
                 }
                 console.log(shiftEnds);
             }
-        });
-        $('#calendarModal .modal-body').fullCalendar({
-            eventSources: [
-                {
-                    events: shiftEnds,
-                    allDayDefault: true,
-                    color: 'yellow',   // an option!
-                    textColor: 'black' // an option!
+        })).then(function () {
+            $('#calendarModal .modal-body').fullCalendar({
+
+                events: function (start, end, timezone, refetchEvents) {
+                    debugger;
+                    var results = shiftEnds;
+                    var events = [];
+                    for (var event in results) {
+                        var obj = {
+                            title: ".",
+                            start: results[event],
+                            end: results[event],
+                            allDay: true
+                        };
+                        events.push(obj);
+                    }
+                    refetchEvents(events);
+
+
+                },
+                dayClick: function () {
+                    $('#rowContainer').empty();
+                    date = $(this).data('date');
+                    $('.date-select h3').remove();
+                    $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                    // TODO: add edit function, detected by existing data in calendar
+                    // this assumes new/add:
+                    searchQuery = { "Key": _key, "ShiftDate": date }, data = JSON.stringify(searchQuery), shiftEnds = [];
+
+                    $.ajax('../api/ShiftEnd/ShiftEndList', {
+                        type: 'POST',
+                        data: data,
+                        success: function (msg) {
+                            localStorage['CT_key'] = msg['Key'];
+                            /*startTimer(msg['Key']);*/
+                            shiftEndList = msg['ReturnData'];
+                            console.log(shiftEndList);
+                            for (var i = 0; i < shiftEndList.length; i++) {
+                                var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
+                                shiftEnds.push(shiftDate);
+                            }
+                            console.log(shiftEnds);
+                        }
+                    });
+                    addOrEdit = "-1";
+                    $('#calendarModal').modal('hide');
+                    $('.row.fields, .row.buttons').fadeIn(250);
                 }
-            ],
-            dayClick: function () {
-                $('#rowContainer').empty();
-                date = $(this).data('date');
-                $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
-                // TODO: add edit function, detected by existing data in calendar
-                // this assumes new/add:
-                addOrEdit = "-1";
-                $('#calendarModal').modal('hide');
-                $('.row.fields, .row.buttons').fadeIn(250);
-            }
+            });
         });
+        
     });
 
     $('.buttons .reset').unbind().click(function (e) {
@@ -257,7 +311,7 @@ function shiftEnd() {
                 localStorage['CT_key'] = msg['Key'];
                 /*startTimer(msg['Key']);*/
                 farmList = msg['ReturnData'];
-                alert("Your information was successfully recorded.");
+                $('.date-select').append("<div>Information Saved!</div>");
             }
         })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); });
     });
