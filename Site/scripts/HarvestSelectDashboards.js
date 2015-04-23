@@ -156,7 +156,7 @@ function farmYields() {
         $('.data .add-row').unbind().click(function (e) {
             e.preventDefault();
             
-            var Remove = "0", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldId": addOrEdit, "PondID": pondID, "PoundsYielded": pondYield, "Remove": Remove }, data = JSON.stringify(searchQuery);
+            var Remove = "0", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldID": addOrEdit, "PondID": pondID, "PoundsYielded": pondYield, "Remove": Remove }, data = JSON.stringify(searchQuery);
             $(this).parent().parent().find('.add-row').fadeOut(250);
             $(this).parent().parent().find('.delete-row').fadeIn(250);
             i = parseInt($(this).parent().parent().attr('data-rownum')) + 1;
@@ -190,7 +190,7 @@ function farmYields() {
         $('.data .delete-row').unbind().click(function (e) {
             e.preventDefault();
             // TO DO: prevent removing sole empty row or replace with empty row
-            var Remove = "1", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldId": $(this).parent().parent().attr('data-yieldid'), "PondID": pondID, "PoundsYielded": pondYield, "Remove": Remove }, data = JSON.stringify(searchQuery);
+            var Remove = "1", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldID": $(this).parent().parent().attr('data-yieldid'), "PondID": pondID, "PoundsYielded": pondYield, "Remove": Remove }, data = JSON.stringify(searchQuery);
             $(this).parent().parent().remove();
             $.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
                 type: 'PUT',
