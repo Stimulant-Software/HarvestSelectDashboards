@@ -55,27 +55,37 @@
                                 <fieldset><label>Password</label><input type="password" id="password" /></fieldset>
                                 <fieldset><label>Confirm Password</label><input type="password" id="passConfirm" /></fieldset>
                             </section>
-                            <fieldset class="buttons"><button id="Button1" class="submit">Submit</button><button class="cancel">Cancel</button></fieldset>
                         </form>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-primary submit">Save changes</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="modifyUserRolesAndFarms" class="admin-modal modal">
-            <form>
-                <header>Edit Roles</header>
-                <p>For <span id="userFirstLast"></span><input type="hidden" id="userId" value="" /></p>
-                <section id="userRolesList">
-                    <label>Roles:</label>
-                    <fieldset id="adminUserRolesList"></fieldset>
-                </section>
-                <fieldset class="buttons"><button class="cancel">Finished</button></fieldset>
-            </form>
+        <section id="modifyUserRolesAndFarms" class="admin-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Edit Roles</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <p>For <span id="userFirstLast"></span><input type="hidden" id="userId" value="" /></p>
+                            <section id="userRolesList">
+                                <label>Roles:</label>
+                                <fieldset id="adminUserRolesList"></fieldset>
+                            </section>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Finished</button>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="alertBox" class="modal">

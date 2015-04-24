@@ -90,7 +90,7 @@ function populateUsers() {
     });
 }
 
-$('.add-new').unbind().click(function (e) { e.preventDefault(); var objectType = pageType.charAt(0).toUpperCase() + pageType.slice(1); $('body').append('<div id="lightboxBG" class="modal"></div>'); switch (pageType) { case "pond": loadFarmsForPonds(); break; case "user": /* loadFarmsForUsers(), loadRolesForUsers(); */break; default: break; } $('#lightboxBG').fadeIn('100', function () { centerModal('#addNew' + objectType + 'Modal'); $('#addNew' + objectType + 'Modal').fadeIn('100'); bindFormButtons(); }); });
+$('.add-new').unbind().click(function (e) { e.preventDefault(); var objectType = pageType.charAt(0).toUpperCase() + pageType.slice(1); switch (pageType) { case "pond": loadFarmsForPonds(); break; case "user": /* loadFarmsForUsers(), loadRolesForUsers(); */break; default: break; } /*$('#addNew' + objectType + 'Modal').modal();*/ bindFormButtons(); });
 
 function bindButtons() {
     $('.change-feedme').unbind().click(function (e) { e.preventDefault(); var objectID = getObjectID($(this)), objectStatus = $(this).parent().parent('ol').attr('class'), objectName = $(this).siblings('span').text(); var newFeedStatusID = $(this).data('nofeed') == "True" ? "False" : "True"; dto = { "Key": localStorage['CT_key'],  "PondId": objectID, "PondName": objectName, "NoFeed": newFeedStatusID }, data = JSON.stringify(dto); showProgress('body', 'bind-buttons'); $.when($.ajax('../api/Pond/ChangePondFeedStatus', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); console.log(msg); } })).then(function () { populatePonds(farmID); hideProgress('bind-buttons'); }); });
@@ -99,7 +99,7 @@ function bindButtons() {
 
     $('.edit-roles-farms').unbind().click(function (e) {
         e.preventDefault(); var objectID = getObjectID($(this)), objectStatus = $(this).parent().parent('ol').attr('class'), objectName = $(this).siblings('span').text(), userFarms = new Array(), userRoles = new Array();
-        ; $('body').append('<div id="lightboxBG" class="modal"></div>'); $('#lightboxBG').fadeIn('100', function () { centerModal('#modifyUserRolesAndFarms'); $('#modifyUserRolesAndFarms').fadeIn('100'); });
+        $('#modifyUserRolesAndFarms').modal();
         var searchQuery = { "key": _key, "UserId": objectID };
         data = JSON.stringify(searchQuery);
         $.when($.ajax('../api/User/UserDetail', {
@@ -126,8 +126,7 @@ function bindButtons() {
         // fill admin-modal inputs appropriately
         var objectID = getObjectID($(this)), objectStatus = $(this).parent().parent('ol').attr('class'), objectName = $(this).siblings('span').text(), objectStatusID = objectStatus == "active" ? "1" : "2", objectType = pageType.charAt(0).toUpperCase() + pageType.slice(1); 
 
-        $('body').append('<div id="lightboxBG" class="modal"></div>');
-        $('#lightboxBG').fadeIn('100', function () { centerModal('#addNew' + objectType + 'Modal'); $('#addNew' + objectType + 'Modal').fadeIn('100'); });
+        $('#addNew' + objectType + 'Modal').modal();
 
         switch (pageType) {
             case "farm": var searchQuery = { "key": _key, "FarmId": objectID }, farmInfo = {}; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmDetail', { type: 'POST', data: data, success: function (msg) { _key = msg['Key']; localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); farmInfo = msg['ReturnData'][0]; } })).then(function () { $('#farmName').val(farmInfo.FarmName); $('#farmID').val(farmInfo.FarmId); $('#statusID').val(farmInfo.StatusId); }); break;
@@ -220,8 +219,8 @@ function bindFormButtons() {
             var data = JSON.stringify(submitObject);
 
             switch (pageType) {
-                case "farm": $.ajax('../api/Farm/FarmAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetFarmModal(); closeAdminModal(); populateFarms(); hideProgress('submitForm'); } }); break;
-                case "pond": $.ajax('../api/Pond/PondAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetPondModal(); closeAdminModal(); populatePonds(farmID); hideProgress('submitForm'); } }); break;
+                case "farm": $.ajax('../api/Farm/FarmAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetFarmModal(); populateFarms(); hideProgress('submitForm'); } }); break;
+                case "pond": $.ajax('../api/Pond/PondAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetPondModal(); /*populatePonds(farmID);*/ hideProgress('submitForm'); } }); break;
                 case "user":
                     $.when($.ajax('../api/User/UserAddOrEdit', {
                         type: 'PUT',
@@ -241,7 +240,7 @@ function bindFormButtons() {
                                 }
                             });
                         } else {
-                            resetUserModal(), closeAdminModal(), populateUsers(); hideProgress('submitForm');
+                            resetUserModal(), populateUsers(); hideProgress('submitForm');
                         }
                     });
                     break;
@@ -250,7 +249,8 @@ function bindFormButtons() {
         }
     });
 
-    $('.cancel').unbind().click(function (e) { e.preventDefault(); switch (pageType) { case "farm": resetFarmModal(); break; case "pond": resetPondModal(); break; case "user": resetUserModal(); break; default: console.log("ERROR: Page has no type"); break; } closeAdminModal(); }); }
+    $('.cancel').unbind().click(function (e) { e.preventDefault(); switch (pageType) { case "farm": resetFarmModal(); break; case "pond": resetPondModal(); break; case "user": resetUserModal(); break; default: console.log("ERROR: Page has no type"); break; } closeAdminModal(); });
+}
 
 function resetFarmModal() { $('#farmName').val(""); $('#statusID').val('1'); $('#farmID').val('-1'); }
 
@@ -260,7 +260,7 @@ function resetUserModal() { $('#firstName').val(""); $('#lastName').val(""); $('
 
 function getObjectID(element) { var objectID = element.attr('id').split('_'); return objectID[1]; }
 
-function loadFarmsForPonds(farmID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#changeFarm').empty().html(ddlHtml); }); }
+function loadFarmsForPonds(farmID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('.changeFarm').empty().html(ddlHtml); }); }
 
 function loadRolesForUsers(checkedRoles, userID) {
     roleChecklistHtml = '', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/User/AllRoles', {
@@ -331,7 +331,7 @@ function editUserRoles(userID) {
     });
 }
 
-function closeAdminModal() { $('.admin-modal, #lightboxBG').fadeOut('100', function () { $('#lightboxBG').remove(); }); }
+//function closeAdminModal() { $('.admin-modal, #lightboxBG').fadeOut('100', function () { $('#lightboxBG').remove(); }); }
 
 var newCompanyID, newFarmID;
 function initialSetup() {

@@ -247,7 +247,6 @@ function shiftEnd() {
             $('#calendarModal .modal-body').fullCalendar({
 
                 events: function (start, end, timezone, refetchEvents) {
-                    debugger;
                     var results = shiftEnds;
                     var events = [];
                     for (var event in results) {

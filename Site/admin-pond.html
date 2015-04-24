@@ -24,7 +24,7 @@
         </header>
 
         <form class="row">
-            <fieldset><label>Administer ponds for: </label><select id="changeFarm"></select></fieldset>
+            <fieldset><label>Administer ponds for: </label><select id="changeFarm" class="changeFarm"></select></fieldset>
             <ol class="active col-sm-6">
                 <li class="header">ACTIVE PONDS</li>
                 <li><span>There are no active ponds</span></li>
@@ -53,13 +53,12 @@
                             <input type="hidden" id="HealthStatus" value="1" />
                         </fieldset>
                         <fieldset><label>Pond Size (acres)</label><input type="text" id="Size" placeholder="Pond Size" required /></fieldset>
-                        <fieldset><label>Farm Location</label><select id="FarmId" required></select></fieldset>
-                        <fieldset class="buttons"><button id="submitPond" class="submit">Submit</button><button class="cancel">Cancel</button></fieldset>
+                        <fieldset><label>Farm Location</label><select id="farmID" class="changeFarm" required></select></fieldset>
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <button id="submitPond" type="button" class="btn btn-primary submit" data-dismiss="modal">Save Changes</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
