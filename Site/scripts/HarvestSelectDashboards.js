@@ -139,8 +139,8 @@ function farmYields() {
 
     function bindYieldButtons() {
         $('.farmDDL').change(function () {
-            var rowID = $(this).attr('id').replace('farms', ''), farmID = $("select option:selected").val();
-            loadPondsDDL(rowID);
+            var rowID = $(this).attr('id').replace('farms', ''), farmID = $(this).val();
+            loadPondsDDL(rowID, farmID);
         });
 
         $('.pondsDDL').change(function () {
