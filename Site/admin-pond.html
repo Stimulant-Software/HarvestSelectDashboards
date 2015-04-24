@@ -20,7 +20,7 @@
     <section id="mainContent" class="container">
         <header class="admin row">
             <h2 class="pull-left">Pond Administration</h2>
-            <button id="addNewPond" class="add-new">+ Create New Pond</button>
+            <button id="addNewPond" class="add-new" data-toggle="modal" data-target="#addNewPondModal">+ Create New Pond</button>
         </header>
 
         <form class="row">
@@ -36,20 +36,33 @@
         </form>
     </section>
 
-    <section id="addNewPondModal" class="admin-modal modal">
-        <form>
-            <header>New Pond</header>
-            <fieldset>
-                <label>Pond Name</label><input type="text" id="PondName" placeholder="Pond Name" required />
-                <input type="hidden" id="StatusId" value="1" />
-                <input type="hidden" id="PondId" value="-1" />
-                <input type="hidden" id="NoFeed" value="False" />
-                <input type="hidden" id="HealthStatus" value="1" />
-            </fieldset>
-            <fieldset><label>Pond Size (acres)</label><input type="text" id="Size" placeholder="Pond Size" required /></fieldset>
-            <fieldset><label>Farm Location</label><select id="FarmId" required></select></fieldset>
-            <fieldset class="buttons"><button id="submitPond" class="submit">Submit</button><button class="cancel">Cancel</button></fieldset>
-        </form>
+    <section id="addNewPondModal" class="admin-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">New Pond</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <fieldset>
+                            <label>Pond Name</label><input type="text" id="PondName" placeholder="Pond Name" required />
+                            <input type="hidden" id="StatusId" value="1" />
+                            <input type="hidden" id="PondId" value="-1" />
+                            <input type="hidden" id="NoFeed" value="False" />
+                            <input type="hidden" id="HealthStatus" value="1" />
+                        </fieldset>
+                        <fieldset><label>Pond Size (acres)</label><input type="text" id="Size" placeholder="Pond Size" required /></fieldset>
+                        <fieldset><label>Farm Location</label><select id="FarmId" required></select></fieldset>
+                        <fieldset class="buttons"><button id="submitPond" class="submit">Submit</button><button class="cancel">Cancel</button></fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="alertBox" class="modal">

@@ -38,8 +38,16 @@ input { width: 20%; font-size: 1.2em; margin-bottom: 10px; background-color: lig
 #calendarModal { width: 90%; margin: 0 auto; top: 5%; left: 5%; z-index: -1; position: fixed; }
 #calendarModal.in { z-index: 10000; }
 
+.admin button { margin: 0 0 0 10px; background-color: #095A99; color: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 6px 28px; }
+.admin header button { margin: 20px 0 0 50px; }
 .admin ol { list-style: none; }
-.admin ol .header { text-align: center; font-weight: bold; text-transform: uppercase; }
+.admin ol li { text-align: right; padding: 10px; margin-left: -15px; margin-right: -15px; min-height: 56px; }
+.admin ol li:nth-child(odd) { border-top: 1px solid #bdbdbd; border-bottom: 1px solid #bdbdbd; background-color: #dedede; }
+.admin ol li span { float: left; line-height: 34px; font-size: 20px; }
+.admin ol .header { text-align: center; font-weight: bold; text-transform: uppercase; min-height: initial; padding: 0; background-color: transparent !important; border-top: none !important; font-size: 24px; }
+.admin select { background-color: initial; padding: 2px 10px; }
+.admin input { background-color: initial; }
+.admin label { margin-right: 10px; width: auto; }
 
 /* Progress graphic */
 #lightboxBG { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background-color: rgba(255,255,255,0.7); }

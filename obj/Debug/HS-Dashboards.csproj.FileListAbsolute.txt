@@ -51,11 +51,7 @@ C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.Ra
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.WebPages.Deployment.dll
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.WebPages.dll
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.WebPages.Razor.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\FluentValidation.pdb
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\FluentValidation.xml
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\EntityFramework.xml
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\Microsoft.Web.Infrastructure.xml
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\Newtonsoft.Json.xml
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Net.Http.Formatting.xml
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.Helpers.xml
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.Http.xml
@@ -65,18 +61,6 @@ C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.Ra
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.WebPages.xml
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.WebPages.Deployment.xml
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\System.Web.WebPages.Razor.xml
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\de\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\es\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\fr\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\it\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\ko\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\nl\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\pl\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\pt\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\ru\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\sv\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\bin\tr\FluentValidation.resources.dll
-C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\obj\Debug\HS-Dashboards.csprojResolveAssemblyReference.cache
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\obj\Debug\SGApp.dll
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\obj\Debug\SGApp.pdb
 C:\Users\kennm\Desktop\Projects\HarvestSelectDashboards\bin\SGApp.dll.config
@@ -120,3 +104,4 @@ C:\Users\kennm\Desktop\Projects\HarvestSelectDashboards\bin\tr\FluentValidation.
 C:\Users\kennm\Desktop\Projects\HarvestSelectDashboards\obj\Debug\HS-Dashboards.csprojResolveAssemblyReference.cache
 C:\Users\kennm\Desktop\Projects\HarvestSelectDashboards\obj\Debug\SGApp.dll
 C:\Users\kennm\Desktop\Projects\HarvestSelectDashboards\obj\Debug\SGApp.pdb
+C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\obj\Debug\HS-Dashboards.csprojResolveAssemblyReference.cache

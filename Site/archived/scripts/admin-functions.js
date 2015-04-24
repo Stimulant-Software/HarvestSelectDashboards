@@ -89,7 +89,8 @@ function populateUsers() {
     });
 }
 
-$('.add-new').unbind().click(function (e) { e.preventDefault(); var objectType = pageType.charAt(0).toUpperCase() + pageType.slice(1); $('body').append('<div id="lightboxBG" class="modal"></div>'); switch (pageType) { case "pond": loadFarmsForPonds(); break; case "user": /* loadFarmsForUsers(), loadRolesForUsers(); */break; default: break; } $('#lightboxBG').fadeIn('100', function () { centerModal('#addNew' + objectType + 'Modal'); $('#addNew' + objectType + 'Modal').fadeIn('100'); bindFormButtons(); }); });
+// TODO: REDEFINE
+$('.add-new').unbind().click(function (e) { e.preventDefault(); var objectType = pageType.charAt(0).toUpperCase() + pageType.slice(1); switch (pageType) { case "pond": loadFarmsForPonds(); break; case "user": /* loadFarmsForUsers(), loadRolesForUsers(); */break; default: break; } $('#lightboxBG').fadeIn('100', function () { bindFormButtons(); }); });
 
 function bindButtons() {
     $('.change-feedme').unbind().click(function (e) { e.preventDefault(); var objectID = getObjectID($(this)), objectStatus = $(this).parent().parent('ol').attr('class'), objectName = $(this).siblings('span').text(); var newFeedStatusID = $(this).data('nofeed') == "True" ? "False" : "True"; dto = { "Key": localStorage['CT_key'],  "PondId": objectID, "PondName": objectName, "NoFeed": newFeedStatusID }, data = JSON.stringify(dto); showProgress('body', 'bind-buttons'); $.when($.ajax('../api/Pond/ChangePondFeedStatus', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); console.log(msg); } })).then(function () { populatePonds(farmID); hideProgress('bind-buttons'); }); });

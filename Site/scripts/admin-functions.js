@@ -17,6 +17,7 @@ $.when( checkKey() ).then(function(){
                 break;
             case "pond":
                 pageType = "pond";
+                loadFarmsForPonds();
                 $('#changeFarm').change(function () {
                     farmID = $('option:selected', this).val();
                     populatePonds(farmID);
@@ -71,7 +72,7 @@ function populateUsers() {
             var userFullName = activeUsers[i].LastName + ", " + activeUsers[i].FirstName;
             if (userFullName.length > 25) userFullName = userFullName.substring(0, 17) + "...";
 
-            activeUserList += '<li><span title="' + activeUsers[i].LastName + ", " + activeUsers[i].FirstName + '">' + userFullName + '</span>'; if (activeUsers[i].UserId != localStorage['CTuserID']) { activeUserList += '<button class="change-status" id="activeUser_' + activeUsers[i].UserId + '">Deactivate</button>' } activeUserList += '<button class="edit" id="editUser_' + activeUsers[i].UserId + '">Edit Info</button><button class="edit-roles-farms" id="editUserRoles_' + activeUsers[i].UserId + '">Roles & Farms</button></li>';
+            activeUserList += '<li><span title="' + activeUsers[i].LastName + ", " + activeUsers[i].FirstName + '">' + userFullName + '</span>'; if (activeUsers[i].UserId != localStorage['CTuserID']) { activeUserList += '<button class="change-status" id="activeUser_' + activeUsers[i].UserId + '">Deactivate</button>' } activeUserList += '<button class="edit" id="editUser_' + activeUsers[i].UserId + '">Edit Info</button><button class="edit-roles-farms" id="editUserRoles_' + activeUsers[i].UserId + '">Roles</button></li>';
         }
         for (var i = 0; i < inactiveUsers.length; i++) {
 
@@ -79,7 +80,7 @@ function populateUsers() {
             var userFullName = inactiveUsers[i].LastName + ", " + inactiveUsers[i].FirstName;
             if (userFullName.length > 25) userFullName = userFullName.substring(0, 17) + "...";
 
-            inactiveUserList += '<li><span title="' + inactiveUsers[i].LastName + ", " + inactiveUsers[i].FirstName + '">' + userFullName + '</span><button class="change-status" id="inactiveUser_' + inactiveUsers[i].UserId + '">Activate</button><button class="edit" id="editUser_' + inactiveUsers[i].UserId + '">Edit Info</button><button class="edit-roles-farms" id="editUserRoles_' + inactiveUsers[i].UserId + '">Roles & Farms</button></li>';
+            inactiveUserList += '<li><span title="' + inactiveUsers[i].LastName + ", " + inactiveUsers[i].FirstName + '">' + userFullName + '</span><button class="change-status" id="inactiveUser_' + inactiveUsers[i].UserId + '">Activate</button><button class="edit" id="editUser_' + inactiveUsers[i].UserId + '">Edit Info</button><button class="edit-roles-farms" id="editUserRoles_' + inactiveUsers[i].UserId + '">Roles</button></li>';
         }
         if (activeUsers.length == 0) { activeUserList += '<li><span>There are no active users.</span></li>' };
         if (inactiveUsers.length == 0) { inactiveUserList += '<li><span>There are no inactive users.</span></li>' };
@@ -107,13 +108,13 @@ function bindButtons() {
             success: function (msg) {
                 localStorage['CT_key'] = msg['Key']; startTimer(msg['Key'])
                 userInfo = msg['ReturnData'][0];
-                if (userInfo.Farms) { userFarms = userInfo.Farms.split(',') } else userFarms = {};
+                //if (userInfo.Farms) { userFarms = userInfo.Farms.split(',') } else userFarms = {};
                 if (userInfo.Roles) { userRoles = userInfo.Roles.split(',') } else userRoles = {};
             }
         })).then(function () {
             $('#userFirstLast').text(userInfo.FirstName + " " + userInfo.LastName);
             $('#userId').val(userInfo.UserId);
-            loadFarmsForUsers(userFarms, userInfo.UserId);
+            //loadFarmsForUsers(userFarms, userInfo.UserId);
             loadRolesForUsers(userRoles, userInfo.UserId);
         });
         bindFormButtons();
@@ -259,7 +260,7 @@ function resetUserModal() { $('#firstName').val(""); $('#lastName').val(""); $('
 
 function getObjectID(element) { var objectID = element.attr('id').split('_'); return objectID[1]; }
 
-function loadFarmsForPonds(farmID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#FarmId').empty().html(ddlHtml); }); }
+function loadFarmsForPonds(farmID) { var ddlHtml = '<option value="" selected="selected">Select Farm</option>', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#changeFarm').empty().html(ddlHtml); }); }
 
 function loadRolesForUsers(checkedRoles, userID) {
     roleChecklistHtml = '', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/User/AllRoles', {
@@ -280,40 +281,40 @@ function loadRolesForUsers(checkedRoles, userID) {
     })).then(function () { $('#adminUserRolesList').empty().html(roleChecklistHtml); editUserRoles(userID); });
 }
 
-function loadFarmsForUsers(checkedFarms, userID) {
-    farmChecklistHtml = '<input type="checkbox" id="0"><label>Select All</label><br />', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', {
-        type: 'POST', data: data, success: function (msg) {
-            localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); farmList = msg['ReturnData']; 
-            for (var i = 0; i < farmList.length; ++i) {
-                if (farmList[i].StatusId == "1") {
-                    if(checkedFarms.length > 0) {
-                        if (checkedFarms.indexOf(farmList[i].FarmId) > -1) {
-                            farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '" checked>' + farmList[i].FarmName + '</label><br />';
-                        } else {
-                            farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</label><br />';
-                        }
-                    } else {
-                        farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</label><br />';
-                    }
-                }
-            }
-        }
-    })).then(function () { $('#adminUserFarmsList').empty().html(farmChecklistHtml); editUserFarms(userID); });
-}
+//function loadFarmsForUsers(checkedFarms, userID) {
+//    farmChecklistHtml = '<input type="checkbox" id="0"><label>Select All</label><br />', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', {
+//        type: 'POST', data: data, success: function (msg) {
+//            localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); farmList = msg['ReturnData']; 
+//            for (var i = 0; i < farmList.length; ++i) {
+//                if (farmList[i].StatusId == "1") {
+//                    if(checkedFarms.length > 0) {
+//                        if (checkedFarms.indexOf(farmList[i].FarmId) > -1) {
+//                            farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '" checked>' + farmList[i].FarmName + '</label><br />';
+//                        } else {
+//                            farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</label><br />';
+//                        }
+//                    } else {
+//                        farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</label><br />';
+//                    }
+//                }
+//            }
+//        }
+//    })).then(function () { $('#adminUserFarmsList').empty().html(farmChecklistHtml); editUserFarms(userID); });
+//}
 
-function editUserFarms(userID) {
-    $('#adminUserFarmsList :checkbox').unbind().click(function () {
-        var farmID = $(this).attr('id'), state = $(this).is(':checked'), searchQuery = { "key": _key, "userID": userID, "farmId": farmID, "AddRemove": state }; data = JSON.stringify(searchQuery);
-        $.ajax('../api/User/UserAddOrRemoveFarm', { 
-            type: 'PUT', 
-            data: data, 
-            success: function (msg) {
-                localStorage['CT_key'] = msg['Key']; 
-                startTimer(msg['Key']);
-            }
-        });
-    });
-}
+//function editUserFarms(userID) {
+//    $('#adminUserFarmsList :checkbox').unbind().click(function () {
+//        var farmID = $(this).attr('id'), state = $(this).is(':checked'), searchQuery = { "key": _key, "userID": userID, "farmId": farmID, "AddRemove": state }; data = JSON.stringify(searchQuery);
+//        $.ajax('../api/User/UserAddOrRemoveFarm', { 
+//            type: 'PUT', 
+//            data: data, 
+//            success: function (msg) {
+//                localStorage['CT_key'] = msg['Key']; 
+//                startTimer(msg['Key']);
+//            }
+//        });
+//    });
+//}
 
 function editUserRoles(userID) {
     $('#adminUserRolesList :checkbox').unbind().click(function(){
