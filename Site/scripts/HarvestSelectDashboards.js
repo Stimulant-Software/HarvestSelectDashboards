@@ -59,7 +59,7 @@ function login() {
 			type: 'POST', data: data,
 			statusCode: {
 				200: function (msg) {
-					$('#username, #password').val(""); /* startTimer(msg.Key); */ localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID, companyID = msg.CompanyId; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription + " "; } if (supports_html5_storage()) { localStorage['CTuser'] = username; localStorage['CTpass'] = password; localStorage['CTuserRole'] = userRoles; localStorage['CTuserID'] = userID; localStorage['CTcompanyID'] = companyID; if ($('#rememberMe').is(':checked')) { localStorage['CTremember'] = true } else { localStorage['CTremember'] = false; } } else { createRemember('CTuser', username); createRemember('CTpass', password); createRemember('CTuserRole', userRoles); createRemember('CTuserID', userID); createRemember('CT_key', _key); createRemember('CT_company', companyID); }
+					$('#username, #password').val(""); startTimer(msg.Key);  localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID, companyID = msg.CompanyId; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription + " "; } if (supports_html5_storage()) { localStorage['CTuser'] = username; localStorage['CTpass'] = password; localStorage['CTuserRole'] = userRoles; localStorage['CTuserID'] = userID; localStorage['CTcompanyID'] = companyID; if ($('#rememberMe').is(':checked')) { localStorage['CTremember'] = true } else { localStorage['CTremember'] = false; } } else { createRemember('CTuser', username); createRemember('CTpass', password); createRemember('CTuserRole', userRoles); createRemember('CTuserID', userID); createRemember('CT_key', _key); createRemember('CT_company', companyID); }
 					window.location.href = "index.html";
 				}, 404: function () {
 					$.when(hideProgress('login')).then(function () { alert("Invalid login credentials: " + username + ":" + password + ". Please enter your information again."); });
@@ -85,7 +85,7 @@ function checkKey() { if (!_key) { alert("Session key is undefined; please log i
 var countdown;
 function startTimer(newKeyValue) { if (countdown) clearTimeout(countdown); /* set in milliseconds */ var setTimer = 900000; _key = newKeyValue; countdown = setTimeout(function () { var pageName = location.pathname.substring(location.pathname.lastIndexOf("/") + 1); if (pageName != "login.html") { alertError("Your session has timed out. Please log in again."); window.location.href = "login.html"; } }, setTimer) }
 
-function refreshKey(username, password) { dto = { "UserName": username, "Password": password }, data = JSON.stringify(dto); $.ajax('../api/Login/ValidateLogin', { type: 'POST', data: data, statusCode: { 200: function (msg) { _key = msg.Key; localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription; } if (!supports_html5_storage()) { createRemember('CT_key', _key); } hideProgress(); /* startTimer(_key); */ } }, 404: function () { hideProgress(); alert('Your user credentials are not recognized. Please login again.'); window.location.href = "login.html"; }, 500: function (msg) { $.when(hideProgress()).then(function () { alert("Server error. Please notify support. (" + msg.responseJSON.ExceptionMessage + ")"); window.location.href = "login.html"; console.log(msg); }); } }); }
+function refreshKey(username, password) { dto = { "UserName": username, "Password": password }, data = JSON.stringify(dto); $.ajax('../api/Login/ValidateLogin', { type: 'POST', data: data, statusCode: { 200: function (msg) { _key = msg.Key; localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription; } if (!supports_html5_storage()) { createRemember('CT_key', _key); } hideProgress(); startTimer(msg.Key);  } }, 404: function () { hideProgress(); alert('Your user credentials are not recognized. Please login again.'); window.location.href = "login.html"; }, 500: function (msg) { $.when(hideProgress()).then(function () { alert("Server error. Please notify support. (" + msg.responseJSON.ExceptionMessage + ")"); window.location.href = "login.html"; console.log(msg); }); } }); }
 
 // Cookie check (for 'remember me' box)
 function rememberCheck() { var u = supports_html5_storage() ? localStorage['CTuser'] : readRemember('CTuser'), p = supports_html5_storage() ? localStorage['CTpass'] : readRemember('CTpass'); if (u && p) { $('#username').val(u); $('#password').val(p); $('#remember input').attr('checked', true); return true; } }
@@ -113,7 +113,7 @@ function farmYields() {
             data: data,
             success: function (msg) {
                 localStorage['CT_key'] = msg['Key'];
-                /*startTimer(msg['Key']);*/
+                startTimer(msg.Key); 
                 yieldList = msg['ReturnData'];
                 console.log(yieldList);
             }
@@ -169,7 +169,7 @@ function farmYields() {
 				data: data,
 				success: function (msg) {
 					localStorage['CT_key'] = msg['Key'];
-					/*startTimer(msg['Key']);*/
+					startTimer(msg.Key); 
 					yieldID = msg['YieldID'];
 					console.log(yieldList);
 					$(this).parent().parent().addClass('complete');
@@ -200,7 +200,7 @@ function farmYields() {
                 data: data,
                 success: function (msg) {
                     localStorage['CT_key'] = msg['Key'];
-                    /*startTimer(msg['Key']);*/
+                    startTimer(msg.Key); 
                     yieldList = msg['ReturnData'];
                     
                 }
@@ -217,9 +217,9 @@ function farmYields() {
         })
     }
 
-    function loadFarmsDDL(rowID, farmID) { var ddlHtml = '<option value="">Select Farm</option>', searchQuery = { "Key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (typeof farmID !== "undefined" && farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
+    function loadFarmsDDL(rowID, farmID) { var ddlHtml = '<option value="">Select Farm</option>', searchQuery = { "Key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg.Key);  farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (typeof farmID !== "undefined" && farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
 
-    function loadPondsDDL(rowID, farmID, pondID) { var ddlHtml = '<option value="">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; /*startTimer(msg['Key']);*/ pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (typeof pondID !== "undefined" && pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).empty().html(ddlHtml).attr('disabled', false); }); }
+    function loadPondsDDL(rowID, farmID, pondID) { var ddlHtml = '<option value="">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg.Key);  pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (typeof pondID !== "undefined" && pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).empty().html(ddlHtml).attr('disabled', false); }); }
 }
 
 /* SHIFT END */
@@ -234,7 +234,7 @@ function shiftEnd() {
             data: data,
             success: function (msg) {
                 localStorage['CT_key'] = msg['Key'];
-                /*startTimer(msg['Key']);*/
+                startTimer(msg.Key); 
                 shiftEndList = msg['ReturnData'];
                 console.log(shiftEndList);
                 for (var i = 0; i < shiftEndList.length; i++) {
@@ -277,7 +277,7 @@ function shiftEnd() {
                         data: data,
                         success: function (msg) {
                             localStorage['CT_key'] = msg['Key'];
-                            /*startTimer(msg['Key']);*/
+                            startTimer(msg.Key); 
                             shiftEndList = msg['ReturnData'];
                             console.log(shiftEndList);
                             for (var i = 0; i < shiftEndList.length; i++) {
@@ -312,7 +312,7 @@ function shiftEnd() {
             data: data,
             success: function (msg) {
                 localStorage['CT_key'] = msg['Key'];
-                /*startTimer(msg['Key']);*/
+                startTimer(msg.Key); 
                 farmList = msg['ReturnData'];
                 $('.date-select').append("<div>Information Saved!</div>");
             }
