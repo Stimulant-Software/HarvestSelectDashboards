@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Harvest Select Dashboard Admin</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css">
+    <link rel="stylesheet" type="text/css" href="css/HarvestSelectDashboards.css">
+</head>
+<body class="admin pond">
+    <header class="container text-center">
+        <div class="pull-left">
+            <a href="index.html"><img src="img/logo.gif" alt="Harvest Select Logo" /></a>
+        </div>
+        <div class="pull-right">
+            <span>User Admin</span><img src="img/admin.png" alt="admin icon" />
+        </div>
+    </header>
+    <section id="mainContent" class="container">
+        <header class="admin row">
+            <h2 class="pull-left">Pond Administration</h2>
+            <button id="addNewPond" class="add-new">+ Create New Pond</button>
+        </header>
+
+        <form class="row">
+            <fieldset><label>Administer ponds for: </label><select id="changeFarm"></select></fieldset>
+            <ol class="active col-sm-6">
+                <li class="header">ACTIVE PONDS</li>
+                <li><span>There are no active ponds</span></li>
+            </ol>
+            <ol class="inactive col-sm-6">
+                <li class="header">INACTIVE PONDS</li>
+                <li><span>There are no inactive ponds</span></li>
+            </ol>
+        </form>
+    </section>
+
+    <section id="addNewPondModal" class="admin-modal modal">
+        <form>
+            <header>New Pond</header>
+            <fieldset>
+                <label>Pond Name</label><input type="text" id="PondName" placeholder="Pond Name" required />
+                <input type="hidden" id="StatusId" value="1" />
+                <input type="hidden" id="PondId" value="-1" />
+                <input type="hidden" id="NoFeed" value="False" />
+                <input type="hidden" id="HealthStatus" value="1" />
+            </fieldset>
+            <fieldset><label>Pond Size (acres)</label><input type="text" id="Size" placeholder="Pond Size" required /></fieldset>
+            <fieldset><label>Farm Location</label><select id="FarmId" required></select></fieldset>
+            <fieldset class="buttons"><button id="submitPond" class="submit">Submit</button><button class="cancel">Cancel</button></fieldset>
+        </form>
+    </section>
+
+    <section id="alertBox" class="modal">
+        <i class="fa fa-exclamation-circle"></i>
+        <div id="alertMessage"></div>
+        <fieldset class="buttons"><button id="closeAlert">OK</button></fieldset>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment-with-locales.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.js"></script>
+    <script src="scripts/HarvestSelectDashboards.js"></script>
+    <script type="text/javascript" src="scripts/admin-functions.js"></script>
+</body>
+</html>
