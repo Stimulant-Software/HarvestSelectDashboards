@@ -332,9 +332,7 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
-    <Content Include="Site\admin-user.html" />
     <Content Include="Site\css\HarvestSelectDashboards.css" />
-    <Content Include="Site\farm-yields.html" />
     <Content Include="Site\img\check.png" />
     <Content Include="Site\img\close.png" />
     <Content Include="Site\img\farm-yields.png" />
@@ -343,10 +341,7 @@
     <Content Include="Site\img\plus.png" />
     <Content Include="Site\img\shift-end.png" />
     <Content Include="Site\index.html" />
-    <Content Include="Site\login.html" />
-    <Content Include="Site\scripts\admin-functions.js" />
     <Content Include="Site\scripts\HarvestSelectDashboards.js" />
-    <Content Include="Site\shift-times.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
