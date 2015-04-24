@@ -32,7 +32,7 @@ namespace SGApp.Repository.Application {
         }
 
         public override System.Collections.Generic.List<User> GetByPredicate(string predicate) {
-            var iq = DbContext.Users.Include("UserFarms").Include("UserRoles").AsQueryable();
+            var iq = DbContext.Users.Include("UserRoles").AsQueryable();
             return predicate.Length > 0 ? iq.Where(predicate, null).Take(50).ToList() : iq.Take(50).ToList();
         }
 
