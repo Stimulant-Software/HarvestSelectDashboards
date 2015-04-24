@@ -332,6 +332,8 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Site\admin-farm.html" />
+    <Content Include="Site\admin-pond.html" />
     <Content Include="Site\admin-user.html" />
     <Content Include="Site\css\HarvestSelectDashboards.css" />
     <Content Include="Site\farm-yields.html" />
