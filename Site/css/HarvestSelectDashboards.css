@@ -12,6 +12,9 @@ header span { font-weight: bold; font-size: 1.5em; text-transform: uppercase; }
 .portal ul li a:hover { text-decoration: none; font-weight: bold; }
 .portal .yields a { background-image: url('../img/farm-yields.png'); background-size: 100px auto; }
 .portal .shift a { background-image: url('../img/shift-end.png'); background-size: 100px auto; }
+.portal .admin a { background-image: url('../img/admin.png'); background-size: 100px auto; }
+.portal .admin-farm a { background-image: url('../img/adminfarm.png'); background-size: 100px auto; }
+.portal .admin-pond a { background-image: url('../img/adminpond.png'); background-size: 100px auto; }
 
 input:disabled, select:disabled { background-color: #acacac; }
 .date-select { margin: 10px 0; text-align: center; padding: 10px; }
