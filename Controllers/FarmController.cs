@@ -30,6 +30,7 @@ namespace SGApp.Controllers
             var ur = new AppUserRepository();
             var FarmId = 0;
             var userId = ur.ValidateUser(uDto.Key, out key, ref FarmId);
+            uDto.CompanyId = FarmId.ToString();
 
             AppUserRoleRepository aur = new AppUserRoleRepository();
 
