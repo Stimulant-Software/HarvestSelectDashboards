@@ -41,13 +41,14 @@ input[type="text"] { width: 20%; font-size: 1.2em; margin-bottom: 10px; backgrou
 #calendarModal { width: 90%; margin: 0 auto; top: 5%; left: 5%; z-index: -1; position: fixed; }
 #calendarModal.in { z-index: 10000; }
 
-.admin button { margin: 0 0 0 10px; background-color: #095A99; color: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 6px 28px; }
+.admin button { margin: 0 0 0 10px; background-color: #095A99; color: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 6px 10px; }
 .admin .close { margin: initial; color: #000; border: none; padding: 0; background: transparent; }
 .admin header button { margin: 20px 0 0 50px; }
 .admin ol { list-style: none; }
+.admin ol.inactive { border-left: 1px solid #bdbdbd; }
 .admin ol li { text-align: right; padding: 10px; margin-left: -15px; margin-right: -15px; min-height: 56px; }
 .admin ol li:nth-child(odd) { border-top: 1px solid #bdbdbd; border-bottom: 1px solid #bdbdbd; background-color: #dedede; }
-.admin ol li span { float: left; line-height: 34px; font-size: 20px; }
+.admin ol li span { float: left; line-height: 34px; font-size: 16px; }
 .admin ol .header { text-align: center; font-weight: bold; text-transform: uppercase; min-height: initial; padding: 0; background-color: transparent !important; border-top: none !important; font-size: 24px; }
 .admin select { background-color: initial; padding: 2px 10px; }
 .admin input { background-color: initial; }

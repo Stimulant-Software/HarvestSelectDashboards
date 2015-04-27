@@ -241,11 +241,9 @@ function shiftEnd() {
                     var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
                     shiftEnds.push(shiftDate);
                 }
-                console.log(shiftEnds);
             }
         })).then(function () {
             $('#calendarModal .modal-body').fullCalendar({
-
                 events: function (start, end, timezone, refetchEvents) {
                     var results = shiftEnds;
                     var events = [];
@@ -259,12 +257,25 @@ function shiftEnd() {
                         events.push(obj);
                     }
                     refetchEvents(events);
+                },
+                eventClick: function(event) {
+                    var searchQuery = { "Key": _key, "Shift Date": event.start._i}, data = JSON.stringify(searchQuery);
+                    $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
+                        type: 'POST',
+                        data: data,
+                        success: function (msg) {
+                            localStorage['CT_key'] = msg['Key'];
+                            startTimer(msg.Key);
+                            shiftEndData = msg['ReturnData'];
+                            console.log(shiftEndData);
 
-
+                        }
+                    })).then(function () { });
                 },
                 dayClick: function () {
                     $('#rowContainer').empty();
                     date = $(this).data('date');
+                    console.log(date);
                     $('.date-select h3').remove();
                     $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
                     // TODO: add edit function, detected by existing data in calendar
