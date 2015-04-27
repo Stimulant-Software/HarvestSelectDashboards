@@ -11,7 +11,7 @@ namespace SGApp.Models.EF
 
         public override string KeyName()
         {
-            return "FarmID";
+            return "FarmId";
         }
 
         public override System.Type GetDataType(string fieldName)
@@ -27,8 +27,8 @@ namespace SGApp.Models.EF
             if (CompanyId <= 0)
             {
                 yield return new ValidationResult(
-                    "CompanyID is required.",
-                    new[] { "CompanyID" }
+                    "CompanyId is required.",
+                    new[] { "CompanyId" }
                 );
 
             }
