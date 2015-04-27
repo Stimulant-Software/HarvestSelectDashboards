@@ -107,8 +107,8 @@ function farmYields() {
 
     $('.row.buttons').hide();
     $('#shiftDate').click(function () {
-        var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery);
-        $.ajax('../api/FarmYield/FarmYieldList', {
+        var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), yieldEnds = [];
+        $.when($.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
             data: data,
             success: function (msg) {
@@ -116,27 +116,51 @@ function farmYields() {
                 startTimer(msg.Key); 
                 yieldList = msg['ReturnData'];
                 console.log(yieldList);
+                for (var i = 0; i < yieldList.length; i++) {
+                    var shiftDate = yieldList[i].YieldDate.split(" ")[0];
+                    yieldEnds.push(shiftDate);
+                }
+                console.log(yieldEnds);
             }
-        });
+        })).then(function() {
+            $('#calendarModal').modal();
+            $('#calendarModal .modal-body').fullCalendar({
+                events: function(start, end, timezone, refetchEvents) {
+                    var results = yieldEnds;
+                    var events = [];
+                    for (var event in results) {
+                        var obj = {
+                            title: ".",
+                            start: results[event],
+                            end: results[event],
+                            allDay: true
+                        };
+                        events.push(obj);
+                    }
+                    refetchEvents(events);
 
-        $('#calendarModal').modal();
-        $('#calendarModal .modal-body').fullCalendar({
-            dayClick: function () {
-                $('#rowContainer').empty();
-                date = $(this).data('date');
 
-                // TODO: add edit function, detected by existing data in calendar
-                // this assumes new/add:
-                addOrEdit = "-1";
-                var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+                },
+                dayClick: function() {
+                    $('#rowContainer').empty();
+                    date = $(this).data('date');
 
-                $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); $('.row.buttons').show(); });
-                i = 1;
-                bindYieldButtons();
-                $('.date-select h3').remove();
-                $('.date-select').append("<h3><strong>"+ date + "</strong></h3>");
-                $('#calendarModal').modal('hide');
-            }
+                    // TODO: add edit function, detected by existing data in calendar
+                    // this assumes new/add:
+                    addOrEdit = "-1";
+                    var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+
+                    $.when($('#rowContainer').append(newRowHtml)).then(function() {
+                        loadFarmsDDL(0);
+                        $('.row.buttons').show();
+                    });
+                    i = 1;
+                    bindYieldButtons();
+                    $('.date-select h3').remove();
+                    $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                    $('#calendarModal').modal('hide');
+                }
+            });
         });
     });
 
