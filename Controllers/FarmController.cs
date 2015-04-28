@@ -35,7 +35,7 @@ namespace SGApp.Controllers
             AppUserRoleRepository aur = new AppUserRoleRepository();
 
 
-            if (userId > 0 && aur.IsInRole(userId, "SGAdmin"))
+            if (userId > 0 && aur.IsInRole(userId, "Admin"))
             {
                 var Farm = new Farm();
                 var errors = ValidateDtoData(uDto, Farm);
