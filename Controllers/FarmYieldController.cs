@@ -147,6 +147,7 @@ namespace SGApp.Controllers
                     dic.Add("YieldId", item.YieldID.ToString());
                     dic.Add("PondID", item.PondID.ToString());
                     dic.Add("PondName", item.Pond.PondName);
+                    dic.Add("FarmID", item.Pond.FarmId.ToString());
                     dic.Add("YieldDate", item.YieldDate.ToShortDateString());
                     dic.Add("PoundsYielded", item.PoundsYielded.ToString());
                     dic.Add("PoundsPlant", item.PoundsPlant.ToString());
