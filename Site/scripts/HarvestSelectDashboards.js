@@ -166,8 +166,9 @@ function farmYields() {
                 },
                 eventClick: function(calEvent) {
                     $('#rowContainer').empty();
-                    var searchQuery = { "Key": _key, "Shift Date": event.start._i }, data = JSON.stringify(searchQuery);
-                    $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
+                    console.log(calEvent)
+                    var searchQuery = { "Key": _key, "ShiftDate": calEvent.start._i }, data = JSON.stringify(searchQuery);
+                    $.when($.ajax('../api/FarmYield/FarmYieldList', {
                         type: 'POST',
                         data: data,
                         success: function (msg) {
@@ -223,7 +224,7 @@ function farmYields() {
 
         $('.data .add-row').unbind().click(function (e) {
             e.preventDefault();
-            var remove = "0", yieldID = $(this).parent().parent().data('yieldid'), pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), plantPounds = $(this).parent().parent().find('.plantpounds').val(), headPounds = $(this).parent().parent().find('.headedpounds').val(), pctYield = $(this).parent().parent().find('.pctyield').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldID": yieldLD, "PondID": pondID, "PoundsYielded": pondYield, "PercentYield": pctYield, "PoundsHeaded": headPounds, "PoundsPlant": plantPounds, "Remove": remove }, data = JSON.stringify(searchQuery);
+            var remove = "0", yieldID = $(this).parent().parent().data('yieldid'), pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), plantPounds = $(this).parent().parent().find('.plantpounds').val(), headPounds = $(this).parent().parent().find('.headedpounds').val(), pctYield = $(this).parent().parent().find('.pctyield').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldID": yieldID, "PondID": pondID, "PoundsYielded": pondYield, "PercentYield": pctYield, "PoundsHeaded": headPounds, "PoundsPlant": plantPounds, "Remove": remove }, data = JSON.stringify(searchQuery);
             $(this).parent().parent().find('.add-row').css('opacity', 0);
             $(this).parent().parent().find('.delete-row').css('opacity', 1);
             i = parseInt($(this).parent().parent().attr('data-rownum')) + 1;
