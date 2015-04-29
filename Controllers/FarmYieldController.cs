@@ -130,6 +130,11 @@ namespace SGApp.Controllers
             {
                 var ur = new FarmYieldRepository();
                 var u = new FarmYield();
+                if (cqDTO.YieldDate != null)
+                {
+                    cqDTO.Start_YieldDate = DateTime.Parse(cqDTO.YieldDate).ToString();
+                    cqDTO.End_YieldDate = DateTime.Parse(cqDTO.YieldDate).AddDays(1).ToString();
+                }
                 var predicate = ur.GetPredicate(cqDTO, u, companyId);
                 var data = ur.GetByPredicate(predicate);
                 var col = new Collection<Dictionary<string, string>>();

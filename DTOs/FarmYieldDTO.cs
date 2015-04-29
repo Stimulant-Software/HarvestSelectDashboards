@@ -8,6 +8,8 @@ namespace SGApp.DTOs
         public string Key { get; set; }
         public string YieldID { get; set; }
         public string YieldDate { get; set; }
+        public string Start_YieldDate { get; set; }
+        public string End_YieldDate { get; set; }
         public string PondID { get; set; }
         public string PoundsYielded { get; set; }
         public string Remove { get; set; }
