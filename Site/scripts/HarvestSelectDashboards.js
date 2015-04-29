@@ -10,8 +10,8 @@ $.ajaxSetup({ contentType: 'application/json; charset=utf-8', data: data, error:
 $(function(){
     var currentPage = $(location).attr('href');
     if (currentPage.indexOf("login") > -1) { login(); } else { checkKey(); }
-	if($('.farm-yields').length>0) farmYields();
-	if($('.shift-end').length>0) shiftEnd();
+    if ($('.farm-yields').length > 0) { showProgress(); farmYields(); }
+    if ($('.shift-end').length > 0) { showProgress(); shiftEnd(); }
 });
 
 /* Login page */
@@ -25,7 +25,7 @@ function login() {
         });
         $('#user input').unbind().focusout(function(){
             if($(this).val() != '') {
-                $('#pass').fadeIn(250);
+                $('#pass').css('opacity', 1);
                 $('#user').addClass('has-success');
             } else {
                 $('#user').addClass('has-error');
@@ -38,13 +38,15 @@ function login() {
         });
         $('#pass input').unbind().focusout(function(){
             if($(this).val() != '') {
-                $('#remember, #login').fadeIn(250);
+                $('#remember, #login').css('opacity', 1);
                 $('#pass').addClass('has-success');
             } else {
                 $('#pass').addClass('has-error');
                 $('#pass .help-block').show();
             }
         });
+    } else {
+        $('#pass, #remember, #login').css('opacity', 1);
     }
 	
 	var passbox = $('#password'), userbox = $('#username');
@@ -103,7 +105,7 @@ function centerProgress(container) { if (container == 'body') { container = wind
 
 /* FARM YIELDS */
 function farmYields() {
-    var date, addOrEdit, i;
+    var date, i;
 
     $('.row.buttons').hide();
     $('#shiftDate').click(function () {
@@ -126,7 +128,6 @@ function farmYields() {
                        yieldEnds.push(shiftDate);
                         lastdate = shiftDate;
                     }
-                    
                 }
                 console.log(yieldEnds);
             }
@@ -146,18 +147,12 @@ function farmYields() {
                         events.push(obj);
                     }
                     refetchEvents(events);
-
-
                 },
                 dayClick: function() {
                     $('#rowContainer').empty();
                     date = $(this).data('date');
                     
-
-                    // TODO: add edit function, detected by existing data in calendar
-                    // this assumes new/add:
-                    addOrEdit = "-1";
-                    var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+                    var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
                     $.when($('#rowContainer').append(newRowHtml)).then(function() {
                         loadFarmsDDL(0);
@@ -171,50 +166,66 @@ function farmYields() {
                 },
                 eventClick: function(calEvent) {
                     $('#rowContainer').empty();
-                    date = calEvent.start.format();
-                   
+                    var searchQuery = { "Key": _key, "Shift Date": event.start._i }, data = JSON.stringify(searchQuery);
+                    $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
+                        type: 'POST',
+                        data: data,
+                        success: function (msg) {
+                            localStorage['CT_key'] = msg['Key'];
+                            startTimer(msg.Key);
+                            farmYieldData = msg['ReturnData'];
+                            console.log(farmYieldData);
+                            $('#rowContainer').empty();
+                            $('.date-select h3').remove();
+                            $('.date-select').append("<h3><strong>" + farmYieldData.Date + "</strong></h3>");
+                            for (var i = 0; i < farmYieldData.Yields.length; i++) {
+                                var newRowHtml = '<section class="row row' + farmYieldData.Yield[i].farmYieldID + ' data" data-rownum="' + farmYieldData.Yield[i].farmYieldID + '" data-yieldid="' + farmYieldData.Yield[i].farmYieldID + '"><div class="col-xs-4"><select id="farms' + farmYieldData.Yield[i].farmYieldID + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + farmYieldData.Yield[i].farmYieldID + '" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + farmYieldData.Yield[i].farmYieldID + '" class="pounds table-numbers" type="text" value="' + farmYieldData.Yield[i].Pounds + '"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+                                $.when($('#rowContainer').append(newRowHtml)).then(function () {
+                                    loadFarmsDDL(farmYieldData.Yield[i].farmYieldID, farmYieldData.Yield[i].farmID);
+                                    loadPondsDDL(farmYieldData.Yield[i].farmYieldID, farmYieldData.Yield[i].farmID, farmYieldData.Yield[i].pondID);
+                                });
+                            }
+                            var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
-                    // TODO: add edit function, detected by existing data in calendar
-                    // this assumes new/add:
-                    addOrEdit = "-1";
-                    var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
-
-                    $.when($('#rowContainer').append(newRowHtml)).then(function () {
-                        loadFarmsDDL(0);
-                        $('.row.buttons').show();
+                            $.when($('#rowContainer').append(newRowHtml)).then(function () {
+                                loadFarmsDDL(0);
+                                $('.row.buttons').show();
+                            });
+                            i = 1;
+                            bindYieldButtons();
+                        }
+                    })).then(function () {
+                        $('#calendarModal').modal('hide');
                     });
-                    i = 1;
+
+                    // adjust buttons to take edits instead of new
                     bindYieldButtons();
-                    $('.date-select h3').remove();
-                    $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
-                    $('#calendarModal').modal('hide');
                 }
             });
         });
     });
 
     function bindYieldButtons() {
-        $('.farmDDL').change(function () {
+        $('.farmDDL').unbind().change(function () {
             var rowID = $(this).attr('id').replace('farms', ''), farmID = $(this).val();
             loadPondsDDL(rowID, farmID);
         });
 
-        $('.pondsDDL').change(function () {
-            $(this).parent().next().find('input').attr('disabled', false);
+        $('.pondsDDL').unbind().change(function () {
+            $(this).parent().next().find('input').css('opacity', 1);
         });
 
         $('.pounds').unbind().focusout(function () {
             if (!$(this).val() == "") {
-                $(this).parent().parent().find('.add-row').fadeIn(250);
+                $(this).parent().parent().find('.add-row').css('opacity', 1);
             }
         });
 
         $('.data .add-row').unbind().click(function (e) {
             e.preventDefault();
-            
-            var Remove = "0", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldID": addOrEdit, "PondID": pondID, "PoundsYielded": pondYield, "Remove": Remove }, data = JSON.stringify(searchQuery);
-            $(this).parent().parent().find('.add-row').fadeOut(250);
-            $(this).parent().parent().find('.delete-row').fadeIn(250);
+            var remove = "0", yieldID = $(this).parent().parent().data('yieldid'),pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldID": yieldLD, "PondID": pondID, "PoundsYielded": pondYield, "Remove": remove }, data = JSON.stringify(searchQuery);
+            $(this).parent().parent().find('.add-row').css('opacity', 0);
+            $(this).parent().parent().find('.delete-row').css('opacity', 1);
             i = parseInt($(this).parent().parent().attr('data-rownum')) + 1;
             var justadded = ".row" + (i - 1);
             $.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
@@ -227,14 +238,11 @@ function farmYields() {
 					console.log(yieldList);
 					$(this).parent().parent().addClass('complete');
 					$(justadded).attr('data-yieldid', yieldID);
+                    // ?? What's this? Or - is it necessary?
 					addOrEdit = yieldID;
-					
 				}
 			})).then(function () {
-			    
-			    
-			    
-			    newRowHtml = '<section class="row row' + i + ' data" data-rownum="' + i + '"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+			    newRowHtml = '<section class="row row' + i + ' data" data-rownum="' + i + '" data-yieldid="-1"><div class="col-xs-4"><select id="farms' + i + '" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds' + i + '" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds' + i + '" class="pounds table-numbers" type="text"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
 				$.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(i); });
 				
@@ -246,7 +254,7 @@ function farmYields() {
         $('.data .delete-row').unbind().click(function (e) {
             e.preventDefault();
             // TO DO: prevent removing sole empty row or replace with empty row
-            var Remove = "1", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldID": $(this).parent().parent().attr('data-yieldid'), "PondID": pondID, "PoundsYielded": pondYield, "Remove": Remove }, data = JSON.stringify(searchQuery);
+            var remove = "1", pondID = $(this).parent().parent().find('.pondsDDL').val(), pondYield = $(this).parent().parent().find('.pounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "YieldID": $(this).parent().parent().attr('data-yieldid'), "PondID": pondID, "PoundsYielded": pondYield, "Remove": remove }, data = JSON.stringify(searchQuery);
             $(this).parent().parent().remove();
             $.when($.ajax('../api/FarmYield/FarmYieldAddOrEdit', {
                 type: 'PUT',
@@ -255,14 +263,12 @@ function farmYields() {
                     localStorage['CT_key'] = msg['Key'];
                     startTimer(msg.Key); 
                     yieldList = msg['ReturnData'];
-                    
                 }
             })).then(function () {
-                
                 if (!$('.data').length > 0) {
-                    var newRowHtml = '<section class="row row0 data" data-rownum="0"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL" disabled><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text" disabled></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
+                    var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-4"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-3"><select id="ponds0" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-3"><input placeholder="(Pounds)" id="pounds0" class="pounds table-numbers" type="text"></div><div class="col-xs-1"><a href="#" class="delete-row"><img src="img/close.png"></a></div><div class="col-xs-1"><a href="#" class="add-row"><img src="img/plus.png"></a></div></section>';
 
-                    $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); console.log("!"); });
+                    $.when($('#rowContainer').append(newRowHtml)).then(function () { loadFarmsDDL(0); });
                     i = 1;
                     bindYieldButtons();
                 }
@@ -272,11 +278,12 @@ function farmYields() {
 
     function loadFarmsDDL(rowID, farmID) { var ddlHtml = '<option value="">Select Farm</option>', searchQuery = { "Key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg.Key);  farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (typeof farmID !== "undefined" && farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
 
-    function loadPondsDDL(rowID, farmID, pondID) { var ddlHtml = '<option value="">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg.Key);  pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (typeof pondID !== "undefined" && pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).empty().html(ddlHtml).attr('disabled', false); }); }
+    function loadPondsDDL(rowID, farmID, pondID) { var ddlHtml = '<option value="">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg.Key);  pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (typeof pondID !== "undefined" && pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).empty().html(ddlHtml).css('opacity', 1); }); }
 }
 
 /* SHIFT END */
 function shiftEnd() {
+    hideProgress();
     $('.row.fields, .row.buttons').hide();
     var date, addOrEdit;
     $('#shiftDate').click(function () {
@@ -321,14 +328,33 @@ function shiftEnd() {
                             startTimer(msg.Key);
                             shiftEndData = msg['ReturnData'];
                             console.log(shiftEndData);
-
+                            $('#rowContainer').empty();
+                            $('.date-select h3').remove();
+                            $('.date-select').append("<h3><strong>" + shiftEndData.ShiftDate + "</strong></h3>");
+                            $('#regEmpLate').val(shiftEndData.RegEmpLate);
+                            $('#regEmpOut').val(shiftEndData.RegEmpOut);
+                            $('#regEmpLeftEarly').val(shiftEndData.RegEmplLeftEarly);
+                            $('#tempEmpOut').val(shiftEndData.TempEmpOut);
+                            $('#inmateEmpLeftEarly').val(shiftEndData.InmateLeftEarly);
+                            $('#finKill').val(shiftEndData.FinishedKill);
+                            $('#finFillet').val(shiftEndData.FinishedFillet);
+                            $('#finSkinned').val(shiftEndData.FinishedSkinning);
+                            $('#dayFreeze').val(shiftEndData.DayFinishedFreezing);
+                            $('#nightFreeze').val(shiftEndData.NightFinishedFreezing);
+                            $('#dayFroze').val(shiftEndData.DayShiftFroze);
+                            $('#nightFroze').val(shiftEndData.NightShiftFroze);
+                            $('#filletScale').val(shiftEndData.FilletScaleReading);
+                            $('#downtimeMin').val(shiftEndData.DowntimeMinutes);
+                            addOrEdit = shiftEndData.ShiftEndID;
                         }
-                    })).then(function () { });
+                    })).then(function () {
+                        $('#calendarModal').modal('hide');
+                        $('.row.fields, .row.buttons').fadeIn(250);
+                    });
                 },
                 dayClick: function () {
                     $('#rowContainer').empty();
                     date = $(this).data('date');
-                    console.log(date);
                     $('.date-select h3').remove();
                     $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
                     // TODO: add edit function, detected by existing data in calendar
@@ -342,12 +368,10 @@ function shiftEnd() {
                             localStorage['CT_key'] = msg['Key'];
                             startTimer(msg.Key); 
                             shiftEndList = msg['ReturnData'];
-                            console.log(shiftEndList);
                             for (var i = 0; i < shiftEndList.length; i++) {
                                 var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
                                 shiftEnds.push(shiftDate);
                             }
-                            console.log(shiftEnds);
                         }
                     });
                     addOrEdit = "-1";
