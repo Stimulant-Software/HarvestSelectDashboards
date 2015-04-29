@@ -144,6 +144,9 @@ namespace SGApp.Controllers
                     dic.Add("PondName", item.Pond.PondName);
                     dic.Add("YieldDate", item.YieldDate.ToShortDateString());
                     dic.Add("PoundsYielded", item.PoundsYielded.ToString());
+                    dic.Add("PoundsPlant", item.PoundsPlant.ToString());
+                    dic.Add("PoundsHeaded", item.PoundsHeaded.ToString());
+                    dic.Add("PercentYield", item.PercentYield.ToString());
                     col.Add(dic);
                     var ufdic = new Dictionary<string, string>();
 

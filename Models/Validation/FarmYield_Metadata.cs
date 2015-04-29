@@ -11,6 +11,9 @@ namespace SGApp.Models.Validation
         public System.DateTime YieldDate { get; set; }
         public int PondID { get; set; }
         public decimal PoundsYielded { get; set; }
+        public decimal PoundsPlant { get; set; }
+        public decimal PoundsHeaded { get; set; }
+        public decimal PercentYield { get; set; }
 
 
 

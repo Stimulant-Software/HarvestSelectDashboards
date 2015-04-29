@@ -11,5 +11,8 @@ namespace SGApp.DTOs
         public string PondID { get; set; }
         public string PoundsYielded { get; set; }
         public string Remove { get; set; }
+        public string PoundsPlant { get; set; }
+        public string PoundsHeaded { get; set; }
+        public string PercentYield { get; set; }
     }
 }

@@ -82,6 +82,9 @@
           <Property Name="YieldDate" Type="datetime" Nullable="false" />
           <Property Name="PondID" Type="int" Nullable="false" />
           <Property Name="PoundsYielded" Type="decimal" Nullable="false" Scale="2" />
+          <Property Name="PoundsPlant" Type="decimal" Scale="2" />
+          <Property Name="PoundsHeaded" Type="decimal" Scale="2" />
+          <Property Name="PercentYield" Type="decimal" Scale="2" />
         </EntityType>
         <EntityType Name="Ponds">
           <Key>
@@ -285,7 +288,6 @@
             <End Role="UserRole" EntitySet="UserRoles" />
           </AssociationSet>
           <EntitySet Name="Farms" EntityType="AppModel.Farm" />
-          <EntitySet Name="FarmYields" EntityType="AppModel.FarmYield" />
           <EntitySet Name="Ponds" EntityType="AppModel.Pond" />
           <AssociationSet Name="FK_Farms_Companies" Association="AppModel.FK_Farms_Companies">
             <End Role="Company" EntitySet="Companies" />
@@ -299,15 +301,16 @@
             <End Role="Farm" EntitySet="Farms" />
             <End Role="Pond" EntitySet="Ponds" />
           </AssociationSet>
-          <AssociationSet Name="FK_FarmYields_Ponds" Association="AppModel.FK_FarmYields_Ponds">
-            <End Role="Pond" EntitySet="Ponds" />
-            <End Role="FarmYield" EntitySet="FarmYields" />
-          </AssociationSet>
           <AssociationSet Name="FK_Ponds_Statuses" Association="AppModel.FK_Ponds_Statuses">
             <End Role="Status" EntitySet="Statuses" />
             <End Role="Pond" EntitySet="Ponds" />
           </AssociationSet>
           <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
+          <EntitySet Name="FarmYields" EntityType="AppModel.FarmYield" />
+          <AssociationSet Name="FK_FarmYields_Ponds" Association="AppModel.FK_FarmYields_Ponds">
+            <End Role="Pond" EntitySet="Ponds" />
+            <End Role="FarmYield" EntitySet="FarmYields" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -428,16 +431,6 @@
           <NavigationProperty Name="Status" Relationship="AppModel.FK_Farms_Statuses" FromRole="Farm" ToRole="Status" />
           <NavigationProperty Name="Ponds" Relationship="AppModel.FK_Ponds_Farms" FromRole="Farm" ToRole="Pond" />
         </EntityType>
-        <EntityType Name="FarmYield">
-          <Key>
-            <PropertyRef Name="YieldID" />
-          </Key>
-          <Property Type="Int32" Name="YieldID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="DateTime" Name="YieldDate" Nullable="false" Precision="3" />
-          <Property Type="Int32" Name="PondID" Nullable="false" />
-          <Property Type="Decimal" Name="PoundsYielded" Nullable="false" Precision="18" Scale="2" />
-          <NavigationProperty Name="Pond" Relationship="AppModel.FK_FarmYields_Ponds" FromRole="FarmYield" ToRole="Pond" />
-        </EntityType>
         <EntityType Name="Pond">
           <Key>
             <PropertyRef Name="PondId" />
@@ -449,8 +442,8 @@
           <Property Type="Decimal" Name="Size" Nullable="false" Precision="18" Scale="0" />
           <Property Type="Int32" Name="SortOrder" Nullable="false" />
           <NavigationProperty Name="Farm" Relationship="AppModel.FK_Ponds_Farms" FromRole="Pond" ToRole="Farm" />
-          <NavigationProperty Name="FarmYields" Relationship="AppModel.FK_FarmYields_Ponds" FromRole="Pond" ToRole="FarmYield" />
           <NavigationProperty Name="Status" Relationship="AppModel.FK_Ponds_Statuses" FromRole="Pond" ToRole="Status" />
+          <NavigationProperty Name="FarmYields" Relationship="AppModel.FK_FarmYields_Ponds" FromRole="Pond" ToRole="FarmYield" />
         </EntityType>
         <Association Name="FK_Farms_Companies">
           <End Type="AppModel.Company" Role="Company" Multiplicity="1" />
@@ -488,18 +481,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_FarmYields_Ponds">
-          <End Type="AppModel.Pond" Role="Pond" Multiplicity="1" />
-          <End Type="AppModel.FarmYield" Role="FarmYield" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Pond">
-              <PropertyRef Name="PondId" />
-            </Principal>
-            <Dependent Role="FarmYield">
-              <PropertyRef Name="PondID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Ponds_Statuses">
           <End Type="AppModel.Status" Role="Status" Multiplicity="1" />
           <End Type="AppModel.Pond" Role="Pond" Multiplicity="*" />
@@ -533,6 +514,31 @@
           <Property Type="Decimal" Name="FilletScaleReading" Precision="18" Scale="2" />
           <Property Type="Int32" Name="DowntimeMinutes" />
         </EntityType>
+        <EntityType Name="FarmYield">
+          <Key>
+            <PropertyRef Name="YieldID" />
+          </Key>
+          <Property Type="Int32" Name="YieldID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="YieldDate" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="PondID" Nullable="false" />
+          <Property Type="Decimal" Name="PoundsYielded" Nullable="false" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="PoundsPlant" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="PoundsHeaded" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="PercentYield" Precision="18" Scale="2" />
+          <NavigationProperty Name="Pond" Relationship="AppModel.FK_FarmYields_Ponds" FromRole="FarmYield" ToRole="Pond" />
+        </EntityType>
+        <Association Name="FK_FarmYields_Ponds">
+          <End Type="AppModel.Pond" Role="Pond" Multiplicity="1" />
+          <End Type="AppModel.FarmYield" Role="FarmYield" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pond">
+              <PropertyRef Name="PondId" />
+            </Principal>
+            <Dependent Role="FarmYield">
+              <PropertyRef Name="PondID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -602,16 +608,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="FarmYields">
-            <EntityTypeMapping TypeName="AppModel.FarmYield">
-              <MappingFragment StoreEntitySet="FarmYields">
-                <ScalarProperty Name="PoundsYielded" ColumnName="PoundsYielded" />
-                <ScalarProperty Name="PondID" ColumnName="PondID" />
-                <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
-                <ScalarProperty Name="YieldID" ColumnName="YieldID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Ponds">
             <EntityTypeMapping TypeName="AppModel.Pond">
               <MappingFragment StoreEntitySet="Ponds">
@@ -643,6 +639,19 @@
                 <ScalarProperty Name="RegEmpLate" ColumnName="RegEmpLate" />
                 <ScalarProperty Name="ShiftDate" ColumnName="ShiftDate" />
                 <ScalarProperty Name="ShiftEndID" ColumnName="ShiftEndID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FarmYields">
+            <EntityTypeMapping TypeName="AppModel.FarmYield">
+              <MappingFragment StoreEntitySet="FarmYields">
+                <ScalarProperty Name="PercentYield" ColumnName="PercentYield" />
+                <ScalarProperty Name="PoundsHeaded" ColumnName="PoundsHeaded" />
+                <ScalarProperty Name="PoundsPlant" ColumnName="PoundsPlant" />
+                <ScalarProperty Name="PoundsYielded" ColumnName="PoundsYielded" />
+                <ScalarProperty Name="PondID" ColumnName="PondID" />
+                <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
+                <ScalarProperty Name="YieldID" ColumnName="YieldID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
