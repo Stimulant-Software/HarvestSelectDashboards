@@ -167,7 +167,7 @@ function farmYields() {
                 eventClick: function(calEvent) {
                     $('#rowContainer').empty();
                     console.log(calEvent)
-                    var searchQuery = { "Key": _key, "ShiftDate": calEvent.start._i }, data = JSON.stringify(searchQuery);
+                    var searchQuery = { "Key": _key, "YieldDate": calEvent.start._i }, data = JSON.stringify(searchQuery);
                     $.when($.ajax('../api/FarmYield/FarmYieldList', {
                         type: 'POST',
                         data: data,
