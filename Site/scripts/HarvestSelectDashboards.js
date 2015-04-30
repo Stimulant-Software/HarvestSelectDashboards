@@ -108,7 +108,7 @@ function farmYields() {
     var date, i;
 
     $('.row.buttons').hide();
-    $('#shiftDate').click(function () {
+    $('#shiftDate').unbind().click(function () {
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), yieldEnds = [];
         $.when($.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
