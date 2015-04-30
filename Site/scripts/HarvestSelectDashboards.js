@@ -294,7 +294,7 @@ function shiftEnd() {
     hideProgress();
     $('.row.fields, .row.buttons').hide();
     var date, addOrEdit;
-    $('#shiftDate').click(function () {
+    $('#shiftDate').unbind().click(function () {
         $('input').val("");
         $('.row.fields, .row.buttons').fadeIn(250);
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), shiftEnds = [];
@@ -329,7 +329,7 @@ function shiftEnd() {
                     refetchEvents(events);
                 },
                 eventClick: function(event) {
-                    var searchQuery = { "Key": _key, "ShiftDate": event.start._i}, data = JSON.stringify(searchQuery);
+                    date = event.start._i, searchQuery = { "Key": _key, "ShiftDate": date }, data = JSON.stringify(searchQuery);
                     $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
                         type: 'POST',
                         data: data,
@@ -340,7 +340,7 @@ function shiftEnd() {
                             console.log(shiftEndData);
                             $('#rowContainer').empty();
                             $('.date-select h3').remove();
-                            $('.date-select').append("<h3><strong>" + shiftEndData.ShiftDate + "</strong></h3>");
+                            $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
                             $('#regEmpLate').val(shiftEndData.RegEmpLate);
                             $('#regEmpOut').val(shiftEndData.RegEmpOut);
                             $('#regEmpLeftEarly').val(shiftEndData.RegEmplLeftEarly);
@@ -415,6 +415,6 @@ function shiftEnd() {
                 farmList = msg['ReturnData'];
                 $('.date-select').append("<div>Information Saved!</div>");
             }
-        })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); });
+        })).then( function() { $('input').val(""); $('.row.fields, .row.buttons').hide(); });
     });
 }
