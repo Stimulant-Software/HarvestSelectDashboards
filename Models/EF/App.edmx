@@ -124,6 +124,8 @@
           <Property Name="NightShiftFroze" Type="decimal" Scale="2" />
           <Property Name="FilletScaleReading" Type="decimal" Scale="2" />
           <Property Name="DowntimeMinutes" Type="int" />
+          <Property Name="InLateOut" Type="int" />
+          <Property Name="EmployeesOnVacation" Type="int" />
         </EntityType>
         <EntityType Name="Statuses">
           <Key>
@@ -305,12 +307,12 @@
             <End Role="Status" EntitySet="Statuses" />
             <End Role="Pond" EntitySet="Ponds" />
           </AssociationSet>
-          <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
           <EntitySet Name="FarmYields" EntityType="AppModel.FarmYield" />
           <AssociationSet Name="FK_FarmYields_Ponds" Association="AppModel.FK_FarmYields_Ponds">
             <End Role="Pond" EntitySet="Ponds" />
             <End Role="FarmYield" EntitySet="FarmYields" />
           </AssociationSet>
+          <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
           </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -493,27 +495,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="ShiftEnd">
-          <Key>
-            <PropertyRef Name="ShiftEndID" />
-          </Key>
-          <Property Type="Int32" Name="ShiftEndID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="DateTime" Name="ShiftDate" Nullable="false" Precision="3" />
-          <Property Type="Int32" Name="RegEmpLate" />
-          <Property Type="Int32" Name="RegEmpOut" />
-          <Property Type="Int32" Name="RegEmplLeftEarly" />
-          <Property Type="Int32" Name="TempEmpOut" />
-          <Property Type="Int32" Name="InmateLeftEarly" />
-          <Property Type="DateTime" Name="FinishedKill" Precision="3" />
-          <Property Type="DateTime" Name="FinishedFillet" Precision="3" />
-          <Property Type="DateTime" Name="FinishedSkinning" Precision="3" />
-          <Property Type="DateTime" Name="DayFinishedFreezing" Precision="3" />
-          <Property Type="DateTime" Name="NightFinishedFreezing" Precision="3" />
-          <Property Type="Decimal" Name="DayShiftFroze" Precision="18" Scale="2" />
-          <Property Type="Decimal" Name="NightShiftFroze" Precision="18" Scale="2" />
-          <Property Type="Decimal" Name="FilletScaleReading" Precision="18" Scale="2" />
-          <Property Type="Int32" Name="DowntimeMinutes" />
-        </EntityType>
         <EntityType Name="FarmYield">
           <Key>
             <PropertyRef Name="YieldID" />
@@ -539,6 +520,29 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ShiftEnd">
+          <Key>
+            <PropertyRef Name="ShiftEndID" />
+          </Key>
+          <Property Type="Int32" Name="ShiftEndID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="ShiftDate" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="RegEmpLate" />
+          <Property Type="Int32" Name="RegEmpOut" />
+          <Property Type="Int32" Name="RegEmplLeftEarly" />
+          <Property Type="Int32" Name="TempEmpOut" />
+          <Property Type="Int32" Name="InmateLeftEarly" />
+          <Property Type="DateTime" Name="FinishedKill" Precision="3" />
+          <Property Type="DateTime" Name="FinishedFillet" Precision="3" />
+          <Property Type="DateTime" Name="FinishedSkinning" Precision="3" />
+          <Property Type="DateTime" Name="DayFinishedFreezing" Precision="3" />
+          <Property Type="DateTime" Name="NightFinishedFreezing" Precision="3" />
+          <Property Type="Decimal" Name="DayShiftFroze" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="NightShiftFroze" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="FilletScaleReading" Precision="18" Scale="2" />
+          <Property Type="Int32" Name="DowntimeMinutes" />
+          <Property Type="Int32" Name="InLateOut" />
+          <Property Type="Int32" Name="EmployeesOnVacation" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -620,9 +624,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="FarmYields">
+            <EntityTypeMapping TypeName="AppModel.FarmYield">
+              <MappingFragment StoreEntitySet="FarmYields">
+                <ScalarProperty Name="PercentYield" ColumnName="PercentYield" />
+                <ScalarProperty Name="PoundsHeaded" ColumnName="PoundsHeaded" />
+                <ScalarProperty Name="PoundsPlant" ColumnName="PoundsPlant" />
+                <ScalarProperty Name="PoundsYielded" ColumnName="PoundsYielded" />
+                <ScalarProperty Name="PondID" ColumnName="PondID" />
+                <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
+                <ScalarProperty Name="YieldID" ColumnName="YieldID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ShiftEnds">
             <EntityTypeMapping TypeName="AppModel.ShiftEnd">
               <MappingFragment StoreEntitySet="ShiftEnd">
+                <ScalarProperty Name="EmployeesOnVacation" ColumnName="EmployeesOnVacation" />
+                <ScalarProperty Name="InLateOut" ColumnName="InLateOut" />
                 <ScalarProperty Name="DowntimeMinutes" ColumnName="DowntimeMinutes" />
                 <ScalarProperty Name="FilletScaleReading" ColumnName="FilletScaleReading" />
                 <ScalarProperty Name="NightShiftFroze" ColumnName="NightShiftFroze" />
@@ -639,19 +658,6 @@
                 <ScalarProperty Name="RegEmpLate" ColumnName="RegEmpLate" />
                 <ScalarProperty Name="ShiftDate" ColumnName="ShiftDate" />
                 <ScalarProperty Name="ShiftEndID" ColumnName="ShiftEndID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FarmYields">
-            <EntityTypeMapping TypeName="AppModel.FarmYield">
-              <MappingFragment StoreEntitySet="FarmYields">
-                <ScalarProperty Name="PercentYield" ColumnName="PercentYield" />
-                <ScalarProperty Name="PoundsHeaded" ColumnName="PoundsHeaded" />
-                <ScalarProperty Name="PoundsPlant" ColumnName="PoundsPlant" />
-                <ScalarProperty Name="PoundsYielded" ColumnName="PoundsYielded" />
-                <ScalarProperty Name="PondID" ColumnName="PondID" />
-                <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
-                <ScalarProperty Name="YieldID" ColumnName="YieldID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

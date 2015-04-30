@@ -24,5 +24,7 @@ namespace SGApp.DTOs
         public string NightShiftFroze { get; set; }
         public string FilletScaleReading { get; set; }
         public string DowntimeMinutes { get; set; }
+        public string InLateOut { get; set; }
+        public string EmployeesOnVacation { get; set; }
     }
 }
