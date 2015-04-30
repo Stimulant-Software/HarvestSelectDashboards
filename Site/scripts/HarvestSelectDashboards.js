@@ -3,7 +3,7 @@
 var userID = supports_html5_storage() ? localStorage['CTuserID'] : readRemember('CTuserID');
 if (!data) { var data; }
 $.support.cors = true;
-$.ajaxSetup({ contentType: 'application/json; charset=utf-8', data: data, error: function () { hideProgress(); alert("Error contacting the server."); }, statusCode: { 400: function (msg) { hideProgress(); alert("Oops... Something went wrong!"); console.log(msg); }, 404: function (msg) { if (msg.responseJSON == "validation failed") { hideProgress(); alert("Validation failed. Please login again."); window.location.href = "login.html"; } else { hideProgress(); alert("Oops - there was an error..."); /*window.location.href = "login.html";*/ } }, 500: function () { hideProgress(); alert("AJAX FAIL: 500 Internal Server Error"); } } });
+$.ajaxSetup({ contentType: 'application/json; charset=utf-8', data: data,  statusCode: { 400: function (msg) { hideProgress(); alert("Oops... Something went wrong!"); console.log(msg); }, 404: function (msg) { if (msg.responseJSON == "validation failed") { hideProgress(); alert("Validation failed or your session expired. Please login again."); window.location.href = "login.html"; } else { hideProgress(); alert("Oops - there was an error..."); /*window.location.href = "login.html";*/ } }, 500: function () { hideProgress(); alert("AJAX FAIL: 500 Internal Server Error"); } } });
 // TODO: how to handle 500/AJAX fail errors?
 
 
@@ -109,6 +109,8 @@ function farmYields() {
 
     $('.row.buttons').hide();
     $('#shiftDate').unbind().click(function () {
+        // TO DO: limit calendar call to current month
+        // TO DO: bind next and previous buttons on calendar to month calls
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), yieldEnds = [];
         $.when($.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
@@ -293,6 +295,8 @@ function shiftEnd() {
     $('.row.fields, .row.buttons').hide();
     var date, addOrEdit;
     $('#shiftDate').click(function () {
+        $('input').val("");
+        $('.row.fields, .row.buttons').fadeIn(250);
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), shiftEnds = [];
         
         $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
@@ -325,14 +329,14 @@ function shiftEnd() {
                     refetchEvents(events);
                 },
                 eventClick: function(event) {
-                    var searchQuery = { "Key": _key, "Shift Date": event.start._i}, data = JSON.stringify(searchQuery);
+                    var searchQuery = { "Key": _key, "ShiftDate": event.start._i}, data = JSON.stringify(searchQuery);
                     $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
                         type: 'POST',
                         data: data,
                         success: function (msg) {
                             localStorage['CT_key'] = msg['Key'];
                             startTimer(msg.Key);
-                            shiftEndData = msg['ReturnData'];
+                            shiftEndData = msg['ReturnData'][0];
                             console.log(shiftEndData);
                             $('#rowContainer').empty();
                             $('.date-select h3').remove();
@@ -342,6 +346,8 @@ function shiftEnd() {
                             $('#regEmpLeftEarly').val(shiftEndData.RegEmplLeftEarly);
                             $('#tempEmpOut').val(shiftEndData.TempEmpOut);
                             $('#inmateEmpLeftEarly').val(shiftEndData.InmateLeftEarly);
+                            $('#empVacation').val(shiftEndData.EmployeesOnVacation);
+                            $('#inLateOut').val(shiftEndData.InLateOut);
                             $('#finKill').val(shiftEndData.FinishedKill);
                             $('#finFillet').val(shiftEndData.FinishedFillet);
                             $('#finSkinned').val(shiftEndData.FinishedSkinning);
@@ -399,7 +405,7 @@ function shiftEnd() {
     $('.buttons .save').unbind().click(function (e) {
         e.preventDefault();
         // Harper TODO - you need to add a column / call in API for "DoownTimeMinutes"
-        var searchQuery = { "Key": _key, "userID": userID, "ShiftDate": date, "ShiftEndID": addOrEdit, "DayFinishedFreezing": $('#dayFreeze').val(), "DayShiftFroze": $('#dayFroze').val(), "FilletScaleReading": $('#filletScale').val() , "FinishedFillet": $('#finFillet').val(), "FinishedKill": $('#finKill').val(), "FinishedSkinning": $('#finSkinned').val(), "InmateLeftEarly": $('#inmateEmpLeftEarly').val() , "NightFinishedFreezing": $('#nightFreeze').val(), "NightShiftFroze": $('#nightFroze').val(), "RegEmpLate": $('#regEmpLate').val(), "RegEmpOut": $('#regEmpOut').val() , "RegEmplLeftEarly": $('#regEmpLeftEarly').val(), "TempEmpOut": $('#tempEmpOut').val(), "DowntimeMinutes": $('#downtimeMin').val() }, data = JSON.stringify(searchQuery);
+        var searchQuery = { "Key": _key, "userID": userID, "ShiftDate": date, "ShiftEndID": addOrEdit, "DayFinishedFreezing": $('#dayFreeze').val(), "DayShiftFroze": $('#dayFroze').val(), "FilletScaleReading": $('#filletScale').val() , "FinishedFillet": $('#finFillet').val(), "FinishedKill": $('#finKill').val(), "FinishedSkinning": $('#finSkinned').val(), "InmateLeftEarly": $('#inmateEmpLeftEarly').val() , "NightFinishedFreezing": $('#nightFreeze').val(), "NightShiftFroze": $('#nightFroze').val(), "RegEmpLate": $('#regEmpLate').val(), "RegEmpOut": $('#regEmpOut').val() , "InLateOut": $('#inLateOut').val(), "EmployeesOnVacation": $('#empVacation').val(), "RegEmplLeftEarly": $('#regEmpLeftEarly').val(), "TempEmpOut": $('#tempEmpOut').val(), "DowntimeMinutes": $('#downtimeMin').val() }, data = JSON.stringify(searchQuery);
         $.when($.ajax('../api/ShiftEnd/ShiftEndAddOrEdit', {
             type: 'PUT',
             data: data,
