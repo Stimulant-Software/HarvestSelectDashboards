@@ -138,7 +138,7 @@ namespace SGApp.Controllers
                 var predicate = ur.GetPredicate(cqDTO, u, companyId);
                 var data = ur.GetByPredicate(predicate);
                 var col = new Collection<Dictionary<string, string>>();
-
+                data = data.OrderBy(x => x.YieldDate).ToList();
                 foreach (var item in data)
                 {
 
