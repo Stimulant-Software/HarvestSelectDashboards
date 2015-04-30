@@ -133,21 +133,21 @@ namespace SGApp.Controllers
 
                 foreach (var item in data)
                 {
-
+                    
                     var dic = new Dictionary<string, string>();
 
                     dic.Add("ShiftEndID", item.ShiftEndID.ToString());
-                    dic.Add("DayFinishedFreezing", item.DayFinishedFreezing.ToString());
+                    dic.Add("DayFinishedFreezing", DateTime.Parse(item.DayFinishedFreezing.ToString()).ToShortTimeString());
                     dic.Add("DayShiftFroze", item.DayShiftFroze.ToString());
                     dic.Add("DowntimeMinutes", item.DowntimeMinutes.ToString());
                     dic.Add("EmployeesOnVacation", item.EmployeesOnVacation.ToString());
                     dic.Add("FilletScaleReading", item.FilletScaleReading.ToString());
-                    dic.Add("FinishedFillet", item.FinishedFillet.ToString());
-                    dic.Add("FinishedKill", item.FinishedKill.ToString());
-                    dic.Add("FinishedSkinning", item.FinishedSkinning.ToString());
+                    dic.Add("FinishedFillet", DateTime.Parse(item.FinishedFillet.ToString()).ToShortTimeString());
+                    dic.Add("FinishedKill", DateTime.Parse(item.FinishedKill.ToString()).ToShortTimeString());
+                    dic.Add("FinishedSkinning", DateTime.Parse(item.FinishedSkinning.ToString()).ToShortTimeString());
                     dic.Add("InmateLeftEarly", item.InmateLeftEarly.ToString());
                     dic.Add("InLateOut", item.InLateOut.ToString());
-                    dic.Add("NightFinishedFreezing", item.NightFinishedFreezing.ToString());
+                    dic.Add("NightFinishedFreezing", DateTime.Parse(item.NightFinishedFreezing.ToString()).ToShortTimeString());
                     dic.Add("NightShiftFroze", item.NightShiftFroze.ToString());
                     dic.Add("RegEmpLate", item.RegEmpLate.ToString());
                     dic.Add("RegEmpOut", item.RegEmpOut.ToString());
