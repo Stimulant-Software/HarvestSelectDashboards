@@ -77,6 +77,9 @@
     <Property Name="YieldDate" Type="datetime" Nullable="false" />
     <Property Name="PondID" Type="int" Nullable="false" />
     <Property Name="PoundsYielded" Type="decimal" Nullable="false" Scale="2" />
+    <Property Name="PoundsPlant" Type="decimal" Scale="2" />
+    <Property Name="PoundsHeaded" Type="decimal" Scale="2" />
+    <Property Name="PercentYield" Type="decimal" Scale="2" />
   </EntityType>
   <EntityType Name="Ponds">
     <Key>
