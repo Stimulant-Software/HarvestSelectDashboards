@@ -140,11 +140,13 @@ namespace SGApp.Controllers
                     dic.Add("DayFinishedFreezing", item.DayFinishedFreezing.ToString());
                     dic.Add("DayShiftFroze", item.DayShiftFroze.ToString());
                     dic.Add("DowntimeMinutes", item.DowntimeMinutes.ToString());
+                    dic.Add("EmployeesOnVacation", item.EmployeesOnVacation.ToString());
                     dic.Add("FilletScaleReading", item.FilletScaleReading.ToString());
                     dic.Add("FinishedFillet", item.FinishedFillet.ToString());
                     dic.Add("FinishedKill", item.FinishedKill.ToString());
                     dic.Add("FinishedSkinning", item.FinishedSkinning.ToString());
                     dic.Add("InmateLeftEarly", item.InmateLeftEarly.ToString());
+                    dic.Add("InLateOut", item.InLateOut.ToString());
                     dic.Add("NightFinishedFreezing", item.NightFinishedFreezing.ToString());
                     dic.Add("NightShiftFroze", item.NightShiftFroze.ToString());
                     dic.Add("RegEmpLate", item.RegEmpLate.ToString());

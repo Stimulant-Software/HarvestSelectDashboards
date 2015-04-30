@@ -30,5 +30,7 @@ namespace SGApp.Models.EF
         public Nullable<decimal> NightShiftFroze { get; set; }
         public Nullable<decimal> FilletScaleReading { get; set; }
         public Nullable<int> DowntimeMinutes { get; set; }
+        public Nullable<int> InLateOut { get; set; }
+        public Nullable<int> EmployeesOnVacation { get; set; }
     }
 }
