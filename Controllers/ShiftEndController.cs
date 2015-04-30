@@ -137,17 +137,17 @@ namespace SGApp.Controllers
                     var dic = new Dictionary<string, string>();
 
                     dic.Add("ShiftEndID", item.ShiftEndID.ToString());
-                    dic.Add("DayFinishedFreezing", DateTime.Parse(item.DayFinishedFreezing.ToString()).ToShortTimeString());
+                    dic.Add("DayFinishedFreezing", DateTime.Parse(item.DayFinishedFreezing.ToString()).ToString("HH:mm"));
                     dic.Add("DayShiftFroze", item.DayShiftFroze.ToString());
                     dic.Add("DowntimeMinutes", item.DowntimeMinutes.ToString());
                     dic.Add("EmployeesOnVacation", item.EmployeesOnVacation.ToString());
                     dic.Add("FilletScaleReading", item.FilletScaleReading.ToString());
-                    dic.Add("FinishedFillet", DateTime.Parse(item.FinishedFillet.ToString()).ToShortTimeString());
-                    dic.Add("FinishedKill", DateTime.Parse(item.FinishedKill.ToString()).ToShortTimeString());
-                    dic.Add("FinishedSkinning", DateTime.Parse(item.FinishedSkinning.ToString()).ToShortTimeString());
+                    dic.Add("FinishedFillet", DateTime.Parse(item.FinishedFillet.ToString()).ToString("HH:mm"));
+                    dic.Add("FinishedKill", DateTime.Parse(item.FinishedKill.ToString()).ToString("HH:mm"));
+                    dic.Add("FinishedSkinning", DateTime.Parse(item.FinishedSkinning.ToString()).ToString("HH:mm"));
                     dic.Add("InmateLeftEarly", item.InmateLeftEarly.ToString());
                     dic.Add("InLateOut", item.InLateOut.ToString());
-                    dic.Add("NightFinishedFreezing", DateTime.Parse(item.NightFinishedFreezing.ToString()).ToShortTimeString());
+                    dic.Add("NightFinishedFreezing", DateTime.Parse(item.NightFinishedFreezing.ToString()).ToString("HH:mm"));
                     dic.Add("NightShiftFroze", item.NightShiftFroze.ToString());
                     dic.Add("RegEmpLate", item.RegEmpLate.ToString());
                     dic.Add("RegEmpOut", item.RegEmpOut.ToString());
