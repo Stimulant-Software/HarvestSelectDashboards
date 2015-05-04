@@ -90,7 +90,7 @@ function populateUsers() {
     });
 }
 
-$('.add-new').unbind().click(function (e) { e.preventDefault(); var objectType = pageType.charAt(0).toUpperCase() + pageType.slice(1); switch (pageType) { case "pond": loadFarmsForPonds(); break; case "user": /* loadFarmsForUsers(), loadRolesForUsers(); */break; default: break; } /*$('#addNew' + objectType + 'Modal').modal();*/ bindFormButtons(); });
+$('.add-new').unbind().click(function (e) { e.preventDefault(); var objectType = pageType.charAt(0).toUpperCase() + pageType.slice(1); switch (pageType) { case "pond": loadFarmsForPonds(); break; case "user": resetUserModal();/* loadFarmsForUsers(), loadRolesForUsers(); */break; default: break; } /*$('#addNew' + objectType + 'Modal').modal();*/ bindFormButtons(); });
 
 function bindButtons() {
     $('.change-feedme').unbind().click(function (e) { e.preventDefault(); var objectID = getObjectID($(this)), objectStatus = $(this).parent().parent('ol').attr('class'), objectName = $(this).siblings('span').text(); var newFeedStatusID = $(this).data('nofeed') == "True" ? "False" : "True"; dto = { "Key": localStorage['CT_key'],  "PondId": objectID, "PondName": objectName, "NoFeed": newFeedStatusID }, data = JSON.stringify(dto); showProgress('body', 'bind-buttons'); $.when($.ajax('../api/Pond/ChangePondFeedStatus', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); console.log(msg); } })).then(function () { populatePonds(farmID); hideProgress('bind-buttons'); }); });
@@ -153,6 +153,9 @@ function bindButtons() {
                     // fix styling, add "sg" as value somewhere
                     // need userDetail to pass arrays of farms and roles
                     $('#passwordFields').append('<div id="curtain">Click here to reset the password.</div>');
+                    var pos = $('#password').position();
+                    document.getElementById('curtain').style.top = pos.top;
+                    document.getElementById('curtain').style.left = pos.left;
                     $('#curtain').click(function () { $(this).remove(); })
                 });
                 break;
@@ -224,6 +227,7 @@ function bindFormButtons() {
                 case "farm": $.ajax('../api/Farm/FarmAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetFarmModal(); populateFarms(); hideProgress('submitForm'); } }); break;
                 case "pond": $.ajax('../api/Pond/PondAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetPondModal(); /*populatePonds(farmID);*/ hideProgress('submitForm'); } }); break;
                 case "user":
+                    
                     $.when($.ajax('../api/User/UserAddOrEdit', {
                         type: 'PUT',
                         data: data,
@@ -233,7 +237,7 @@ function bindFormButtons() {
                             data = JSON.stringify(submitObject);
                         }
                     })).then(function () {
-                        if (data["password"] != "") {
+                        if (data["password"]) {
                             $.ajax('../api/User/SetPassword', {
                                 type: 'PUT',
                                 data: data,
@@ -242,7 +246,7 @@ function bindFormButtons() {
                                 }
                             });
                         } else {
-                            resetUserModal(), populateUsers(); hideProgress('submitForm');
+                            resetUserModal(), populateUsers(); hideProgress('submitForm'); closeAdminModal();
                         }
                     });
                     break;
@@ -438,6 +442,7 @@ function initialSetup() {
                         }
                     }); break;
                 case "submitUser":
+                    debugger;
                     $.when($.ajax('../api/User/UserAddOrEdit', {
                         type: 'PUT',
                         data: data,
