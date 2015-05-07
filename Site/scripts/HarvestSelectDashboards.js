@@ -17,7 +17,6 @@ $(function(){
 /* Login page */
 function login() {
     if (!rememberCheck()) {
-        $('.login form div, .login form button').hide();
         $('.login form #user').fadeIn(250);
         $('#user input').unbind().focus(function(){
             $('#user').removeClass('has-success, has-error');
@@ -61,10 +60,10 @@ function login() {
 			type: 'POST', data: data,
 			statusCode: {
 				200: function (msg) {
-					$('#username, #password').val(""); startTimer(msg.Key);  localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID, companyID = msg.CompanyId; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription + " "; } if (supports_html5_storage()) { localStorage['CTuser'] = username; localStorage['CTpass'] = password; localStorage['CTuserRole'] = userRoles; localStorage['CTuserID'] = userID; localStorage['CTcompanyID'] = companyID; if ($('#rememberMe').is(':checked')) { localStorage['CTremember'] = true } else { localStorage['CTremember'] = false; } } else { createRemember('CTuser', username); createRemember('CTpass', password); createRemember('CTuserRole', userRoles); createRemember('CTuserID', userID); createRemember('CT_key', _key); createRemember('CT_company', companyID); }
+				    $('#username, #password').val(""); startTimer(msg.Key); localStorage['CT_key'] = msg.Key; var userRoles = "", userID = msg.UserID, companyID = msg.CompanyId; for (var i = 0; i < msg.UserRoles.length; i++) { userRoles += msg.UserRoles[i].RoleDescription + " "; } if (supports_html5_storage()) { if ($('#rememberMe').is(':checked')) { localStorage['CTuser'] = username; localStorage['CTpass'] = password; localStorage['CTuserRole'] = userRoles; localStorage['CTuserID'] = userID; localStorage['CTcompanyID'] = companyID; localStorage['CTremember'] = true } else { localStorage.removeItem('CTuser'); localStorage.removeItem('CTpass'); localStorage.removeItem('CTuserRole'); localStorage.removeItem('CTuserID'); localStorage.removeItem('CTcompanyID'); localStorage.removeItem('CTremember'); } } else { createRemember('CTuser', username); createRemember('CTpass', password); createRemember('CTuserRole', userRoles); createRemember('CTuserID', userID); createRemember('CT_key', _key); createRemember('CT_company', companyID); }
 					window.location.href = "index.html";
 				}, 404: function () {
-					$.when(hideProgress('login')).then(function () { alert("Invalid login credentials: " + username + ":" + password + ". Please enter your information again."); });
+					$.when(hideProgress()).then(function () { alert("Invalid login credentials: " + username + ":" + password + ". Please enter your information again."); });
 				}, 405: function () {
 				}, 500: function (msg) {
 					hideProgress('login'); if (supports_html5_storage()) { localStorage['CTuser'] = username; localStorage['CTpass'] = password; } else { createRemember('CTuser', username); createRemember('CTpass', password); } alert("Server error. Please notify support. (" + msg.responseJSON.ExceptionMessage + ")"); console.log(msg);
@@ -75,7 +74,7 @@ function login() {
 }
 
 //logout
-function logoutControls() { $('#logoutButton').unbind().click(function () { if (supports_html5_storage()) { if (localStorage['CTremember']=="false") { localStorage['CTuser'] = ""; localStorage['CTpass'] = ""; } } _key = ""; if (supports_html5_storage()) { localStorage['CTuserRole'] = ""; localStorage['CTuserID'] = ""; localStorage['CT_key'] = _key; } else { createRemember('CTuserRole', ""); createRemember('CTuserID', ""); createRemember('CT_key', _key); } window.location.href = "login.html"; }); }
+function logoutControls() { $('#logoutButton').unbind().click(function () { if (supports_html5_storage()) { if (localStorage['CTremember']=="false") { localStorage.removeItem('CTuser'); localStorage.removeItem('CTpass'); } } _key = ""; if (supports_html5_storage()) { localStorage.removeItem('CTuserRole'); localStorage.removeItem('CTuserID'); localStorage.removeItem('CT_key'); } else { createRemember('CTuserRole', ""); createRemember('CTuserID', ""); createRemember('CT_key', _key); } window.location.href = "login.html"; }); }
 
 // COOKIES - SET AND READ; for temp or (if "remember me" is checked) permanent memory of login info)
 // Only use cookies if browser doesn't support localStorage
