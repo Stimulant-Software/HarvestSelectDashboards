@@ -211,7 +211,7 @@ function bindFormButtons() {
             return re.test(email);
         }
 
-        if (errorMessage != '') alertError(errorMessage);
+        if (errorMessage != '') alert(errorMessage);
 
         // if form validates:
         if(allRequired) {
@@ -225,7 +225,7 @@ function bindFormButtons() {
 
             switch (pageType) {
                 case "farm": $.ajax('../api/Farm/FarmAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetFarmModal(); populateFarms(); hideProgress('submitForm'); } }); break;
-                case "pond": $.ajax('../api/Pond/PondAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetPondModal(); /*populatePonds(farmID);*/ hideProgress('submitForm'); } }); break;
+                case "pond": $.ajax('../api/Pond/PondAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetPondModal(); populatePonds(farmID); hideProgress('submitForm'); } }); break;
                 case "user":
                     
                     $.when($.ajax('../api/User/UserAddOrEdit', {
@@ -242,11 +242,11 @@ function bindFormButtons() {
                                 type: 'PUT',
                                 data: data,
                                 success: function (msg) {
-                                    localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetUserModal(); closeAdminModal(); populateUsers(); hideProgress('submitForm');
+                                    localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetUserModal(); $('.modal').modal('hide'); populateUsers(); hideProgress('submitForm');
                                 }
                             });
                         } else {
-                            resetUserModal(), populateUsers(); hideProgress('submitForm'); closeAdminModal();
+                            resetUserModal(), populateUsers(); hideProgress('submitForm'); $('.modal').modal('hide');
                         }
                     });
                     break;
@@ -255,7 +255,7 @@ function bindFormButtons() {
         }
     });
 
-    $('.cancel').unbind().click(function (e) { e.preventDefault(); switch (pageType) { case "farm": resetFarmModal(); break; case "pond": resetPondModal(); break; case "user": resetUserModal(); break; default: console.log("ERROR: Page has no type"); break; } closeAdminModal(); });
+    $('.cancel').unbind().click(function (e) { e.preventDefault(); switch (pageType) { case "farm": resetFarmModal(); break; case "pond": resetPondModal(); break; case "user": resetUserModal(); break; default: console.log("ERROR: Page has no type"); break; } $('.modal').modal('hide'); });
 }
 
 function resetFarmModal() { $('#farmName').val(""); $('#statusID').val('1'); $('#farmID').val('-1'); }
@@ -287,41 +287,6 @@ function loadRolesForUsers(checkedRoles, userID) {
     })).then(function () { $('#adminUserRolesList').empty().html(roleChecklistHtml); editUserRoles(userID); });
 }
 
-//function loadFarmsForUsers(checkedFarms, userID) {
-//    farmChecklistHtml = '<input type="checkbox" id="0"><label>Select All</label><br />', searchQuery = { "key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', {
-//        type: 'POST', data: data, success: function (msg) {
-//            localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); farmList = msg['ReturnData']; 
-//            for (var i = 0; i < farmList.length; ++i) {
-//                if (farmList[i].StatusId == "1") {
-//                    if(checkedFarms.length > 0) {
-//                        if (checkedFarms.indexOf(farmList[i].FarmId) > -1) {
-//                            farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '" checked>' + farmList[i].FarmName + '</label><br />';
-//                        } else {
-//                            farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</label><br />';
-//                        }
-//                    } else {
-//                        farmChecklistHtml += '<label><input type="checkbox" id="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</label><br />';
-//                    }
-//                }
-//            }
-//        }
-//    })).then(function () { $('#adminUserFarmsList').empty().html(farmChecklistHtml); editUserFarms(userID); });
-//}
-
-//function editUserFarms(userID) {
-//    $('#adminUserFarmsList :checkbox').unbind().click(function () {
-//        var farmID = $(this).attr('id'), state = $(this).is(':checked'), searchQuery = { "key": _key, "userID": userID, "farmId": farmID, "AddRemove": state }; data = JSON.stringify(searchQuery);
-//        $.ajax('../api/User/UserAddOrRemoveFarm', { 
-//            type: 'PUT', 
-//            data: data, 
-//            success: function (msg) {
-//                localStorage['CT_key'] = msg['Key']; 
-//                startTimer(msg['Key']);
-//            }
-//        });
-//    });
-//}
-
 function editUserRoles(userID) {
     $('#adminUserRolesList :checkbox').unbind().click(function(){
         var roleID = $(this).attr('id'), state = $(this).is(':checked'), searchQuery = { "key": _key, "userID": userID, "roleId": roleID, "AddRemove": state }, data = JSON.stringify(searchQuery);
@@ -336,8 +301,6 @@ function editUserRoles(userID) {
         });
     });
 }
-
-//function closeAdminModal() { $('.admin-modal, #lightboxBG').fadeOut('100', function () { $('#lightboxBG').remove(); }); }
 
 var newCompanyID, newFarmID;
 function initialSetup() {
@@ -386,7 +349,7 @@ function initialSetup() {
                 return re.test(email);
             }
 
-            if(errorMessage != '') alertError(errorMessage);
+            if(errorMessage != '') alert(errorMessage);
         }
 
         // if form validates:
@@ -437,7 +400,7 @@ function initialSetup() {
                         success: function (msg) {
                             localStorage['CT_key'] = msg['Key'];
                             startTimer(msg['Key']);
-                            window.location = "admin-user.html";
+                            window.location = "admin-pond.html";
                             hideProgress('submitForm');
                         }
                     }); break;
@@ -467,7 +430,7 @@ function initialSetup() {
                                 }
                             });
                         } else {
-                            resetUserModal(); closeAdminModal(); populateUsers(); hideProgress('submitForm');
+                            resetUserModal(); $('.modal').modal('hide'); populateUsers(); hideProgress('submitForm');
                         }
                     });
                     break;
