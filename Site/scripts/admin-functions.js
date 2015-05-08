@@ -227,26 +227,25 @@ function bindFormButtons() {
                 case "farm": $.ajax('../api/Farm/FarmAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetFarmModal(); populateFarms(); hideProgress('submitForm'); } }); break;
                 case "pond": $.ajax('../api/Pond/PondAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetPondModal(); populatePonds(farmID); hideProgress('submitForm'); } }); break;
                 case "user":
-                    
-                    $.when($.ajax('../api/User/UserAddOrEdit', {
+                    console.log(data);
+                    $.ajax('../api/User/UserAddOrEdit', {
                         type: 'PUT',
                         data: data,
                         success: function (msg) {
                             localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']);
                             submitObject['userID'] = (msg['UserId']);
                             data = JSON.stringify(submitObject);
-                        }
-                    })).then(function () {
-                        if (data["password"]) {
-                            $.ajax('../api/User/SetPassword', {
-                                type: 'PUT',
-                                data: data,
-                                success: function (msg) {
-                                    localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetUserModal(); $('.modal').modal('hide'); populateUsers(); hideProgress('submitForm');
-                                }
-                            });
-                        } else {
-                            resetUserModal(), populateUsers(); hideProgress('submitForm'); $('.modal').modal('hide');
+                            if (submitObject["password"] != "") {
+                                $.ajax('../api/User/SetPassword', {
+                                    type: 'PUT',
+                                    data: data,
+                                    success: function (msg) {
+                                        localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetUserModal(); $('.modal').modal('hide'); populateUsers(); hideProgress('submitForm');
+                                    }
+                                });
+                            } else {
+                                resetUserModal(), populateUsers(); hideProgress('submitForm'); $('.modal').modal('hide');
+                            }
                         }
                     });
                     break;
