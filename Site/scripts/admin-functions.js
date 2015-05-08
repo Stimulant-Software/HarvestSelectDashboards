@@ -93,7 +93,7 @@ function populateUsers() {
 $('.add-new').unbind().click(function (e) { e.preventDefault(); var objectType = pageType.charAt(0).toUpperCase() + pageType.slice(1); switch (pageType) { case "pond": loadFarmsForPonds(); break; case "user": resetUserModal();/* loadFarmsForUsers(), loadRolesForUsers(); */break; default: break; } /*$('#addNew' + objectType + 'Modal').modal();*/ bindFormButtons(); });
 
 function bindButtons() {
-    $('.change-feedme').unbind().click(function (e) { e.preventDefault(); var objectID = getObjectID($(this)), objectStatus = $(this).parent().parent('ol').attr('class'), objectName = $(this).siblings('span').text(); var newFeedStatusID = $(this).data('nofeed') == "True" ? "False" : "True"; dto = { "Key": localStorage['CT_key'],  "PondId": objectID, "PondName": objectName, "NoFeed": newFeedStatusID }, data = JSON.stringify(dto); showProgress('body', 'bind-buttons'); $.when($.ajax('../api/Pond/ChangePondFeedStatus', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); console.log(msg); } })).then(function () { populatePonds(farmID); hideProgress('bind-buttons'); }); });
+    $('.change-feedme').unbind().click(function (e) { e.preventDefault(); var objectID = getObjectID($(this)), objectStatus = $(this).parent().parent('ol').attr('class'), objectName = $(this).siblings('span').text(); var newFeedStatusID = $(this).data('nofeed') == "True" ? "False" : "True"; dto = { "Key": localStorage['CT_key'],  "PondId": objectID, "PondName": objectName, "NoFeed": newFeedStatusID }, data = JSON.stringify(dto); showProgress('body', 'bind-buttons'); $.when($.ajax('../api/Pond/ChangePondFeedStatus', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); } })).then(function () { populatePonds(farmID); hideProgress('bind-buttons'); }); });
 
     $('.change-status').unbind().click(function (e) { e.preventDefault(); var objectID = getObjectID($(this)), objectStatus = $(this).parent().parent('ol').attr('class'), objectName = $(this).siblings('span').text();
         var newStatusID = objectStatus.indexOf("inactive") > -1 ? "1" : "2"; switch (pageType) { case "farm": dto = { "Key": localStorage['CT_key'], "FarmId": objectID, "FarmName": objectName, "StatusId": newStatusID }, data = JSON.stringify(dto); showProgress('body', 'change-status-farm'); $.when($.ajax('../api/Farm/FarmAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); } })).then(function () { populateFarms(); hideProgress('change-status-farm'); }); break; case "pond": dto = { "Key": localStorage['CT_key'], "PondId": objectID, "PondName": objectName, "StatusId": newStatusID }, data = JSON.stringify(dto); showProgress('body', 'change-status-pond'); $.when($.ajax('../api/Pond/PondAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); } })).then(function () { populatePonds(farmID); hideProgress('change-status-pond'); }); break; case "user": dto = { "Key": localStorage['CT_key'], "UserId": objectID, "UserName": objectName, "StatusId": newStatusID }, data = JSON.stringify(dto); showProgress('body', 'change-status-user'); $.when($.ajax('../api/User/ChangeUserStatus', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); } })).then(function () { populateUsers(); hideProgress('change-status-user'); }); break; }
@@ -159,8 +159,7 @@ function bindButtons() {
                     $('#curtain').click(function () { $(this).remove(); })
                 });
                 break;
-            default:
-                console.log("ERROR: Page has no type");
+            default: break;
         }
         bindFormButtons();
     });
@@ -227,7 +226,6 @@ function bindFormButtons() {
                 case "farm": $.ajax('../api/Farm/FarmAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetFarmModal(); populateFarms(); hideProgress('submitForm'); } }); break;
                 case "pond": $.ajax('../api/Pond/PondAddOrEdit', { type: 'PUT', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg['Key']); resetPondModal(); populatePonds(farmID); hideProgress('submitForm'); } }); break;
                 case "user":
-                    console.log(data);
                     $.ajax('../api/User/UserAddOrEdit', {
                         type: 'PUT',
                         data: data,
@@ -249,12 +247,12 @@ function bindFormButtons() {
                         }
                     });
                     break;
-                default: console.log("ERROR: Page has no type"); break;
+                default: break;
             }
         }
     });
 
-    $('.cancel').unbind().click(function (e) { e.preventDefault(); switch (pageType) { case "farm": resetFarmModal(); break; case "pond": resetPondModal(); break; case "user": resetUserModal(); break; default: console.log("ERROR: Page has no type"); break; } $('.modal').modal('hide'); });
+    $('.cancel').unbind().click(function (e) { e.preventDefault(); switch (pageType) { case "farm": resetFarmModal(); break; case "pond": resetPondModal(); break; case "user": resetUserModal(); break; default: break; } $('.modal').modal('hide'); });
 }
 
 function resetFarmModal() { $('#farmName').val(""); $('#statusID').val('1'); $('#farmID').val('-1'); }
@@ -295,7 +293,6 @@ function editUserRoles(userID) {
             success: function (msg) {
                 localStorage['CT_key'] = msg['Key']; 
                 startTimer(msg['Key']); 
-                console.log(msg);
             }
         });
     });
@@ -433,7 +430,7 @@ function initialSetup() {
                         }
                     });
                     break;
-                default: console.log("ERROR: Form has no type: " + formType); hideProgress('submitForm'); break;
+                default: hideProgress('submitForm'); break;
             }
         }
     });
