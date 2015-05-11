@@ -137,6 +137,7 @@
     <Compile Include="Controllers\FarmController.cs" />
     <Compile Include="Controllers\FarmYieldController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LiveFishSamplingController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PondController.cs" />
     <Compile Include="Controllers\ShiftEndController.cs" />
@@ -146,8 +147,11 @@
     <Compile Include="DTOs\CompanyDTO.cs" />
     <Compile Include="DTOs\FarmDTO.cs" />
     <Compile Include="DTOs\FarmYieldDTO.cs" />
+    <Compile Include="Controllers\FarmYieldHeaderController.cs" />
+    <Compile Include="DTOs\FarmYieldHeaderDTO.cs" />
     <Compile Include="DTOs\GenericDTO.cs" />
     <Compile Include="DTOs\KeyDTO.cs" />
+    <Compile Include="DTOs\LiveFishSamplingDTOcs.cs" />
     <Compile Include="DTOs\LoginDTO.cs" />
     <Compile Include="DTOs\PondDTO.cs" />
     <Compile Include="DTOs\ReturnDTO.cs" />
@@ -186,6 +190,12 @@
     <Compile Include="Models\EF\FarmYield.cs">
       <DependentUpon>App.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EF\FarmYieldHeader.cs">
+      <DependentUpon>App.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EF\LiveFishSampling.cs">
+      <DependentUpon>App.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EF\Pond.cs">
       <DependentUpon>App.tt</DependentUpon>
     </Compile>
@@ -207,6 +217,8 @@
     <Compile Include="Models\Partials\Company.Partial.cs" />
     <Compile Include="Models\Partials\Farm.Partial.cs" />
     <Compile Include="Models\Partials\FarmYield.Partial.cs" />
+    <Compile Include="Models\Partials\FarmYieldHeader.Partial.cs" />
+    <Compile Include="Models\Partials\LiveFishSampling.Partial.cs" />
     <Compile Include="Models\Partials\Pond.Partial.cs" />
     <Compile Include="Models\Partials\Role.Partial.cs" />
     <Compile Include="Models\Partials\ShiftEnd.Partial.cs" />
@@ -214,8 +226,10 @@
     <Compile Include="Models\Partials\User.Partial.cs" />
     <Compile Include="Models\Partials\UserRole.Partial.cs" />
     <Compile Include="Models\Validation\Company_Metadata.cs" />
+    <Compile Include="Models\Validation\FarmYieldHeader_Metadata.cs" />
     <Compile Include="Models\Validation\FarmYield_Metadata.cs" />
     <Compile Include="Models\Validation\Farm_Metadata.cs" />
+    <Compile Include="Models\Validation\LiveFishSampling_Metadata.cs" />
     <Compile Include="Models\Validation\Pond_Metadata.cs" />
     <Compile Include="Models\Validation\Role_Metadata.cs" />
     <Compile Include="Models\Validation\ShiftEnd_Metadata.cs" />
@@ -231,12 +245,14 @@
     <Compile Include="Repositories\Application\CompanyRepository.cs" />
     <Compile Include="Repositories\Application\FarmRepository.cs" />
     <Compile Include="Repositories\Application\FarmYieldRepository.cs" />
+    <Compile Include="Repositories\Application\LiveFishSamplingRepository.cs" />
     <Compile Include="Repositories\Application\PondRepository.cs" />
     <Compile Include="Repositories\Application\RoleRepository.cs" />
     <Compile Include="Repositories\Application\ShiftEndRepository.cs" />
     <Compile Include="Repositories\Application\Status_Repository.cs" />
     <Compile Include="Repositories\Application\UserRepository.cs" />
     <Compile Include="Repositories\DynamicLibrary.cs" />
+    <Compile Include="Repositories\FarmYieldHeaderRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="Utility\Configuration.cs" />
     <Compile Include="Utility\Constants.cs" />
@@ -343,7 +359,6 @@
     <Content Include="Site\img\check.png" />
     <Content Include="Site\img\close.png" />
     <Content Include="Site\img\farm-yields.png" />
-    <Content Include="Site\img\live-sampling.png" />
     <Content Include="Site\img\logo.gif" />
     <Content Include="Site\img\minus.png" />
     <Content Include="Site\img\plus.png" />
@@ -352,7 +367,6 @@
     <Content Include="Site\login.html" />
     <Content Include="Site\scripts\admin-functions.js" />
     <Content Include="Site\scripts\HarvestSelectDashboards.js" />
-    <Content Include="Site\live-sampling.html" />
     <Content Include="Site\shift-times.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

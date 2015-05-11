@@ -456,7 +456,7 @@ function liveSample() {
         $('.row.fields, .row.buttons').fadeIn(250);
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), samplingDates = [];
 
-        $.when($.ajax('../api/LiveFishSamplingList', {
+        $.when($.ajax('../api/LiveFishSampling/LiveFishSamplingList', {
             type: 'POST',
             data: data,
             success: function (msg) {
@@ -486,7 +486,7 @@ function liveSample() {
                 },
                 eventClick: function (event) {
                     date = event.start._i, searchQuery = { "Key": _key, "SamplingDate": date }, data = JSON.stringify(searchQuery);
-                    $.when($.ajax('../api/ShiftEnd/LiveFishSamplingList', {
+                    $.when($.ajax('../api/LiveFishSampling/LiveFishSamplingList', {
                         type: 'POST',
                         data: data,
                         success: function (msg) {
