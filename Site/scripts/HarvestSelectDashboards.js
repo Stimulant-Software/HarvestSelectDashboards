@@ -196,7 +196,7 @@ function farmYields() {
 
     function loadEditFarmYields(date) {
         $('#rowContainer').empty();
-        var searchQuery = { "Key": _key, "FarmYieldHeaderDate": date }, data = JSON.stringify(searchQuery);
+        var searchQuery = { "Key": _key, "YieldDate": date }, data = JSON.stringify(searchQuery);
         $.ajax('../api/FarmYieldHeader/FarmYieldHeaderList', {
             type: 'POST',
             data: data,
