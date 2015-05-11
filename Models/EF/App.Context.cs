@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SGApp.Models.EF
+namespace SGApp.Models.EF 
 {
     using System;
     using System.Data.Entity;
