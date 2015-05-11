@@ -8,7 +8,9 @@
         <EntityContainer Name="AppModelStoreContainer">
           <EntitySet Name="Companies" EntityType="AppModel.Store.Companies" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Farms" EntityType="AppModel.Store.Farms" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="FarmYieldHeaders" EntityType="AppModel.Store.FarmYieldHeaders" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="FarmYields" EntityType="AppModel.Store.FarmYields" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="LiveFishSampling" EntityType="AppModel.Store.LiveFishSampling" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Ponds" EntityType="AppModel.Store.Ponds" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Roles" EntityType="AppModel.Store.Roles" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ShiftEnd" EntityType="AppModel.Store.ShiftEnd" store:Type="Tables" Schema="dbo" />
@@ -74,6 +76,14 @@
           <Property Name="FarmName" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="CompanyId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="FarmYieldHeaders">
+          <Key>
+            <PropertyRef Name="FarmYieldHeaderID" />
+          </Key>
+          <Property Name="FarmYieldHeaderID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="YieldDate" Type="datetime" Nullable="false" />
+          <Property Name="PlantWeight" Type="decimal" Scale="2" />
+        </EntityType>
         <EntityType Name="FarmYields">
           <Key>
             <PropertyRef Name="YieldID" />
@@ -85,6 +95,24 @@
           <Property Name="PoundsPlant" Type="decimal" Scale="2" />
           <Property Name="PoundsHeaded" Type="decimal" Scale="2" />
           <Property Name="PercentYield" Type="decimal" Scale="2" />
+          <Property Name="PercentYield2" Type="decimal" Scale="2" />
+        </EntityType>
+        <EntityType Name="LiveFishSampling">
+          <Key>
+            <PropertyRef Name="SamplingID" />
+          </Key>
+          <Property Name="SamplingID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="SamplingDate" Type="datetime" Nullable="false" />
+          <Property Name="Pct0_125" Type="decimal" Scale="2" />
+          <Property Name="Avg0_125" Type="decimal" Scale="2" />
+          <Property Name="Pct125_225" Type="decimal" Scale="2" />
+          <Property Name="Avg125_225" Type="decimal" Scale="2" />
+          <Property Name="Pct225_3" Type="decimal" Scale="2" />
+          <Property Name="Avg225_3" Type="decimal" Scale="2" />
+          <Property Name="Pct3_5" Type="decimal" Scale="2" />
+          <Property Name="Avg3_5" Type="decimal" Scale="2" />
+          <Property Name="Pct5_Up" Type="decimal" Scale="2" />
+          <Property Name="Avg5_Up" Type="decimal" Scale="2" />
         </EntityType>
         <EntityType Name="Ponds">
           <Key>
@@ -307,12 +335,14 @@
             <End Role="Status" EntitySet="Statuses" />
             <End Role="Pond" EntitySet="Ponds" />
           </AssociationSet>
+          <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
+          <EntitySet Name="FarmYieldHeaders" EntityType="AppModel.FarmYieldHeader" />
+          <EntitySet Name="LiveFishSamplings" EntityType="AppModel.LiveFishSampling" />
           <EntitySet Name="FarmYields" EntityType="AppModel.FarmYield" />
           <AssociationSet Name="FK_FarmYields_Ponds" Association="AppModel.FK_FarmYields_Ponds">
             <End Role="Pond" EntitySet="Ponds" />
             <End Role="FarmYield" EntitySet="FarmYields" />
           </AssociationSet>
-          <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
           </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -495,31 +525,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="FarmYield">
-          <Key>
-            <PropertyRef Name="YieldID" />
-          </Key>
-          <Property Type="Int32" Name="YieldID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="DateTime" Name="YieldDate" Nullable="false" Precision="3" />
-          <Property Type="Int32" Name="PondID" Nullable="false" />
-          <Property Type="Decimal" Name="PoundsYielded" Nullable="false" Precision="18" Scale="2" />
-          <Property Type="Decimal" Name="PoundsPlant" Precision="18" Scale="2" />
-          <Property Type="Decimal" Name="PoundsHeaded" Precision="18" Scale="2" />
-          <Property Type="Decimal" Name="PercentYield" Precision="18" Scale="2" />
-          <NavigationProperty Name="Pond" Relationship="AppModel.FK_FarmYields_Ponds" FromRole="FarmYield" ToRole="Pond" />
-        </EntityType>
-        <Association Name="FK_FarmYields_Ponds">
-          <End Type="AppModel.Pond" Role="Pond" Multiplicity="1" />
-          <End Type="AppModel.FarmYield" Role="FarmYield" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Pond">
-              <PropertyRef Name="PondId" />
-            </Principal>
-            <Dependent Role="FarmYield">
-              <PropertyRef Name="PondID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="ShiftEnd">
           <Key>
             <PropertyRef Name="ShiftEndID" />
@@ -543,6 +548,57 @@
           <Property Type="Int32" Name="InLateOut" />
           <Property Type="Int32" Name="EmployeesOnVacation" />
         </EntityType>
+        <EntityType Name="FarmYieldHeader">
+          <Key>
+            <PropertyRef Name="FarmYieldHeaderID" />
+          </Key>
+          <Property Type="Int32" Name="FarmYieldHeaderID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="YieldDate" Nullable="false" Precision="3" />
+          <Property Type="Decimal" Name="PlantWeight" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="LiveFishSampling">
+          <Key>
+            <PropertyRef Name="SamplingID" />
+          </Key>
+          <Property Type="Int32" Name="SamplingID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="SamplingDate" Nullable="false" Precision="3" />
+          <Property Type="Decimal" Name="Pct0_125" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Avg0_125" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Pct125_225" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Avg125_225" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Pct225_3" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Avg225_3" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Pct3_5" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Avg3_5" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Pct5_Up" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Avg5_Up" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="FarmYield">
+          <Key>
+            <PropertyRef Name="YieldID" />
+          </Key>
+          <Property Type="Int32" Name="YieldID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="YieldDate" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="PondID" Nullable="false" />
+          <Property Type="Decimal" Name="PoundsYielded" Nullable="false" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="PoundsPlant" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="PoundsHeaded" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="PercentYield" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="PercentYield2" Precision="18" Scale="2" />
+          <NavigationProperty Name="Pond" Relationship="AppModel.FK_FarmYields_Ponds" FromRole="FarmYield" ToRole="Pond" />
+        </EntityType>
+        <Association Name="FK_FarmYields_Ponds">
+          <End Type="AppModel.Pond" Role="Pond" Multiplicity="1" />
+          <End Type="AppModel.FarmYield" Role="FarmYield" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pond">
+              <PropertyRef Name="PondId" />
+            </Principal>
+            <Dependent Role="FarmYield">
+              <PropertyRef Name="PondID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -624,19 +680,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="FarmYields">
-            <EntityTypeMapping TypeName="AppModel.FarmYield">
-              <MappingFragment StoreEntitySet="FarmYields">
-                <ScalarProperty Name="PercentYield" ColumnName="PercentYield" />
-                <ScalarProperty Name="PoundsHeaded" ColumnName="PoundsHeaded" />
-                <ScalarProperty Name="PoundsPlant" ColumnName="PoundsPlant" />
-                <ScalarProperty Name="PoundsYielded" ColumnName="PoundsYielded" />
-                <ScalarProperty Name="PondID" ColumnName="PondID" />
-                <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
-                <ScalarProperty Name="YieldID" ColumnName="YieldID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ShiftEnds">
             <EntityTypeMapping TypeName="AppModel.ShiftEnd">
               <MappingFragment StoreEntitySet="ShiftEnd">
@@ -658,6 +701,47 @@
                 <ScalarProperty Name="RegEmpLate" ColumnName="RegEmpLate" />
                 <ScalarProperty Name="ShiftDate" ColumnName="ShiftDate" />
                 <ScalarProperty Name="ShiftEndID" ColumnName="ShiftEndID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FarmYieldHeaders">
+            <EntityTypeMapping TypeName="AppModel.FarmYieldHeader">
+              <MappingFragment StoreEntitySet="FarmYieldHeaders">
+                <ScalarProperty Name="PlantWeight" ColumnName="PlantWeight" />
+                <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
+                <ScalarProperty Name="FarmYieldHeaderID" ColumnName="FarmYieldHeaderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LiveFishSamplings">
+            <EntityTypeMapping TypeName="AppModel.LiveFishSampling">
+              <MappingFragment StoreEntitySet="LiveFishSampling">
+                <ScalarProperty Name="Avg5_Up" ColumnName="Avg5_Up" />
+                <ScalarProperty Name="Pct5_Up" ColumnName="Pct5_Up" />
+                <ScalarProperty Name="Avg3_5" ColumnName="Avg3_5" />
+                <ScalarProperty Name="Pct3_5" ColumnName="Pct3_5" />
+                <ScalarProperty Name="Avg225_3" ColumnName="Avg225_3" />
+                <ScalarProperty Name="Pct225_3" ColumnName="Pct225_3" />
+                <ScalarProperty Name="Avg125_225" ColumnName="Avg125_225" />
+                <ScalarProperty Name="Pct125_225" ColumnName="Pct125_225" />
+                <ScalarProperty Name="Avg0_125" ColumnName="Avg0_125" />
+                <ScalarProperty Name="Pct0_125" ColumnName="Pct0_125" />
+                <ScalarProperty Name="SamplingDate" ColumnName="SamplingDate" />
+                <ScalarProperty Name="SamplingID" ColumnName="SamplingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FarmYields">
+            <EntityTypeMapping TypeName="AppModel.FarmYield">
+              <MappingFragment StoreEntitySet="FarmYields">
+                <ScalarProperty Name="PercentYield2" ColumnName="PercentYield2" />
+                <ScalarProperty Name="PercentYield" ColumnName="PercentYield" />
+                <ScalarProperty Name="PoundsHeaded" ColumnName="PoundsHeaded" />
+                <ScalarProperty Name="PoundsPlant" ColumnName="PoundsPlant" />
+                <ScalarProperty Name="PoundsYielded" ColumnName="PoundsYielded" />
+                <ScalarProperty Name="PondID" ColumnName="PondID" />
+                <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
+                <ScalarProperty Name="YieldID" ColumnName="YieldID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

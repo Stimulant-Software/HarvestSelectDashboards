@@ -27,7 +27,7 @@ namespace SGApp.Models.EF
         public int SortOrder { get; set; }
     
         public virtual Farm Farm { get; set; }
-        public virtual ICollection<FarmYield> FarmYields { get; set; }
         public virtual Status Status { get; set; }
+        public virtual ICollection<FarmYield> FarmYields { get; set; }
     }
 }

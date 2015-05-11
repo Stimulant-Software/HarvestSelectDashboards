@@ -14,6 +14,7 @@ namespace SGApp.Models.Validation
         public decimal PoundsPlant { get; set; }
         public decimal PoundsHeaded { get; set; }
         public decimal PercentYield { get; set; }
+        public decimal PercentYield2 { get; set; }
 
 
 

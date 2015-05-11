@@ -31,8 +31,10 @@ namespace SGApp.Models.EF
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Farm> Farms { get; set; }
-        public DbSet<FarmYield> FarmYields { get; set; }
         public DbSet<Pond> Ponds { get; set; }
         public DbSet<ShiftEnd> ShiftEnds { get; set; }
+        public DbSet<FarmYieldHeader> FarmYieldHeaders { get; set; }
+        public DbSet<LiveFishSampling> LiveFishSamplings { get; set; }
+        public DbSet<FarmYield> FarmYields { get; set; }
     }
 }

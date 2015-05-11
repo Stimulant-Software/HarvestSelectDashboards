@@ -12,17 +12,10 @@ namespace SGApp.Models.EF
     using System;
     using System.Collections.Generic;
     
-    public partial class FarmYield
+    public partial class FarmYieldHeader
     {
-        public int YieldID { get; set; }
+        public int FarmYieldHeaderID { get; set; }
         public System.DateTime YieldDate { get; set; }
-        public int PondID { get; set; }
-        public decimal PoundsYielded { get; set; }
-        public Nullable<decimal> PoundsPlant { get; set; }
-        public Nullable<decimal> PoundsHeaded { get; set; }
-        public Nullable<decimal> PercentYield { get; set; }
-        public Nullable<decimal> PercentYield2 { get; set; }
-    
-        public virtual Pond Pond { get; set; }
+        public Nullable<decimal> PlantWeight { get; set; }
     }
 }
