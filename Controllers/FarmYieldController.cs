@@ -153,6 +153,7 @@ namespace SGApp.Controllers
                     dic.Add("PoundsPlant", item.PoundsPlant.ToString());
                     dic.Add("PoundsHeaded", item.PoundsHeaded.ToString());
                     dic.Add("PercentYield", item.PercentYield.ToString());
+                    dic.Add("PercentYield2", item.PercentYield.ToString());
                     col.Add(dic);
                     var ufdic = new Dictionary<string, string>();
 

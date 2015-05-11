@@ -3,7 +3,7 @@ using SGApp.Models.Validation;
 using SGApp.Models.Common;
 namespace SGApp.Models.EF
 {
-    public partial class FarmYield : EntityBase
+    public partial class FarmYieldHeader : EntityBase
     {
 
         public override string KeyName()

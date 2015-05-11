@@ -17,5 +17,6 @@ namespace SGApp.DTOs
             get;
             set;
         }
+        
     }
 }
