@@ -22,11 +22,13 @@
 				<!-- pull in string of dates - need range, method -->
                 <button id="shiftDate" class="btn" data-toggle=modal" data-target="#calendarModal">Select a date to add or edit information</button>
 			</section>
-			<section id="rowContainer"></section>
-            <label>Plant Weight</label><input placeholder="(Plant Weight)" id="plantpounds" class="plantpounds table-numbers" type="text" value="">
-            <section class="row buttons">
-                <a href="#" id="plantLbsSave" class="save btn pull-right">Save</a>
-            </section>
+            <div class="row">
+                <label class="plantpounds">Plant Weight</label>
+                <input placeholder="(Plant Weight)" id="plantpounds" class="plantpounds table-numbers" type="text" value="">
+                <input type="hidden" id="plantPoundsID" value="-1">
+                <a href="#" id="plantLbsSave" class="save btn pull-right plantpounds">Save</a>
+            </div>
+            <section id="rowContainer" class="row"></section>
         </section>
 
         <section id="calendarModal" class="modal-body fade">

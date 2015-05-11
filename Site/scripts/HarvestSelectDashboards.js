@@ -125,6 +125,7 @@ function farmYields() {
     $('#shiftDate').unbind().click(function () {
         // TO DO: limit calendar call to current month
         // TO DO: bind next and previous buttons on calendar to month calls
+        showProgress('body')
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), yieldEnds = [];
         $.when($.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
@@ -146,6 +147,7 @@ function farmYields() {
                 }
             }
         })).then(function() {
+            hideProgress();
             $('#calendarModal').modal();
             $('#calendarModal .modal-body').fullCalendar({
                 events: function(start, end, timezone, refetchEvents) {
@@ -164,6 +166,7 @@ function farmYields() {
                 },
                 dayClick: function() {
                     $('#rowContainer').empty();
+                    $('.plantpounds').css('opacity', 1);
                     date = $(this).data('date');
                     
                     var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-2"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-2"><select id="ponds0" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-6"><input placeholder="(Pond Weight)" id="pounds0" class="pounds table-numbers" type="text"><input placeholder="(Headed Weight)" id="headedpounds0" class="headedpounds table-numbers" type="text"><input placeholder="(% Yield1)" id="pctyield1_0" class="pctyield1 table-numbers" type="text"><input placeholder="(% Yield2)" id="pctyield2_0" class="pctyield2 table-numbers" type="text"></div><div class="col-xs-2"><a href="#" class="add-row"><img src="img/plus.png"></a><a href="#" class="delete-row"><img src="img/close.png"></a></div></section>';
@@ -193,7 +196,17 @@ function farmYields() {
 
     function loadEditFarmYields(date) {
         $('#rowContainer').empty();
-        var searchQuery = { "Key": _key, "YieldDate": date }, data = JSON.stringify(searchQuery);
+        var searchQuery = { "Key": _key, "FarmYieldHeaderDate": date }, data = JSON.stringify(searchQuery);
+        $.ajax('../api/FarmYieldHeader/FarmYieldHeaderList', {
+            type: 'POST',
+            data: data,
+            success: function (msg) {
+                localStorage['CT_key'] = msg['Key'];
+                startTimer(msg.Key);
+                plantPoundsData = msg['ReturnData'];
+                console.log(plantPoundsData);
+            }
+        });
         $.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
             data: data,

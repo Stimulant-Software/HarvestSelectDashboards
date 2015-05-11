@@ -359,6 +359,7 @@
     <Content Include="Site\img\check.png" />
     <Content Include="Site\img\close.png" />
     <Content Include="Site\img\farm-yields.png" />
+    <Content Include="Site\img\live-sampling.png" />
     <Content Include="Site\img\logo.gif" />
     <Content Include="Site\img\minus.png" />
     <Content Include="Site\img\plus.png" />
