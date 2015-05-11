@@ -41,6 +41,8 @@
       <End Role="Pond" EntitySet="Ponds" />
     </AssociationSet>
     <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
+    <EntitySet Name="FarmYieldHeaders" EntityType="AppModel.FarmYieldHeader" />
+    <EntitySet Name="LiveFishSamplings" EntityType="AppModel.LiveFishSampling" />
     <EntitySet Name="FarmYields" EntityType="AppModel.FarmYield" />
     <AssociationSet Name="FK_FarmYields_Ponds" Association="AppModel.FK_FarmYields_Ponds">
       <End Role="Pond" EntitySet="Ponds" />
@@ -248,6 +250,33 @@
     <Property Type="Decimal" Name="NightShiftFroze" Precision="18" Scale="2" />
     <Property Type="Decimal" Name="FilletScaleReading" Precision="18" Scale="2" />
     <Property Type="Int32" Name="DowntimeMinutes" />
+    <Property Type="Int32" Name="InLateOut" />
+    <Property Type="Int32" Name="EmployeesOnVacation" />
+  </EntityType>
+  <EntityType Name="FarmYieldHeader">
+    <Key>
+      <PropertyRef Name="FarmYieldHeaderID" />
+    </Key>
+    <Property Type="Int32" Name="FarmYieldHeaderID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="DateTime" Name="YieldDate" Nullable="false" Precision="3" />
+    <Property Type="Decimal" Name="PlantWeight" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="LiveFishSampling">
+    <Key>
+      <PropertyRef Name="SamplingID" />
+    </Key>
+    <Property Type="Int32" Name="SamplingID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="DateTime" Name="SamplingDate" Nullable="false" Precision="3" />
+    <Property Type="Decimal" Name="Pct0_125" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Avg0_125" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Pct125_225" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Avg125_225" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Pct225_3" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Avg225_3" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Pct3_5" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Avg3_5" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Pct5_Up" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="Avg5_Up" Precision="18" Scale="2" />
   </EntityType>
   <EntityType Name="FarmYield">
     <Key>
@@ -260,6 +289,7 @@
     <Property Type="Decimal" Name="PoundsPlant" Precision="18" Scale="2" />
     <Property Type="Decimal" Name="PoundsHeaded" Precision="18" Scale="2" />
     <Property Type="Decimal" Name="PercentYield" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="PercentYield2" Precision="18" Scale="2" />
     <NavigationProperty Name="Pond" Relationship="AppModel.FK_FarmYields_Ponds" FromRole="FarmYield" ToRole="Pond" />
   </EntityType>
   <Association Name="FK_FarmYields_Ponds">

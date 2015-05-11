@@ -196,6 +196,9 @@ function farmYields() {
 
     function loadEditFarmYields(date) {
         $('#rowContainer').empty();
+        $('.date-select h3, .date-select div').remove();
+        $('#plantpounds').val();
+        $('#plantPoundsID').val("-1");
         var searchQuery = { "Key": _key, "YieldDate": date }, data = JSON.stringify(searchQuery);
         $.ajax('../api/FarmYieldHeader/FarmYieldHeaderList', {
             type: 'POST',
@@ -205,6 +208,8 @@ function farmYields() {
                 startTimer(msg.Key);
                 plantPoundsData = msg['ReturnData'];
                 console.log(plantPoundsData);
+                $('#plantpounds').val(plantPoundsData[0].PlantWeight);
+                $('#plantPoundsID').val(plantPoundsData[0].FarmYieldHeaderID);
             }
         });
         $.ajax('../api/FarmYield/FarmYieldList', {
@@ -254,15 +259,16 @@ function farmYields() {
         });
 
         $('#plantLbsSave').unbind().click(function (e) {
+            showProgress('body');
             e.preventDefault();
-            var date = $('.date-select h3 strong').text(), plantPounds = $('#plantPounds').val(), searchQuery = { "Key": _key, "YieldDate": date, "PlantWeight": plantPounds }, data = JSON.stringify(searchQuery);
+            var date = $('.date-select h3 strong').text(), plantPounds = $('#plantpounds').val(), plantPoundsID = $('#plantPoundsID').val(), searchQuery = { "Key": _key, "YieldDate": date, "PlantWeight": plantPounds, "FarmYieldHeaderID": plantPoundsID }, data = JSON.stringify(searchQuery);
             $.ajax('../api/FarmYieldHeader/FarmYieldHeaderAddOrEdit', {
                 type: 'PUT',
                 data: data,
                 success: function (msg) {
+                    hideProgress();
                     localStorage['CT_key'] = msg['Key'];
                     startTimer(msg.Key);
-
                     $('.date-select').append("<div>Plant Weight Saved.</div>");
                 }
             })

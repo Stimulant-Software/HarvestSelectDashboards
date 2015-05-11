@@ -79,6 +79,8 @@
     <EntitySetMapping Name="ShiftEnds">
       <EntityTypeMapping TypeName="AppModel.ShiftEnd">
         <MappingFragment StoreEntitySet="ShiftEnd">
+          <ScalarProperty Name="EmployeesOnVacation" ColumnName="EmployeesOnVacation" />
+          <ScalarProperty Name="InLateOut" ColumnName="InLateOut" />
           <ScalarProperty Name="DowntimeMinutes" ColumnName="DowntimeMinutes" />
           <ScalarProperty Name="FilletScaleReading" ColumnName="FilletScaleReading" />
           <ScalarProperty Name="NightShiftFroze" ColumnName="NightShiftFroze" />
@@ -98,9 +100,37 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="FarmYieldHeaders">
+      <EntityTypeMapping TypeName="AppModel.FarmYieldHeader">
+        <MappingFragment StoreEntitySet="FarmYieldHeaders">
+          <ScalarProperty Name="PlantWeight" ColumnName="PlantWeight" />
+          <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
+          <ScalarProperty Name="FarmYieldHeaderID" ColumnName="FarmYieldHeaderID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LiveFishSamplings">
+      <EntityTypeMapping TypeName="AppModel.LiveFishSampling">
+        <MappingFragment StoreEntitySet="LiveFishSampling">
+          <ScalarProperty Name="Avg5_Up" ColumnName="Avg5_Up" />
+          <ScalarProperty Name="Pct5_Up" ColumnName="Pct5_Up" />
+          <ScalarProperty Name="Avg3_5" ColumnName="Avg3_5" />
+          <ScalarProperty Name="Pct3_5" ColumnName="Pct3_5" />
+          <ScalarProperty Name="Avg225_3" ColumnName="Avg225_3" />
+          <ScalarProperty Name="Pct225_3" ColumnName="Pct225_3" />
+          <ScalarProperty Name="Avg125_225" ColumnName="Avg125_225" />
+          <ScalarProperty Name="Pct125_225" ColumnName="Pct125_225" />
+          <ScalarProperty Name="Avg0_125" ColumnName="Avg0_125" />
+          <ScalarProperty Name="Pct0_125" ColumnName="Pct0_125" />
+          <ScalarProperty Name="SamplingDate" ColumnName="SamplingDate" />
+          <ScalarProperty Name="SamplingID" ColumnName="SamplingID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="FarmYields">
       <EntityTypeMapping TypeName="AppModel.FarmYield">
         <MappingFragment StoreEntitySet="FarmYields">
+          <ScalarProperty Name="PercentYield2" ColumnName="PercentYield2" />
           <ScalarProperty Name="PercentYield" ColumnName="PercentYield" />
           <ScalarProperty Name="PoundsHeaded" ColumnName="PoundsHeaded" />
           <ScalarProperty Name="PoundsPlant" ColumnName="PoundsPlant" />

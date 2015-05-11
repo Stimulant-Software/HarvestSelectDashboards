@@ -3,7 +3,9 @@
   <EntityContainer Name="AppModelStoreContainer">
     <EntitySet Name="Companies" EntityType="AppModel.Store.Companies" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Farms" EntityType="AppModel.Store.Farms" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FarmYieldHeaders" EntityType="AppModel.Store.FarmYieldHeaders" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="FarmYields" EntityType="AppModel.Store.FarmYields" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="LiveFishSampling" EntityType="AppModel.Store.LiveFishSampling" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Ponds" EntityType="AppModel.Store.Ponds" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Roles" EntityType="AppModel.Store.Roles" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ShiftEnd" EntityType="AppModel.Store.ShiftEnd" store:Type="Tables" Schema="dbo" />
@@ -69,6 +71,14 @@
     <Property Name="FarmName" Type="varchar" Nullable="false" MaxLength="50" />
     <Property Name="CompanyId" Type="int" Nullable="false" />
   </EntityType>
+  <EntityType Name="FarmYieldHeaders">
+    <Key>
+      <PropertyRef Name="FarmYieldHeaderID" />
+    </Key>
+    <Property Name="FarmYieldHeaderID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="YieldDate" Type="datetime" Nullable="false" />
+    <Property Name="PlantWeight" Type="decimal" Scale="2" />
+  </EntityType>
   <EntityType Name="FarmYields">
     <Key>
       <PropertyRef Name="YieldID" />
@@ -80,6 +90,24 @@
     <Property Name="PoundsPlant" Type="decimal" Scale="2" />
     <Property Name="PoundsHeaded" Type="decimal" Scale="2" />
     <Property Name="PercentYield" Type="decimal" Scale="2" />
+    <Property Name="PercentYield2" Type="decimal" Scale="2" />
+  </EntityType>
+  <EntityType Name="LiveFishSampling">
+    <Key>
+      <PropertyRef Name="SamplingID" />
+    </Key>
+    <Property Name="SamplingID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="SamplingDate" Type="datetime" Nullable="false" />
+    <Property Name="Pct0_125" Type="decimal" Scale="2" />
+    <Property Name="Avg0_125" Type="decimal" Scale="2" />
+    <Property Name="Pct125_225" Type="decimal" Scale="2" />
+    <Property Name="Avg125_225" Type="decimal" Scale="2" />
+    <Property Name="Pct225_3" Type="decimal" Scale="2" />
+    <Property Name="Avg225_3" Type="decimal" Scale="2" />
+    <Property Name="Pct3_5" Type="decimal" Scale="2" />
+    <Property Name="Avg3_5" Type="decimal" Scale="2" />
+    <Property Name="Pct5_Up" Type="decimal" Scale="2" />
+    <Property Name="Avg5_Up" Type="decimal" Scale="2" />
   </EntityType>
   <EntityType Name="Ponds">
     <Key>
@@ -119,6 +147,8 @@
     <Property Name="NightShiftFroze" Type="decimal" Scale="2" />
     <Property Name="FilletScaleReading" Type="decimal" Scale="2" />
     <Property Name="DowntimeMinutes" Type="int" />
+    <Property Name="InLateOut" Type="int" />
+    <Property Name="EmployeesOnVacation" Type="int" />
   </EntityType>
   <EntityType Name="Statuses">
     <Key>
