@@ -8,27 +8,33 @@
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css">
         <link rel="stylesheet" type="text/css" href="css/HarvestSelectDashboards.css">
     </head>
-    <body class="farm-yields">
+    <body class="live-sample">
         <header class="container text-center">
-            <div class="text-center col-xs-12 col-md-6">
+            <div class="pull-left">
                 <a href="index.html"><img src="img/logo.gif" alt="Harvest Select Logo" /></a>
 			</div>
-			<div class="text-center col-xs-12 col-md-6">
-				<span>Farm Yields</span><img src="img/farm-yields.png" alt="Farm Yields icon" />
+			<div class="pull-right">
+				<span>Live Fish Sampling</span><img src="img/live-sampling.png" alt="Live Fish Sampling icon" />
 			</div>
         </header>
         <section id="mainContent" class="container">
 			<section class="row date-select">
 				<!-- pull in string of dates - need range, method -->
-                <button id="shiftDate" class="btn" data-toggle=modal" data-target="#calendarModal">Select a date to add or edit information</button>
+                <button id="shiftDate" data-toggle="modal" data-target="#calendarModal">Select a date to add or edit information</button>
 			</section>
-			<section id="rowContainer"></section>
-            <label>Plant Weight</label><input placeholder="(Plant Weight)" id="plantpounds" class="plantpounds table-numbers" type="text" value="">
-            <section class="row buttons">
-                <a href="#" id="plantLbsSave" class="save btn pull-right">Save</a>
-            </section>
+			<section class="row fields">
+				<div class="col-xs-12 input-group text-center">
+                    <h2 class="text-center">Live Fish Sampling<br /><small>Fish Size and Avg Today</small></h2>
+                    <div class="row"><label>0-1.25 lbs LIVE FISH</label><input placeholder="%" type="number" class="table-numbers" id="Pct0_125"><input placeholder="lbs" type="number" class="table-numbers" id="Avg0_125"></div>
+                    <div class="row"><label>1.25 lbs-2.25 lbs LIVE FISH</label><input placeholder="%" type="number" class="table-numbers" id="Pct125_225"><input placeholder="lbs" type="number" class="table-numbers" id="Avg125_225"></div>
+                    <div class="row"><label>2.25-3 lbs LIVE FISH</label><input placeholder="%" type="number" class="table-numbers" id="Pct225_3"><input placeholder="lbs" type="number" class="table-numbers" id="Avg225_3"></div>
+                    <div class="row"><label>3-5 lbs LIVE FISH</label><input placeholder="%" type="number" class="table-numbers" id="Pct3_5"><input placeholder="lbs" type="number" class="table-numbers" id="Avg3_5"></div>
+                    <div class="row"><label>5 lbs &amp; UP LIVE FISH</label><input placeholder="%" type="number" class="table-numbers" id="Pct5_Up"><input placeholder="lbs" type="number" class="table-numbers" id="Avg5_Up"></div>
+			</section>
+			<section class="row buttons text-center">
+				<a href="#" class="save btn">Save</a>
+			</section>
         </section>
-
         <section id="calendarModal" class="modal-body fade">
             <div class="modal-dialog">
                 <div class="modal-content">
