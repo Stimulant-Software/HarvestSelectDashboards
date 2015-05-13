@@ -146,7 +146,7 @@ function farmYields() {
 
         $('#plantpounds').val();
         $('#plantPoundsID').val('-1');
-        $('.plantpounds').hide();
+        $('.plantpounds').css('opacity', 0);
 
         var searchDates = getCurrentDate();
         month = searchDates.month;
@@ -178,6 +178,7 @@ function farmYields() {
         });
     });
 
+    // need to reset the damn date. or not trigger fullCalendar everytime
     function loadYieldsCalendar(resultsObject) {
         $('#calendarModal .modal-body').fullCalendar({
             events: function (start, end, timezone, refetchEvents) {
@@ -229,12 +230,10 @@ function farmYields() {
             }  else {
                 month--;
             }
-            $('#calendarModal .modal-body').fullCalendar('prev');
-            showProgress('body');
 
             $('#plantpounds').val();
             $('#plantPoundsID').val('-1');
-            $('.plantpounds').hide();
+            $('.plantpounds').css('opacity', 0);
 
             var searchDates = getDefinedDate(month, year);
             var searchQuery = { "Key": _key, "Start_YieldDate": searchDates.start, "End_YieldDate": searchDates.end }, data = JSON.stringify(searchQuery), yieldEnds = [];
@@ -259,8 +258,8 @@ function farmYields() {
                 }
             })).then(function () {
                 hideProgress();
-                $('#calendarModal').modal();
                 loadYieldsCalendar(yieldEnds);
+                $('#calendarModal .modal-body').fullCalendar('prev');
             });
         });
 
@@ -272,12 +271,10 @@ function farmYields() {
             } else {
                 month++;
             }
-
-            $('#calendarModal .modal-body').fullCalendar('next');
-
+            
             $('#plantpounds').val();
             $('#plantPoundsID').val('-1');
-            $('.plantpounds').hide();
+            $('.plantpounds').css('opacity', 0);
 
             var searchDates = getDefinedDate(month, year);
             var searchQuery = { "Key": _key, "Start_YieldDate": searchDates.start, "End_YieldDate": searchDates.end }, data = JSON.stringify(searchQuery), yieldEnds = [];
@@ -288,22 +285,24 @@ function farmYields() {
                     localStorage['CT_key'] = msg['Key'];
                     startTimer(msg.Key);
                     yieldList = msg['ReturnData'];
-                    var lastdate = yieldList[0].YieldDate.split(" ")[0];
-                    for (var i = 0; i < yieldList.length; i++) {
-                        var shiftDate = yieldList[i].YieldDate.split(" ")[0];
-                        if (i == 0) {
-                            yieldEnds.push(shiftDate);
-                        }
-                        else if (shiftDate != lastdate) {
-                            yieldEnds.push(shiftDate);
-                            lastdate = shiftDate;
+                    if (yieldList != "") {
+                        var lastdate = yieldList[0].YieldDate.split(" ")[0];
+                        for (var i = 0; i < yieldList.length; i++) {
+                            var shiftDate = yieldList[i].YieldDate.split(" ")[0];
+                            if (i == 0) {
+                                yieldEnds.push(shiftDate);
+                            }
+                            else if (shiftDate != lastdate) {
+                                yieldEnds.push(shiftDate);
+                                lastdate = shiftDate;
+                            }
                         }
                     }
                 }
             })).then(function () {
                 hideProgress();
-                $('#calendarModal').modal();
                 loadYieldsCalendar(yieldEnds);
+                $('#calendarModal .modal-body').fullCalendar('next');
             });
         });
     }
