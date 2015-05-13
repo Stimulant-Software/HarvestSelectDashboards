@@ -117,16 +117,41 @@ function hideProgress(classIdentifier) { var bgElement = "#lightboxBG." + classI
 
 function centerProgress(container) { if (container == 'body') { container = window }; var containerHeight = $(container).innerHeight(), containerWidth = $(container).innerWidth(), modalHeight = $('#progressBar').innerHeight(), modalWidth = $('#progressBar').innerWidth(); var modalTop = (containerHeight - modalHeight) / 2, modalLeft = (containerWidth - modalWidth) / 2; $('#progressBar').css({ 'top': modalTop, 'left': modalLeft }); }
 
+function getCurrentDate() {
+    var currentTime = new Date(), currentMonth = currentTime.getMonth() + 1, currentYear = currentTime.getFullYear(), startDate = currentMonth + "/01/" + currentYear, endDate = currentMonth + 1 + "/01/" + currentYear;
+    return {
+        start: startDate,
+        end: endDate,
+        month: currentMonth,
+        year: currentYear
+    };
+}
+function getDefinedDate(month, year) {
+    var startDate = month + "/01/" + year, endDate = +month + 1 + "/01/" + year;
+    return {
+        start: startDate,
+        end: endDate,
+    };
+}
+
 /* FARM YIELDS */
 function farmYields() {
-    var date, i;
+    var date, i, month, year;
 
     $('.row.buttons').hide();
     $('#shiftDate').unbind().click(function () {
         // TO DO: limit calendar call to current month
         // TO DO: bind next and previous buttons on calendar to month calls
-        showProgress('body')
-        var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), yieldEnds = [];
+        showProgress('body');
+
+        $('#plantpounds').val();
+        $('#plantPoundsID').val('-1');
+        $('.plantpounds').hide();
+
+        var searchDates = getCurrentDate();
+        month = searchDates.month;
+        year = searchDates.year;
+        var searchQuery = { "Key": _key, "Start_YieldDate": searchDates.start, "End_YieldDate": searchDates.end }, data = JSON.stringify(searchQuery), yieldEnds = [];
         $.when($.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
             data: data,
@@ -149,50 +174,139 @@ function farmYields() {
         })).then(function() {
             hideProgress();
             $('#calendarModal').modal();
-            $('#calendarModal .modal-body').fullCalendar({
-                events: function(start, end, timezone, refetchEvents) {
-                    var results = yieldEnds;
-                    var events = [];
-                    for (var event in results) {
-                        var obj = {
-                            title: "EDIT",
-                            start: results[event],
-                            end: results[event],
-                            allDay: true
-                        };
-                        events.push(obj);
-                    }
-                    refetchEvents(events);
-                },
-                dayClick: function() {
-                    $('#rowContainer').empty();
-                    $('.plantpounds').css('opacity', 1);
-                    date = $(this).data('date');
-                    
-                    var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-2"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-2"><select id="ponds0" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-6"><input placeholder="(Pond Weight)" id="pounds0" class="pounds table-numbers" type="text"><input placeholder="(Headed Weight)" id="headedpounds0" class="headedpounds table-numbers" type="text"><input placeholder="(% Yield1)" id="pctyield1_0" class="pctyield1 table-numbers" type="text"><input placeholder="(% Yield2)" id="pctyield2_0" class="pctyield2 table-numbers" type="text"></div><div class="col-xs-2"><a href="#" class="add-row"><img src="img/plus.png"></a><a href="#" class="delete-row"><img src="img/close.png"></a></div></section>';
-
-                    $.when($('#rowContainer').append(newRowHtml)).then(function() {
-                        loadFarmsDDL(0);
-                        $('.row.buttons').show();
-                    });
-                    i = 1;
-                    bindYieldButtons();
-                    $('.date-select h3').remove();
-                    $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
-                    $('#calendarModal').modal('hide');
-                },
-                eventClick: function(calEvent) {
-                    var chosenDate = calEvent.start._i;
-                    $.when(loadEditFarmYields(chosenDate)).then(function () {
-                        $('#calendarModal').modal('hide');
-                    });
-
-                    // adjust buttons to take edits instead of new
-                    bindYieldButtons();
-                }
-            });
+            loadYieldsCalendar(yieldEnds);
         });
     });
+
+    function loadYieldsCalendar(resultsObject) {
+        $('#calendarModal .modal-body').fullCalendar({
+            events: function (start, end, timezone, refetchEvents) {
+                var results = resultsObject;
+                var events = [];
+                for (var event in results) {
+                    var obj = {
+                        title: "EDIT",
+                        start: results[event],
+                        end: results[event],
+                        allDay: true
+                    };
+                    events.push(obj);
+                }
+                refetchEvents(events);
+            },
+            dayClick: function () {
+                $('#rowContainer').empty();
+                $('.plantpounds').css('opacity', 1);
+                date = $(this).data('date');
+
+                var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-2"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-2"><select id="ponds0" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-6"><input placeholder="(Pond Weight)" id="pounds0" class="pounds table-numbers" type="text"><input placeholder="(Headed Weight)" id="headedpounds0" class="headedpounds table-numbers" type="text"><input placeholder="(% Yield1)" id="pctyield1_0" class="pctyield1 table-numbers" type="text"><input placeholder="(% Yield2)" id="pctyield2_0" class="pctyield2 table-numbers" type="text"></div><div class="col-xs-2"><a href="#" class="add-row"><img src="img/plus.png"></a><a href="#" class="delete-row"><img src="img/close.png"></a></div></section>';
+
+                $.when($('#rowContainer').append(newRowHtml)).then(function () {
+                    loadFarmsDDL(0);
+                    $('.row.buttons').show();
+                });
+                i = 1;
+                bindYieldButtons();
+                $('.date-select h3').remove();
+                $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                $('#calendarModal').modal('hide');
+            },
+            eventClick: function (calEvent) {
+                var chosenDate = calEvent.start._i;
+                $.when(loadEditFarmYields(chosenDate)).then(function () {
+                    $('#calendarModal').modal('hide');
+                });
+
+                // adjust buttons to take edits instead of new
+                bindYieldButtons();
+            }
+        });
+
+        $('.fc-prev-button').unbind().click(function () {
+            if (month == 1) {
+                month = 12;
+                year--;
+            }  else {
+                month--;
+            }
+            $('#calendarModal .modal-body').fullCalendar('prev');
+            showProgress('body');
+
+            $('#plantpounds').val();
+            $('#plantPoundsID').val('-1');
+            $('.plantpounds').hide();
+
+            var searchDates = getDefinedDate(month, year);
+            var searchQuery = { "Key": _key, "Start_YieldDate": searchDates.start, "End_YieldDate": searchDates.end }, data = JSON.stringify(searchQuery), yieldEnds = [];
+            $.when($.ajax('../api/FarmYield/FarmYieldList', {
+                type: 'POST',
+                data: data,
+                success: function (msg) {
+                    localStorage['CT_key'] = msg['Key'];
+                    startTimer(msg.Key);
+                    yieldList = msg['ReturnData'];
+                    var lastdate = yieldList[0].YieldDate.split(" ")[0];
+                    for (var i = 0; i < yieldList.length; i++) {
+                        var shiftDate = yieldList[i].YieldDate.split(" ")[0];
+                        if (i == 0) {
+                            yieldEnds.push(shiftDate);
+                        }
+                        else if (shiftDate != lastdate) {
+                            yieldEnds.push(shiftDate);
+                            lastdate = shiftDate;
+                        }
+                    }
+                }
+            })).then(function () {
+                hideProgress();
+                $('#calendarModal').modal();
+                loadYieldsCalendar(yieldEnds);
+            });
+        });
+
+        $('.fc-next-button').unbind().click(function () {
+            $('#calendarModal').modal('hide');
+            if (month == 12) {
+                month = 1;
+                year++;
+            } else {
+                month++;
+            }
+
+            $('#calendarModal .modal-body').fullCalendar('next');
+
+            $('#plantpounds').val();
+            $('#plantPoundsID').val('-1');
+            $('.plantpounds').hide();
+
+            var searchDates = getDefinedDate(month, year);
+            var searchQuery = { "Key": _key, "Start_YieldDate": searchDates.start, "End_YieldDate": searchDates.end }, data = JSON.stringify(searchQuery), yieldEnds = [];
+            $.when($.ajax('../api/FarmYield/FarmYieldList', {
+                type: 'POST',
+                data: data,
+                success: function (msg) {
+                    localStorage['CT_key'] = msg['Key'];
+                    startTimer(msg.Key);
+                    yieldList = msg['ReturnData'];
+                    var lastdate = yieldList[0].YieldDate.split(" ")[0];
+                    for (var i = 0; i < yieldList.length; i++) {
+                        var shiftDate = yieldList[i].YieldDate.split(" ")[0];
+                        if (i == 0) {
+                            yieldEnds.push(shiftDate);
+                        }
+                        else if (shiftDate != lastdate) {
+                            yieldEnds.push(shiftDate);
+                            lastdate = shiftDate;
+                        }
+                    }
+                }
+            })).then(function () {
+                hideProgress();
+                $('#calendarModal').modal();
+                loadYieldsCalendar(yieldEnds);
+            });
+        });
+    }
 
     function loadEditFarmYields(date) {
         $('#rowContainer').empty();
