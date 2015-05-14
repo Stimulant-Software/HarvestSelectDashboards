@@ -451,7 +451,7 @@ function shiftEnd() {
     $('.buttons .save').unbind().click(function (e) {
         e.preventDefault();
 
-        var dayFreeze = $('#dayFreeze').val() == "" ? "00:00" : $('#dayFreeze').val(shiftEndData.DayFinishedFreezing), nightFreeze = $('#nightFreeze').val() == "" ? "00:00" : $('#nightFreeze').val(shiftEndData.NightFinishedFreezing);
+        //var dayFreeze = $('#dayFreeze').val() == "" ? "00:00" : $('#dayFreeze').val(shiftEndData.DayFinishedFreezing), nightFreeze = $('#nightFreeze').val() == "" ? "00:00" : $('#nightFreeze').val(shiftEndData.NightFinishedFreezing);
 
         // Harper TODO - you need to add a column / call in API for "DoownTimeMinutes"
         var searchQuery = { "Key": _key, "userID": userID, "ShiftDate": date, "ShiftEndID": addOrEdit, "DayFinishedFreezing": dayFreeze, "DayShiftFroze": $('#dayFroze').val(), "FilletScaleReading": $('#filletScale').val() , "FinishedFillet": $('#finFillet').val(), "FinishedKill": $('#finKill').val(), "FinishedSkinning": $('#finSkinned').val(), "InmateLeftEarly": $('#inmateEmpLeftEarly').val() , "NightFinishedFreezing": nightFreeze, "NightShiftFroze": $('#nightFroze').val(), "RegEmpLate": $('#regEmpLate').val(), "RegEmpOut": $('#regEmpOut').val() , "InLateOut": $('#inLateOut').val(), "EmployeesOnVacation": $('#empVacation').val(), "RegEmplLeftEarly": $('#regEmpLeftEarly').val(), "TempEmpOut": $('#tempEmpOut').val(), "DowntimeMinutes": $('#downtimeMin').val() }, data = JSON.stringify(searchQuery);
