@@ -351,6 +351,7 @@ function shiftEnd() {
             type: 'POST',
             data: data,
             success: function (msg) {
+               
                 localStorage['CT_key'] = msg['Key'];
                 startTimer(msg.Key); 
                 shiftEndList = msg['ReturnData'];
@@ -360,6 +361,7 @@ function shiftEnd() {
                 }
             }
         })).then(function () {
+            $('#calendarModal .modal-body').fullCalendar('destroy');
             $('#calendarModal .modal-body').fullCalendar({
                 events: function (start, end, timezone, refetchEvents) {
                     var results = shiftEnds;
@@ -417,21 +419,22 @@ function shiftEnd() {
                     $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
                     // TODO: add edit function, detected by existing data in calendar
                     // this assumes new/add:
-                    searchQuery = { "Key": _key, "ShiftDate": date }, data = JSON.stringify(searchQuery), shiftEnds = [];
+                    //searchQuery = { "Key": _key, "ShiftDate": date }, data = JSON.stringify(searchQuery), shiftEnds = [];
 
-                    $.ajax('../api/ShiftEnd/ShiftEndList', {
-                        type: 'POST',
-                        data: data,
-                        success: function (msg) {
-                            localStorage['CT_key'] = msg['Key'];
-                            startTimer(msg.Key); 
-                            shiftEndList = msg['ReturnData'];
-                            for (var i = 0; i < shiftEndList.length; i++) {
-                                var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
-                                shiftEnds.push(shiftDate);
-                            }
-                        }
-                    });
+                    //$.ajax('../api/ShiftEnd/ShiftEndList', {
+                    //    type: 'POST',
+                    //    data: data,
+                    //    success: function (msg) {
+                    //        debugger;
+                    //        localStorage['CT_key'] = msg['Key'];
+                    //        startTimer(msg.Key); 
+                    //        shiftEndList = msg['ReturnData'];
+                    //        for (var i = 0; i < shiftEndList.length; i++) {
+                    //            var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
+                    //            shiftEnds.push(shiftDate);
+                    //        }
+                    //    }
+                    //});
                     addOrEdit = "-1";
                     $('#calendarModal').modal('hide');
                     $('.row.fields, .row.buttons').fadeIn(250);
@@ -454,7 +457,7 @@ function shiftEnd() {
         //var dayFreeze = $('#dayFreeze').val() == "" ? "00:00" : $('#dayFreeze').val(shiftEndData.DayFinishedFreezing), nightFreeze = $('#nightFreeze').val() == "" ? "00:00" : $('#nightFreeze').val(shiftEndData.NightFinishedFreezing);
 
         // Harper TODO - you need to add a column / call in API for "DoownTimeMinutes"
-        var searchQuery = { "Key": _key, "userID": userID, "ShiftDate": date, "ShiftEndID": addOrEdit, "DayFinishedFreezing": dayFreeze, "DayShiftFroze": $('#dayFroze').val(), "FilletScaleReading": $('#filletScale').val() , "FinishedFillet": $('#finFillet').val(), "FinishedKill": $('#finKill').val(), "FinishedSkinning": $('#finSkinned').val(), "InmateLeftEarly": $('#inmateEmpLeftEarly').val() , "NightFinishedFreezing": nightFreeze, "NightShiftFroze": $('#nightFroze').val(), "RegEmpLate": $('#regEmpLate').val(), "RegEmpOut": $('#regEmpOut').val() , "InLateOut": $('#inLateOut').val(), "EmployeesOnVacation": $('#empVacation').val(), "RegEmplLeftEarly": $('#regEmpLeftEarly').val(), "TempEmpOut": $('#tempEmpOut').val(), "DowntimeMinutes": $('#downtimeMin').val() }, data = JSON.stringify(searchQuery);
+        var searchQuery = { "Key": _key, "userID": userID, "ShiftDate": date, "ShiftEndID": addOrEdit, "DayFinishedFreezing": $('#dayFreeze').val(), "DayShiftFroze": $('#dayFroze').val(), "FilletScaleReading": $('#filletScale').val(), "FinishedFillet": $('#finFillet').val(), "FinishedKill": $('#finKill').val(), "FinishedSkinning": $('#finSkinned').val(), "InmateLeftEarly": $('#inmateEmpLeftEarly').val(), "NightFinishedFreezing": $('#nightFreeze').val(), "NightShiftFroze": $('#nightFroze').val(), "RegEmpLate": $('#regEmpLate').val(), "RegEmpOut": $('#regEmpOut').val(), "InLateOut": $('#inLateOut').val(), "EmployeesOnVacation": $('#empVacation').val(), "RegEmplLeftEarly": $('#regEmpLeftEarly').val(), "TempEmpOut": $('#tempEmpOut').val(), "DowntimeMinutes": $('#downtimeMin').val() }, data = JSON.stringify(searchQuery);
         $.when($.ajax('../api/ShiftEnd/ShiftEndAddOrEdit', {
             type: 'PUT',
             data: data,
