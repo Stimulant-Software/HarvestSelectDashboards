@@ -11,6 +11,7 @@ namespace SGApp.DTOs
         public string Start_YieldDate { get; set; }
         public string End_YieldDate { get; set; }
         public string PlantWeight { get; set; }
+        public string WeighBacks { get; set; }
 
     }
 }

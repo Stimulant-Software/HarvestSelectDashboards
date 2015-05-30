@@ -21,10 +21,10 @@
         <AssociationConnector Association="AppModel.FK_Ponds_Farms" />
         <AssociationConnector Association="AppModel.FK_Ponds_Statuses" />
         <EntityTypeShape EntityType="AppModel.ShiftEnd" Width="1.5" PointX="9.8075511631591024" PointY="18.346478589971774" />
-        <EntityTypeShape EntityType="AppModel.FarmYieldHeader" Width="1.5" PointX="5.75" PointY="12.5" />
         <EntityTypeShape EntityType="AppModel.LiveFishSampling" Width="1.5" PointX="8.75" PointY="14" />
         <EntityTypeShape EntityType="AppModel.FarmYield" Width="1.5" PointX="5.9178680358072135" PointY="29.311310602962649" />
         <AssociationConnector Association="AppModel.FK_FarmYields_Ponds" />
+        <EntityTypeShape EntityType="AppModel.FarmYieldHeader" Width="1.5" PointX="3.9696133807160026" PointY="21.081989581269209" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

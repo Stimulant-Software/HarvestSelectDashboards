@@ -17,5 +17,6 @@ namespace SGApp.Models.EF
         public int FarmYieldHeaderID { get; set; }
         public System.DateTime YieldDate { get; set; }
         public Nullable<decimal> PlantWeight { get; set; }
+        public Nullable<decimal> WeighBacks { get; set; }
     }
 }
