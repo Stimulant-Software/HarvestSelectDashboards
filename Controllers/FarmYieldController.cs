@@ -135,6 +135,27 @@ namespace SGApp.Controllers
                     cqDTO.Start_YieldDate = DateTime.Parse(cqDTO.YieldDate).ToString();
                     cqDTO.End_YieldDate = DateTime.Parse(cqDTO.YieldDate).AddDays(1).ToString();
                 }
+                else
+                {
+                    int sm = int.Parse(cqDTO.StartDateMonth);
+                    if (sm == 1)
+                    {
+                        cqDTO.Start_YieldDate = DateTime.Parse("12/23/" + (int.Parse(cqDTO.StartDateYear) - 1).ToString()).ToString();
+                        cqDTO.End_YieldDate = DateTime.Parse("2/14/" + cqDTO.StartDateYear).ToString();
+                    }
+                    else if (sm == 12)
+                    {
+                        cqDTO.Start_YieldDate = DateTime.Parse("11/23/" + cqDTO.StartDateYear).ToString();
+                        cqDTO.End_YieldDate = DateTime.Parse("1/14/" + (int.Parse(cqDTO.StartDateYear) + 1).ToString()).ToString();
+                    }
+                    else
+                    {
+                        cqDTO.Start_YieldDate = DateTime.Parse((int.Parse(cqDTO.StartDateMonth) - 1).ToString() + "/23/" + cqDTO.StartDateYear).ToString();
+                        cqDTO.End_YieldDate = DateTime.Parse((int.Parse(cqDTO.StartDateMonth) + 1).ToString() + "/14/" + cqDTO.StartDateYear).ToString();
+                    }
+
+                    
+                }
                 var predicate = ur.GetPredicate(cqDTO, u, companyId);
                 var data = ur.GetByPredicate(predicate);
                 var col = new Collection<Dictionary<string, string>>();
