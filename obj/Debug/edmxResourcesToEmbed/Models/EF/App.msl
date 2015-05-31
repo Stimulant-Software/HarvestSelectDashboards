@@ -100,15 +100,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="FarmYieldHeaders">
-      <EntityTypeMapping TypeName="AppModel.FarmYieldHeader">
-        <MappingFragment StoreEntitySet="FarmYieldHeaders">
-          <ScalarProperty Name="PlantWeight" ColumnName="PlantWeight" />
-          <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
-          <ScalarProperty Name="FarmYieldHeaderID" ColumnName="FarmYieldHeaderID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="LiveFishSamplings">
       <EntityTypeMapping TypeName="AppModel.LiveFishSampling">
         <MappingFragment StoreEntitySet="LiveFishSampling">
@@ -138,6 +129,16 @@
           <ScalarProperty Name="PondID" ColumnName="PondID" />
           <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
           <ScalarProperty Name="YieldID" ColumnName="YieldID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FarmYieldHeaders">
+      <EntityTypeMapping TypeName="AppModel.FarmYieldHeader">
+        <MappingFragment StoreEntitySet="FarmYieldHeaders">
+          <ScalarProperty Name="WeighBacks" ColumnName="WeighBacks" />
+          <ScalarProperty Name="PlantWeight" ColumnName="PlantWeight" />
+          <ScalarProperty Name="YieldDate" ColumnName="YieldDate" />
+          <ScalarProperty Name="FarmYieldHeaderID" ColumnName="FarmYieldHeaderID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

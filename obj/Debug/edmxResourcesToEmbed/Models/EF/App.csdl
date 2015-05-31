@@ -41,13 +41,13 @@
       <End Role="Pond" EntitySet="Ponds" />
     </AssociationSet>
     <EntitySet Name="ShiftEnds" EntityType="AppModel.ShiftEnd" />
-    <EntitySet Name="FarmYieldHeaders" EntityType="AppModel.FarmYieldHeader" />
     <EntitySet Name="LiveFishSamplings" EntityType="AppModel.LiveFishSampling" />
     <EntitySet Name="FarmYields" EntityType="AppModel.FarmYield" />
     <AssociationSet Name="FK_FarmYields_Ponds" Association="AppModel.FK_FarmYields_Ponds">
       <End Role="Pond" EntitySet="Ponds" />
       <End Role="FarmYield" EntitySet="FarmYields" />
     </AssociationSet>
+    <EntitySet Name="FarmYieldHeaders" EntityType="AppModel.FarmYieldHeader" />
   </EntityContainer>
   <EntityType Name="Company">
     <Key>
@@ -253,14 +253,6 @@
     <Property Type="Int32" Name="InLateOut" />
     <Property Type="Int32" Name="EmployeesOnVacation" />
   </EntityType>
-  <EntityType Name="FarmYieldHeader">
-    <Key>
-      <PropertyRef Name="FarmYieldHeaderID" />
-    </Key>
-    <Property Type="Int32" Name="FarmYieldHeaderID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Type="DateTime" Name="YieldDate" Nullable="false" Precision="3" />
-    <Property Type="Decimal" Name="PlantWeight" Precision="18" Scale="2" />
-  </EntityType>
   <EntityType Name="LiveFishSampling">
     <Key>
       <PropertyRef Name="SamplingID" />
@@ -304,4 +296,13 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <EntityType Name="FarmYieldHeader">
+    <Key>
+      <PropertyRef Name="FarmYieldHeaderID" />
+    </Key>
+    <Property Type="Int32" Name="FarmYieldHeaderID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="DateTime" Name="YieldDate" Nullable="false" Precision="3" />
+    <Property Type="Decimal" Name="PlantWeight" Precision="18" Scale="2" />
+    <Property Type="Decimal" Name="WeighBacks" Precision="18" Scale="2" />
+  </EntityType>
 </Schema>
