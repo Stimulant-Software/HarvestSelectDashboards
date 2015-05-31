@@ -165,10 +165,11 @@ function farmYields() {
         })).then(function () {
             hideProgress();
             $('#calendarModal').modal();
+            $('#calendarModal .modal-body').fullCalendar('destroy');
             $('#calendarModal .modal-body').fullCalendar({
-                /*events: 
+                events: 
                     function (start, end, timezone, refetchEvents) {
-                    var results = yieldEnds;
+                        var results = getCalData(); //yieldEnds;
                     var events = [];
                     for (var event in results) {
                         var obj = {
@@ -180,7 +181,7 @@ function farmYields() {
                         events.push(obj);
                     }
                     refetchEvents(events);
-                },*/
+                },
                 dayClick: function () {
                     $('#rowContainer').empty();
                     $('.plantpounds').css('opacity', 1);
@@ -198,22 +199,6 @@ function farmYields() {
                     $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
                     $('#calendarModal').modal('hide');
                 },
-                eventSources: {
-                    events: function (start, end, timezone, refetchEvents) {
-                        var results = getCalData();
-                        var events = [];
-                        for (var event in results) {
-                            var obj = {
-                                title: "EDIT",
-                                start: results[event],
-                                end: results[event],
-                                allDay: true
-                            };
-                            events.push(obj);
-                        }
-                        refetchEvents(events);
-                    }
-                },
                 eventClick: function (calEvent) {
                     var chosenDate = calEvent.start._i;
                     $.when(loadEditFarmYields(chosenDate)).then(function () {
@@ -223,6 +208,13 @@ function farmYields() {
                     // adjust buttons to take edits instead of new
                     bindYieldButtons();
                 }
+            });
+            $('.fc-button-prev span').click(function () {
+                alert('prev is clicked, do something');
+            });
+
+            $('.fc-button-next span').click(function () {
+                alert('nextis clicked, do something');
             });
         });
     }
@@ -237,7 +229,7 @@ function farmYields() {
                 localStorage['CT_key'] = msg['Key'];
                 startTimer(msg.Key);
                 yieldList = msg['ReturnData'];
-                console.log(yieldList);
+                console.log(yieldList.length);
                 var lastdate = yieldList[0].YieldDate.split(" ")[0];
                 for (var i = 0; i < yieldList.length; i++) {
                     var shiftDate = yieldList[i].YieldDate.split(" ")[0];
@@ -248,16 +240,16 @@ function farmYields() {
                         yieldEnds.push(shiftDate);
                         lastdate = shiftDate;
                     }
-                }
+                };
+                var view = $('#calendarModal .modal-body').fullCalendar('getView');
+                // calendar view actually starts days before the month you're viewing
+                // to account for calendar view including those days!
+                startDateMonth = view.start._d.getMonth() + 2; // adding one for see above, one for javascript month rep
+                stateDateYear = view.start._d.getFullYear();
+                console.log(view.start._d + "/" + startDateMonth );
+                return yieldEnds;
             }
-        });
-        var view = $('#calendarModal .modal-body').fullCalendar('getView');
-        // calendar view actually starts days before the month you're viewing
-        // to account for calendar view including those days!
-        startDateMonth = view.start._d.getMonth() + 2; // adding one for see above, one for javascript month rep
-        stateDateYear = view.start._d.getFullYear();
-        console.log(view.start._d + "/" + startDateMonth );
-        return yieldEnds;
+        })
     }
 
 function loadEditFarmYields(date) {
