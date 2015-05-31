@@ -119,7 +119,7 @@ function centerProgress(container) { if (container == 'body') { container = wind
 
 function getTodaysMonth() {
     $('.row.buttons').hide();
-    var today = new Date(), todaysMonth = today.getMonth() + 1, todaysYear = today.getYear();
+    var today = new Date(), todaysMonth = today.getMonth() + 1, todaysYear = today.getFullYear();
     if (todaysMonth < 10) todaysMonth = "0" + todaysMonth;
     var tdate = new Object();
     tdate.month = todaysMonth;
@@ -137,9 +137,9 @@ function farmYields() {
         loadCalendar(startDateMonth, startDateYear);
     });
 
-    function loadCalendar(startDateMonth, startDateYear) {
-        var searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery), yieldEnds = [];
-        $.when($.ajax('../api/FarmYield/FarmYieldList', {
+    function loadCalendar() {
+        /*var searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery), yieldEnds = []*/;
+        /*$.when($.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
             data: data,
             success: function (msg) {
@@ -162,13 +162,13 @@ function farmYields() {
                 alert("Could not fetch the data.");
                 console.log(msg);
             }
-        })).then(function () {
+        })).then(function () {*/
             hideProgress();
             $('#calendarModal').modal();
             $('#calendarModal .modal-body').fullCalendar({
-                /*events: 
+                events: 
                     function (start, end, timezone, refetchEvents) {
-                    var results = yieldEnds;
+                    var results = getCalData();
                     var events = [];
                     for (var event in results) {
                         var obj = {
@@ -180,7 +180,7 @@ function farmYields() {
                         events.push(obj);
                     }
                     refetchEvents(events);
-                },*/
+                },
                 dayClick: function () {
                     $('#rowContainer').empty();
                     $('.plantpounds').css('opacity', 1);
@@ -198,7 +198,22 @@ function farmYields() {
                     $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
                     $('#calendarModal').modal('hide');
                 },
-                eventSources: [ getCalData() ],
+                /*eventSources: {
+                    events: function (start, end, timezone, refetchEvents) {
+                        var results = getCalData();
+                        var events = [];
+                        for (var event in results) {
+                            var obj = {
+                                title: "EDIT",
+                                start: results[event],
+                                end: results[event],
+                                allDay: true
+                            };
+                            events.push(obj);
+                        }
+                        refetchEvents(events);
+                    }
+                },*/
                 eventClick: function (calEvent) {
                     var chosenDate = calEvent.start._i;
                     $.when(loadEditFarmYields(chosenDate)).then(function () {
@@ -209,17 +224,15 @@ function farmYields() {
                     bindYieldButtons();
                 }
             });
-        });
+        /*});*/
     }
 
     function getCalData() {
-        var source = [{}];
-        var searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery), yieldEnds = [];
+        var searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery), yieldEnds = [{}];
         $.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
             data: data,
             success: function (msg) {
-                alert("!");
                 localStorage['CT_key'] = msg['Key'];
                 startTimer(msg.Key);
                 yieldList = msg['ReturnData'];
@@ -234,13 +247,10 @@ function farmYields() {
                         lastdate = shiftDate;
                     }
                 }
-            },
-            error: function () {
-                alert('could not get the data');
-            },
+            }
         })
 
-        return source;
+        return yieldEnds;
     }
 
 function loadEditFarmYields(date) {
