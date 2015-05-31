@@ -78,6 +78,7 @@
     <Property Name="FarmYieldHeaderID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
     <Property Name="YieldDate" Type="datetime" Nullable="false" />
     <Property Name="PlantWeight" Type="decimal" Scale="2" />
+    <Property Name="WeighBacks" Type="decimal" Scale="2" />
   </EntityType>
   <EntityType Name="FarmYields">
     <Key>

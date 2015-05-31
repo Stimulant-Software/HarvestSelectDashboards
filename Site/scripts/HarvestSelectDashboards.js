@@ -138,8 +138,8 @@ function farmYields() {
     });
 
     function loadCalendar() {
-        /*var searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery), yieldEnds = []*/;
-        /*$.when($.ajax('../api/FarmYield/FarmYieldList', {
+        var searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery), yieldEnds = [];
+        $.when($.ajax('../api/FarmYield/FarmYieldList', {
             type: 'POST',
             data: data,
             success: function (msg) {
@@ -162,13 +162,13 @@ function farmYields() {
                 alert("Could not fetch the data.");
                 console.log(msg);
             }
-        })).then(function () {*/
+        })).then(function () {
             hideProgress();
             $('#calendarModal').modal();
             $('#calendarModal .modal-body').fullCalendar({
-                events: 
+                /*events: 
                     function (start, end, timezone, refetchEvents) {
-                    var results = getCalData();
+                    var results = yieldEnds;
                     var events = [];
                     for (var event in results) {
                         var obj = {
@@ -180,7 +180,7 @@ function farmYields() {
                         events.push(obj);
                     }
                     refetchEvents(events);
-                },
+                },*/
                 dayClick: function () {
                     $('#rowContainer').empty();
                     $('.plantpounds').css('opacity', 1);
@@ -198,7 +198,7 @@ function farmYields() {
                     $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
                     $('#calendarModal').modal('hide');
                 },
-                /*eventSources: {
+                eventSources: {
                     events: function (start, end, timezone, refetchEvents) {
                         var results = getCalData();
                         var events = [];
@@ -213,7 +213,7 @@ function farmYields() {
                         }
                         refetchEvents(events);
                     }
-                },*/
+                },
                 eventClick: function (calEvent) {
                     var chosenDate = calEvent.start._i;
                     $.when(loadEditFarmYields(chosenDate)).then(function () {
@@ -224,7 +224,7 @@ function farmYields() {
                     bindYieldButtons();
                 }
             });
-        /*});*/
+        });
     }
 
     function getCalData() {
@@ -233,9 +233,11 @@ function farmYields() {
             type: 'POST',
             data: data,
             success: function (msg) {
+                console.log(startDateMonth);
                 localStorage['CT_key'] = msg['Key'];
                 startTimer(msg.Key);
                 yieldList = msg['ReturnData'];
+                console.log(yieldList);
                 var lastdate = yieldList[0].YieldDate.split(" ")[0];
                 for (var i = 0; i < yieldList.length; i++) {
                     var shiftDate = yieldList[i].YieldDate.split(" ")[0];
@@ -272,7 +274,6 @@ function loadEditFarmYields(date) {
             localStorage['CT_key'] = msg['Key'];
             startTimer(msg.Key);
             plantPoundsData = msg['ReturnData'];
-            console.log(plantPoundsData);
             $('#plantpounds').val(plantPoundsData[0].PlantWeight);
             $('#plantPoundsID').val(plantPoundsData[0].FarmYieldHeaderID);
             $('#weighbacks').val(plantPoundsData[0].WeighBacks);
