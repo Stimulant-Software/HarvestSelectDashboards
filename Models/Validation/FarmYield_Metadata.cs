@@ -15,6 +15,8 @@ namespace SGApp.Models.Validation
         public decimal PoundsHeaded { get; set; }
         public decimal PercentYield { get; set; }
         public decimal PercentYield2 { get; set; }
+        public System.DateTime Start_YieldDate { get; set; }
+        public System.DateTime End_YieldDate { get; set; }
 
 
 

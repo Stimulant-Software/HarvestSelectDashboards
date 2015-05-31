@@ -154,7 +154,8 @@ namespace SGApp.Controllers
                         cqDTO.End_YieldDate = DateTime.Parse((int.Parse(cqDTO.StartDateMonth) + 1).ToString() + "/14/" + cqDTO.StartDateYear).ToString();
                     }
 
-                    
+                    cqDTO.StartDateMonth = null;
+                    cqDTO.StartDateYear = null;
                 }
                 var predicate = ur.GetPredicate(cqDTO, u, companyId);
                 var data = ur.GetByPredicate(predicate);

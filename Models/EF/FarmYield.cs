@@ -22,6 +22,8 @@ namespace SGApp.Models.EF
         public Nullable<decimal> PoundsHeaded { get; set; }
         public Nullable<decimal> PercentYield { get; set; }
         public Nullable<decimal> PercentYield2 { get; set; }
+        public System.DateTime Start_YieldDate { get; set; }
+        public System.DateTime End_YieldDate { get; set; }
     
         public virtual Pond Pond { get; set; }
     }
