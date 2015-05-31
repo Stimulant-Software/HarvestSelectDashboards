@@ -248,8 +248,13 @@ function farmYields() {
                     }
                 }
             }
-        })
-
+        });
+        var view = $('#calendarModal .modal-body').fullCalendar('getView');
+        // calendar view actually starts days before the month you're viewing
+        // to account for calendar view including those days!
+        startDateMonth = view.start._d.getMonth() + 2; // adding one for see above, one for javascript month rep
+        stateDateYear = view.start._d.getFullYear();
+        console.log(view.start._d + "/" + startDateMonth );
         return yieldEnds;
     }
 
