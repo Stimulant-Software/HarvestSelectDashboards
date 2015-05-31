@@ -138,7 +138,6 @@ namespace SGApp.Controllers
                 else
                 {
                     int sm = int.Parse(cqDTO.StartDateMonth);
-                    int sy = int.Parse(cqDTO.StartDateYear);
                     if (sm == 1)
                     {
                         cqDTO.Start_YieldDate = DateTime.Parse("12/23/" + (int.Parse(cqDTO.StartDateYear) - 1).ToString()).ToString();
