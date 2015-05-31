@@ -142,7 +142,7 @@ namespace SGApp.Controllers
                     dic.Add("FarmYieldHeaderID", item.FarmYieldHeaderID.ToString());
                     dic.Add("YieldDate", item.YieldDate.ToShortDateString());
                     dic.Add("PlantWeight", item.PlantWeight.ToString());
-                    dic.Add("WeighBacks", item.PlantWeight.ToString());
+                    dic.Add("WeighBacks", item.WeighBacks.ToString());
                     col.Add(dic);
                     var ufdic = new Dictionary<string, string>();
 
