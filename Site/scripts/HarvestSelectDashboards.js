@@ -368,12 +368,12 @@ function shiftEnd() {
     $('#shiftDate').unbind().click(function () {
         console.log("clicked");
         if (calFlag != "created") loadCalendar(startDateMonth, startDateYear);
-        else  { $('#calendarModal').modal(); return; }
+        //else  { $('#calendarModal').modal(); return; }
     });
 
     function loadCalendar() {
         calFlag = "created";
-        var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), shiftEnds = [];
+        //var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), shiftEnds = [];
 
         $('#calendarModal .modal-body').fullCalendar({
             events: function (start, end, timezone, refetchEvents) {
@@ -494,12 +494,12 @@ function liveSample() {
     var calFlag, date, addOrEdit, date, i, tdate = getTodaysMonth(), startDateMonth = tdate.month, startDateYear = tdate.year;
     $('#shiftDate').unbind().click(function () {
         if (calFlag != "created") loadCalendar(startDateMonth, startDateYear);
-        else { $('#calendarModal').modal(); return; }
+        //else { $('#calendarModal').modal(); return; }
     });
 
     function loadCalendar() {
         calFlag = "created";
-        var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), samplingDates = [];
+        //var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), samplingDates = [];
 
         $('#calendarModal .modal-body').fullCalendar({
             events: function (start, end, timezone, refetchEvents) {
