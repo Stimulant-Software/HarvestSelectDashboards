@@ -129,47 +129,27 @@ function getTodaysMonth() {
 
 /* FARM YIELDS */
 function farmYields() {
-    var date, i, tdate = getTodaysMonth(), startDateMonth = tdate.month, startDateYear = tdate.year;
+    var calFlag, date, i, tdate = getTodaysMonth(), startDateMonth = tdate.month, startDateYear = tdate.year;
     $('#shiftDate').unbind().click(function () {
-        // TO DO: limit calendar call to current month
-        // TO DO: bind next and previous buttons on calendar to month calls
-        showProgress('body');
-        loadCalendar(startDateMonth, startDateYear);
+        if (calFlag != "created") loadCalendar(startDateMonth, startDateYear);
+        else $('#calendarModal').modal();
     });
 
     function loadCalendar() {
-        var searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery), yieldEnds = [];
-        $.when($.ajax('../api/FarmYield/FarmYieldList', {
-            type: 'POST',
-            data: data,
-            success: function (msg) {
-                localStorage['CT_key'] = msg['Key'];
-                startTimer(msg.Key);
-                yieldList = msg['ReturnData'];
-                var lastdate = yieldList[0].YieldDate.split(" ")[0];
-                for (var i = 0; i < yieldList.length; i++) {
-                    var shiftDate = yieldList[i].YieldDate.split(" ")[0];
-                    if (i == 0) {
-                        yieldEnds.push(shiftDate);
-                    }
-                    else if (shiftDate != lastdate) {
-                        yieldEnds.push(shiftDate);
-                        lastdate = shiftDate;
-                    }
-                }
-            },
-            error: function (msg) {
-                alert("Could not fetch the data.");
-                console.log(msg);
-            }
-        })).then(function () {
-            $('#calendarModal').modal();
-            $('#calendarModal .modal-body').fullCalendar({
-                events:
-                    function (start, end, timezone, refetchEvents) {
-                        $.when(hideProgress()).then(function(){showProgress('body');});
+        calFlag = "created";
+        $('#calendarModal .modal-body').fullCalendar({
+            events:
+                function (start, end, timezone, refetchEvents) {
+                    $.when(hideProgress()).then(function () {
+                        showProgress('body');
+                        var view = $('#calendarModal .modal-body').fullCalendar('getView');
+
+                        stateDateYear = view.start._d.getFullYear();
+                        if (view.start._d.getMonth() == 11) { startDateMonth = 1; startDateYear = view.start._d.getFullYear() - 1; } // looking at January
+                        else if (view.start._d.getMonth() == 10) startDateMonth == 12; // looking at December
+                        else startDateMonth = view.start._d.getMonth() + 2; // adding one for javascript month representation, 1 for view starting 10 days prior to viewed month
                         
-                        var results = [], searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery), yieldEnds = [{}];
+                        var results = [], searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery);
                         $.when($.ajax('../api/FarmYield/FarmYieldList', {
                             type: 'POST',
                             data: data,
@@ -177,22 +157,21 @@ function farmYields() {
                                 localStorage['CT_key'] = msg['Key'];
                                 startTimer(msg.Key);
                                 yieldList = msg['ReturnData'];
-                                var lastdate = yieldList[0].YieldDate.split(" ")[0];
-                                for (var i = 0; i < yieldList.length; i++) {
-                                    var shiftDate = yieldList[i].YieldDate.split(" ")[0];
-                                    if (i == 0) { results.push(shiftDate); }
-                                    else if (shiftDate != lastdate) {
-                                        results.push(shiftDate);
-                                        lastdate = shiftDate;
-                                    }
-                                };
-                                var view = $('#calendarModal .modal-body').fullCalendar('getView');
-                                // TODO: adjust for month and year based on month
-                                startDateMonth = view.start._d.getMonth() + 1; // adding one for javascript month representation
-                                stateDateYear = view.start._d.getFullYear();
+                                if(yieldList.length>0) {
+                                    var lastdate = yieldList[0].YieldDate.split(" ")[0];
+                                    for (var i = 0; i < yieldList.length; i++) {
+                                        var shiftDate = yieldList[i].YieldDate.split(" ")[0];
+                                        if (i == 0) { results.push(shiftDate); }
+                                        else if (shiftDate != lastdate) {
+                                            results.push(shiftDate);
+                                            lastdate = shiftDate;
+                                        }
+                                    };
+                                }
                             }
                         })).then(function () { 
                             hideProgress();
+                            $('#calendarModal').modal();
                             var events = [];
                             for (var event in results) {
                                 var obj = {
@@ -205,34 +184,32 @@ function farmYields() {
                             }
                             refetchEvents(events);
                         });
-                    },
-                dayClick: function () {
-                    $('#rowContainer').empty();
-                    $('.plantpounds, .yield-labels').css('opacity', 1);
-                    date = $(this).data('date');
-
-                    var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-2"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-2"><select id="ponds0" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-6"><input placeholder="(Pond Weight)" id="pounds0" class="pounds table-numbers" type="text"><input placeholder="(Headed Weight)" id="headedpounds0" class="headedpounds table-numbers" type="text"><input placeholder="(% Yield1)" id="pctyield1_0" class="pctyield1 table-numbers" type="text"><input placeholder="(% Yield2)" id="pctyield2_0" class="pctyield2 table-numbers" type="text"></div><div class="col-xs-2"><a href="#" class="add-row"><img src="img/plus.png"></a><a href="#" class="delete-row"><img src="img/close.png"></a></div></section>';
-
-                    $.when($('#rowContainer').append(newRowHtml)).then(function () {
-                        loadFarmsDDL(0);
-                        $('.row.buttons').show();
                     });
-                    i = 1;
-                    bindYieldButtons();
-                    $('.date-select h3').remove();
-                    $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
-                    $('#calendarModal').modal('hide');
                 },
-                eventClick: function (calEvent) {
-                    var chosenDate = calEvent.start._i;
-                    $.when(loadEditFarmYields(chosenDate)).then(function () {
-                        $('#calendarModal').modal('hide');
-                    });
+            dayClick: function () {
+                $('#rowContainer').empty();
+                $('.plantpounds, .yield-labels').css('opacity', 1);
+                date = $(this).data('date');
 
-                    // adjust buttons to take edits instead of new
-                    bindYieldButtons();
-                }
-            });
+                var newRowHtml = '<section class="row row0 data" data-rownum="0" data-yieldid="-1"><div class="col-xs-2"><select id="farms0" class="farmDDL"></select></div><div class="col-xs-2"><select id="ponds0" class="pondsDDL"><option>(Pond)</option></select></div><div class="col-xs-6"><input placeholder="(Pond Weight)" id="pounds0" class="pounds table-numbers" type="text"><input placeholder="(Headed Weight)" id="headedpounds0" class="headedpounds table-numbers" type="text"><input placeholder="(% Yield1)" id="pctyield1_0" class="pctyield1 table-numbers" type="text"><input placeholder="(% Yield2)" id="pctyield2_0" class="pctyield2 table-numbers" type="text"></div><div class="col-xs-2"><a href="#" class="add-row"><img src="img/plus.png"></a><a href="#" class="delete-row"><img src="img/close.png"></a></div></section>';
+
+                $.when($('#rowContainer').append(newRowHtml)).then(function () {
+                    loadFarmsDDL(0);
+                    $('.row.buttons').show();
+                });
+                i = 1;
+                bindYieldButtons();
+                $('.date-select h3').remove();
+                $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                $('#calendarModal').modal('hide');
+            },
+            eventClick: function (calEvent) {
+                var chosenDate = calEvent.start._i;
+                $.when(loadEditFarmYields(chosenDate)).then(function () {
+                    $('#calendarModal').modal('hide');
+                });
+                bindYieldButtons();
+            }
         });
     }
 
@@ -250,9 +227,12 @@ function farmYields() {
                 localStorage['CT_key'] = msg['Key'];
                 startTimer(msg.Key);
                 plantPoundsData = msg['ReturnData'];
-                $('#plantpounds').val(plantPoundsData[0].PlantWeight);
-                $('#plantPoundsID').val(plantPoundsData[0].FarmYieldHeaderID);
-                $('#weighbacks').val(plantPoundsData[0].WeighBacks);
+                var plantWeight = typeof plantPoundsData[0] !== "undefined" ? plantPoundsData[0].PlantWeight : 0;
+                var weighBacks = typeof plantPoundsData[0] !== "undefined" ? plantPoundsData[0].WeighBacks : 0;
+                var farmYieldHeaderID = typeof plantPoundsData[0] !== "undefined" ? plantPoundsData[0].FarmYieldHeaderID : 0;
+                $('#plantpounds').val(plantWeight);
+                $('#plantPoundsID').val(farmYieldHeaderID);
+                $('#weighbacks').val(weighBacks);
             }
         });
         $.ajax('../api/FarmYield/FarmYieldList', {
@@ -377,115 +357,113 @@ function farmYields() {
         var ddlHtml = '<option value="">Select Farm</option>', searchQuery = { "Key": _key, "userID": userID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Farm/FarmList', {
             type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg.Key);  farmList = msg['ReturnData']; for (var i = 0; i < farmList.length; ++i) { if (farmList[i].StatusId == "1") { if (typeof farmID !== "undefined" && farmList[i].FarmId == farmID) { ddlHtml += '<option value="' + farmList[i].FarmId + '" selected>' + farmList[i].FarmName + '</option>'; } else { ddlHtml += '<option value="' + farmList[i].FarmId + '">' + farmList[i].FarmName + '</option>'; } } } } })).then(function () { $('#farms' + rowID).empty().html(ddlHtml); }); }
 
-    function loadPondsDDL(rowID, farmID, pondID) { var ddlHtml = '<option value="">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg.Key);  pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (typeof pondID !== "undefined" && pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).empty().html(ddlHtml).css('opacity', 1); }); }
+    function loadPondsDDL(rowID, farmID, pondID) {
+        var ddlHtml = '<option value="">Select Pond</option>', searchQuery = { "Key": _key, "userID": userID, "FarmId": farmID }; data = JSON.stringify(searchQuery); $.when($.ajax('../api/Pond/PondList', { type: 'POST', data: data, success: function (msg) { localStorage['CT_key'] = msg['Key']; startTimer(msg.Key); pondList = msg['ReturnData']; for (var i = 0; i < pondList.length; ++i) { if (pondList[i].StatusId == "1") { if (typeof pondID !== "undefined" && pondList[i].PondId == pondID) { ddlHtml += '<option value="' + pondList[i].PondId + '" selected>' + pondList[i].PondName + '</option>'; } else { ddlHtml += '<option value="' + pondList[i].PondId + '">' + pondList[i].PondName + '</option>'; } } } } })).then(function () { $('#ponds' + rowID).empty().html(ddlHtml).css('opacity', 1); });
+    }
 }
 
 /* SHIFT END */
 function shiftEnd() {
-    hideProgress();
-    $('.row.fields, .row.buttons').hide();
-    var date, addOrEdit;
+    var calFlag, date, addOrEdit, date, i, tdate = getTodaysMonth(), startDateMonth = tdate.month, startDateYear = tdate.year;
     $('#shiftDate').unbind().click(function () {
-        $('input').val("");
-        $('.row.fields, .row.buttons').fadeIn(250);
+        console.log("clicked");
+        if (calFlag != "created") loadCalendar(startDateMonth, startDateYear);
+        else  { $('#calendarModal').modal(); return; }
+    });
+
+    function loadCalendar() {
+        calFlag = "created";
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), shiftEnds = [];
-        
-        $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
-            type: 'POST',
-            data: data,
-            success: function (msg) {
-               
-                localStorage['CT_key'] = msg['Key'];
-                startTimer(msg.Key); 
-                shiftEndList = msg['ReturnData'];
-                for (var i = 0; i < shiftEndList.length; i++) {
-                    var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
-                    shiftEnds.push(shiftDate);
-                }
-            }
-        })).then(function () {
-            $('#calendarModal .modal-body').fullCalendar('destroy');
-            $('#calendarModal .modal-body').fullCalendar({
-                events: function (start, end, timezone, refetchEvents) {
-                    var results = shiftEnds;
-                    var events = [];
-                    for (var event in results) {
-                        var obj = {
-                            title: "EDIT",
-                            start: results[event],
-                            end: results[event],
-                            allDay: true
-                        };
-                        events.push(obj);
-                    }
-                    refetchEvents(events);
-                },
-                eventClick: function(event) {
-                    date = event.start._i, searchQuery = { "Key": _key, "ShiftDate": date }, data = JSON.stringify(searchQuery);
+
+        $('#calendarModal .modal-body').fullCalendar({
+            events: function (start, end, timezone, refetchEvents) {
+                $.when(hideProgress()).then(function () {
+                    showProgress('body');
+                    var view = $('#calendarModal .modal-body').fullCalendar('getView');
+
+                    stateDateYear = view.start._d.getFullYear();
+                    if (view.start._d.getMonth() == 11) { startDateMonth = 1; startDateYear = view.start._d.getFullYear() - 1; } // looking at January
+                    else if (view.start._d.getMonth() == 10) startDateMonth == 12; // looking at December
+                    else startDateMonth = view.start._d.getMonth() + 2; // adding one for javascript month representation, 1 for view starting 10 days prior to viewed month
+
+                    var results = [], searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery);
                     $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
                         type: 'POST',
                         data: data,
                         success: function (msg) {
                             localStorage['CT_key'] = msg['Key'];
                             startTimer(msg.Key);
-                            shiftEndData = msg['ReturnData'][0];
-                            $('#rowContainer').empty();
-                            $('.date-select h3').remove();
-                            $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
-                            $('#regEmpLate').val(shiftEndData.RegEmpLate);
-                            $('#regEmpOut').val(shiftEndData.RegEmpOut);
-                            $('#regEmpLeftEarly').val(shiftEndData.RegEmplLeftEarly);
-                            $('#tempEmpOut').val(shiftEndData.TempEmpOut);
-                            $('#inmateEmpLeftEarly').val(shiftEndData.InmateLeftEarly);
-                            $('#empVacation').val(shiftEndData.EmployeesOnVacation);
-                            $('#inLateOut').val(shiftEndData.InLateOut);
-                            $('#finKill').val(shiftEndData.FinishedKill);
-                            $('#finFillet').val(shiftEndData.FinishedFillet);
-                            $('#finSkinned').val(shiftEndData.FinishedSkinning);
-                            $('#dayFreeze').val(shiftEndData.DayFinishedFreezing);
-                            $('#nightFreeze').val(shiftEndData.NightFinishedFreezing);
-                            $('#dayFroze').val(shiftEndData.DayShiftFroze);
-                            $('#nightFroze').val(shiftEndData.NightShiftFroze);
-                            $('#filletScale').val(shiftEndData.FilletScaleReading);
-                            $('#downtimeMin').val(shiftEndData.DowntimeMinutes);
-                            addOrEdit = shiftEndData.ShiftEndID;
+                            shiftEndList = msg['ReturnData'];
+                            if (shiftEndList.length > 0) {
+                                for (var i = 0; i < shiftEndList.length; i++) {
+                                    var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
+                                    results.push(shiftDate);
+                                }
+                            }
                         }
                     })).then(function () {
-                        $('#calendarModal').modal('hide');
-                        $('.row.fields, .row.buttons').fadeIn(250);
+                        hideProgress();
+                        $('#calendarModal').modal();
+                        var events = [];
+                        for (var event in results) {
+                            var obj = {
+                                title: "EDIT",
+                                start: results[event],
+                                end: results[event],
+                                allDay: true
+                            };
+                            events.push(obj);
+                        }
+                        refetchEvents(events);
                     });
-                },
-                dayClick: function () {
-                    $('#rowContainer').empty();
-                    date = $(this).data('date');
-                    $('.date-select h3').remove();
-                    $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
-                    // TODO: add edit function, detected by existing data in calendar
-                    // this assumes new/add:
-                    //searchQuery = { "Key": _key, "ShiftDate": date }, data = JSON.stringify(searchQuery), shiftEnds = [];
-
-                    //$.ajax('../api/ShiftEnd/ShiftEndList', {
-                    //    type: 'POST',
-                    //    data: data,
-                    //    success: function (msg) {
-                    //        debugger;
-                    //        localStorage['CT_key'] = msg['Key'];
-                    //        startTimer(msg.Key); 
-                    //        shiftEndList = msg['ReturnData'];
-                    //        for (var i = 0; i < shiftEndList.length; i++) {
-                    //            var shiftDate = shiftEndList[i].ShiftDate.split(" ")[0];
-                    //            shiftEnds.push(shiftDate);
-                    //        }
-                    //    }
-                    //});
-                    addOrEdit = "-1";
+                });
+            },
+            eventClick: function (event) {
+                date = event.start._i, searchQuery = { "Key": _key, "ShiftDate": date }, data = JSON.stringify(searchQuery);
+                $.when($.ajax('../api/ShiftEnd/ShiftEndList', {
+                    type: 'POST',
+                    data: data,
+                    success: function (msg) {
+                        localStorage['CT_key'] = msg['Key'];
+                        startTimer(msg.Key);
+                        shiftEndData = msg['ReturnData'][0];
+                        $('#rowContainer').empty();
+                        $('.date-select h3').remove();
+                        $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                        $('#regEmpLate').val(shiftEndData.RegEmpLate);
+                        $('#regEmpOut').val(shiftEndData.RegEmpOut);
+                        $('#regEmpLeftEarly').val(shiftEndData.RegEmplLeftEarly);
+                        $('#tempEmpOut').val(shiftEndData.TempEmpOut);
+                        $('#inmateEmpLeftEarly').val(shiftEndData.InmateLeftEarly);
+                        $('#empVacation').val(shiftEndData.EmployeesOnVacation);
+                        $('#inLateOut').val(shiftEndData.InLateOut);
+                        $('#finKill').val(shiftEndData.FinishedKill);
+                        $('#finFillet').val(shiftEndData.FinishedFillet);
+                        $('#finSkinned').val(shiftEndData.FinishedSkinning);
+                        $('#dayFreeze').val(shiftEndData.DayFinishedFreezing);
+                        $('#nightFreeze').val(shiftEndData.NightFinishedFreezing);
+                        $('#dayFroze').val(shiftEndData.DayShiftFroze);
+                        $('#nightFroze').val(shiftEndData.NightShiftFroze);
+                        $('#filletScale').val(shiftEndData.FilletScaleReading);
+                        $('#downtimeMin').val(shiftEndData.DowntimeMinutes);
+                        addOrEdit = shiftEndData.ShiftEndID;
+                    }
+                })).then(function () {
                     $('#calendarModal').modal('hide');
-                    $('.row.fields, .row.buttons').fadeIn(250);
-                }
-            });
+                    $('.row.fields, .row.buttons').css('opacity',1);
+                });
+            },
+            dayClick: function () {
+                $('#rowContainer').empty();
+                date = $(this).data('date');
+                $('.date-select h3').remove();
+                $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                addOrEdit = "-1";
+                $('#calendarModal').modal('hide');
+                $('.row.fields, .row.buttons').css('opacity', 1);
+            }
         });
-        
-    });
+    }
 
     $('.buttons .reset').unbind().click(function (e) {
         e.preventDefault();
@@ -497,9 +475,6 @@ function shiftEnd() {
     $('.buttons .save').unbind().click(function (e) {
         e.preventDefault();
 
-        //var dayFreeze = $('#dayFreeze').val() == "" ? "00:00" : $('#dayFreeze').val(shiftEndData.DayFinishedFreezing), nightFreeze = $('#nightFreeze').val() == "" ? "00:00" : $('#nightFreeze').val(shiftEndData.NightFinishedFreezing);
-
-        // Harper TODO - you need to add a column / call in API for "DoownTimeMinutes"
         var searchQuery = { "Key": _key, "userID": userID, "ShiftDate": date, "ShiftEndID": addOrEdit, "DayFinishedFreezing": $('#dayFreeze').val(), "DayShiftFroze": $('#dayFroze').val(), "FilletScaleReading": $('#filletScale').val(), "FinishedFillet": $('#finFillet').val(), "FinishedKill": $('#finKill').val(), "FinishedSkinning": $('#finSkinned').val(), "InmateLeftEarly": $('#inmateEmpLeftEarly').val(), "NightFinishedFreezing": $('#nightFreeze').val(), "NightShiftFroze": $('#nightFroze').val(), "RegEmpLate": $('#regEmpLate').val(), "RegEmpOut": $('#regEmpOut').val(), "InLateOut": $('#inLateOut').val(), "EmployeesOnVacation": $('#empVacation').val(), "RegEmplLeftEarly": $('#regEmpLeftEarly').val(), "TempEmpOut": $('#tempEmpOut').val(), "DowntimeMinutes": $('#downtimeMin').val() }, data = JSON.stringify(searchQuery);
         $.when($.ajax('../api/ShiftEnd/ShiftEndAddOrEdit', {
             type: 'PUT',
@@ -510,78 +485,93 @@ function shiftEnd() {
                 farmList = msg['ReturnData'];
                 $('.date-select').append("<div>Information Saved!</div>");
             }
-        })).then( function() { $('input').val(""); $('.row.fields, .row.buttons').hide(); });
+        })).then(function () { $('input').val(""); $('.row.fields, .row.buttons').css('opacity', 0); });
     });
 }
 
 /* LIVE FISH SAMPLING */
 function liveSample() {
-    hideProgress();
-    $('.row.fields, .row.buttons').hide();
-    var date, addOrEdit;
+    var calFlag, date, addOrEdit, date, i, tdate = getTodaysMonth(), startDateMonth = tdate.month, startDateYear = tdate.year;
     $('#shiftDate').unbind().click(function () {
-        $('input').val("");
-        $('.row.fields, .row.buttons').fadeIn(250);
+        if (calFlag != "created") loadCalendar(startDateMonth, startDateYear);
+        else { $('#calendarModal').modal(); return; }
+    });
+
+    function loadCalendar() {
+        calFlag = "created";
         var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), samplingDates = [];
 
-        $.when($.ajax('../api/LiveFishSampling/LiveFishSamplingList', {
-            type: 'POST',
-            data: data,
-            success: function (msg) {
-                localStorage['CT_key'] = msg['Key'];
-                startTimer(msg.Key);
-                sampleList = msg['ReturnData'];
-                for (var i = 0; i < sampleList.length; i++) {
-                    var sampleDate = sampleList[i].SamplingDate.split(" ")[0];
-                    samplingDates.push(sampleDate);
-                }
-            }
-        })).then(function () {
-            $('#calendarModal .modal-body').fullCalendar({
-                events: function (start, end, timezone, refetchEvents) {
-                    var results = samplingDates;
-                    var events = [];
-                    for (var event in results) {
-                        var obj = {
-                            title: "EDIT",
-                            start: results[event],
-                            end: results[event],
-                            allDay: true
-                        };
-                        events.push(obj);
-                    }
-                    refetchEvents(events);
-                },
-                eventClick: function (event) {
-                    date = event.start._i, searchQuery = { "Key": _key, "SamplingDate": date }, data = JSON.stringify(searchQuery);
+        $('#calendarModal .modal-body').fullCalendar({
+            events: function (start, end, timezone, refetchEvents) {
+                $.when(hideProgress()).then(function () {
+                    showProgress('body');
+                    var view = $('#calendarModal .modal-body').fullCalendar('getView');
+
+                    stateDateYear = view.start._d.getFullYear();
+                    if (view.start._d.getMonth() == 11) { startDateMonth = 1; startDateYear = view.start._d.getFullYear() - 1; } // looking at January
+                    else if (view.start._d.getMonth() == 10) startDateMonth == 12; // looking at December
+                    else startDateMonth = view.start._d.getMonth() + 2; // adding one for javascript month representation, 1 for view starting 10 days prior to viewed month
+
+                    var results = [], searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery);
                     $.when($.ajax('../api/LiveFishSampling/LiveFishSamplingList', {
                         type: 'POST',
                         data: data,
                         success: function (msg) {
                             localStorage['CT_key'] = msg['Key'];
                             startTimer(msg.Key);
-                            sampleData = msg['ReturnData'][0];
-                            $('#rowContainer').empty();
-                            $('.date-select h3').remove();
-                            $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
-                            $('#Pct0_125').val(sampleData.Pct0_125);
-                            $('#Avg0_125').val(sampleData.Avg0_125);
-                            $('#Pct125_225').val(sampleData.Pct125_225);
-                            $('#Avg125_225').val(sampleData.Avg125_225);
-                            $('#Pct225_3').val(sampleData.Pct225_3);
-                            $('#Avg225_3').val(sampleData.Avg225_3);
-                            $('#Pct3_5').val(sampleData.Pct3_5);
-                            $('#Avg3_5').val(sampleData.Avg3_5);
-                            $('#Pct5_Up').val(sampleData.Pct5_Up);
-                            $('#Avg5_Up').val(sampleData.Avg5_Up);
-                            addOrEdit = sampleData.SamplingID;
+                            sampleList = msg['ReturnData'];
+                            for (var i = 0; i < sampleList.length; i++) {
+                                var sampleDate = sampleList[i].SamplingDate.split(" ")[0];
+                                results.push(sampleDate);
+                            }
                         }
                     })).then(function () {
-                        $('#calendarModal').modal('hide');
-                        $('.row.fields, .row.buttons').fadeIn(250);
+                        hideProgress();
+                        $('#calendarModal').modal();
+                        var events = [];
+                        for (var event in results) {
+                            var obj = {
+                                title: "EDIT",
+                                start: results[event],
+                                end: results[event],
+                                allDay: true
+                            };
+                            events.push(obj);
+                        }
+                        refetchEvents(events);
                     });
-                },
-                dayClick: function () {
+                });
+            },
+            eventClick: function (event) {
+                date = event.start._i, searchQuery = { "Key": _key, "SamplingDate": date }, data = JSON.stringify(searchQuery);
+                $.when($.ajax('../api/LiveFishSampling/LiveFishSamplingList', {
+                    type: 'POST',
+                    data: data,
+                    success: function (msg) {
+                        localStorage['CT_key'] = msg['Key'];
+                        startTimer(msg.Key);
+                        sampleData = msg['ReturnData'][0];
+                        $('#rowContainer').empty();
+                        $('.date-select h3').remove();
+                        $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                        $('#Pct0_125').val(sampleData.Pct0_125);
+                        $('#Avg0_125').val(sampleData.Avg0_125);
+                        $('#Pct125_225').val(sampleData.Pct125_225);
+                        $('#Avg125_225').val(sampleData.Avg125_225);
+                        $('#Pct225_3').val(sampleData.Pct225_3);
+                        $('#Avg225_3').val(sampleData.Avg225_3);
+                        $('#Pct3_5').val(sampleData.Pct3_5);
+                        $('#Avg3_5').val(sampleData.Avg3_5);
+                        $('#Pct5_Up').val(sampleData.Pct5_Up);
+                        $('#Avg5_Up').val(sampleData.Avg5_Up);
+                        addOrEdit = sampleData.SamplingID;
+                    }
+                })).then(function () {
+                    $('#calendarModal').modal('hide');
+                    $('.row.fields, .row.buttons').css('opacity', 1);
+                });
+            },
+            dayClick: function () {
                     $('#rowContainer').empty();
                     date = $(this).data('date');
                     $('.date-select h3').remove();
@@ -605,12 +595,10 @@ function liveSample() {
                     });
                     addOrEdit = "-1";
                     $('#calendarModal').modal('hide');
-                    $('.row.fields, .row.buttons').fadeIn(250);
+                    $('.row.fields, .row.buttons').css('opacity',1);
                 }
-            });
         });
-
-    });
+    }
 
     $('.buttons .reset').unbind().click(function (e) {
         e.preventDefault();
@@ -631,6 +619,6 @@ function liveSample() {
                 farmList = msg['ReturnData'];
                 $('.date-select').append("<div>Information Saved!</div>");
             }
-        })).then(function () { $('input').val(""); $('.row.fields, .row.buttons').hide(); });
+        })).then(function () { $('input').val(""); $('.row.fields, .row.buttons').css('opacity',1); });
     });
 }
