@@ -140,11 +140,13 @@
     <Compile Include="Controllers\LiveFishSamplingController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PondController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\ShiftEndController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UtilitiesController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DTOs\CompanyDTO.cs" />
+    <Compile Include="DTOs\DailyReportDTO.cs" />
     <Compile Include="DTOs\FarmDTO.cs" />
     <Compile Include="DTOs\FarmYieldDTO.cs" />
     <Compile Include="Controllers\FarmYieldHeaderController.cs" />
@@ -320,6 +322,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>App.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="index.html" />
     <Content Include="Models\EF\App.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>App.edmx</DependentUpon>
@@ -365,10 +368,12 @@
     <Content Include="Site\img\plus.png" />
     <Content Include="Site\img\shift-end.png" />
     <Content Include="Site\index.html" />
+    <Content Include="Site\live-sampling.html" />
     <Content Include="Site\login.html" />
     <Content Include="Site\scripts\admin-functions.js" />
     <Content Include="Site\scripts\HarvestSelectDashboards.js" />
     <Content Include="Site\shift-times.html" />
+    <Content Include="Site\weekly-reports.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
