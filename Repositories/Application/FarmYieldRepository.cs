@@ -63,7 +63,17 @@ namespace SGApp.Repository.Application
             return DbContext.FarmYields.Where(x => x.YieldID == id).SingleOrDefault();
         }
 
+        public decimal? GetPondWeightByDate(DateTime reportDate)
+        {
+            DateTime endDate = reportDate.AddDays(1);
+            return DbContext.FarmYields.Where(x => x.YieldDate > reportDate && x.YieldDate < endDate).Sum(x => x.PoundsHeaded);
+        }
 
+        public List<FarmYield> GetByDate(DateTime reportDate)
+        {
+            DateTime endDate = reportDate.AddDays(1);
+            return DbContext.FarmYields.Where(x => x.YieldDate > reportDate && x.YieldDate < endDate).ToList();
+        }
     }
 
 

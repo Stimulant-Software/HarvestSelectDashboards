@@ -62,7 +62,11 @@ namespace SGApp.Repository.Application
         {
             return DbContext.LiveFishSamplings.Where(x => x.SamplingID == id).SingleOrDefault();
         }
-
+        public  LiveFishSampling GetByDate(DateTime reportDate)
+        {
+            DateTime endDate = reportDate.AddDays(1);
+            return DbContext.LiveFishSamplings.Where(x => x.SamplingDate > reportDate && x.SamplingDate < endDate).SingleOrDefault();
+        }
 
     }
 

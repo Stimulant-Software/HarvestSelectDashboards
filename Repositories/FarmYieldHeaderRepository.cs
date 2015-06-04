@@ -62,7 +62,11 @@ namespace SGApp.Repository.Application
         {
             return DbContext.FarmYieldHeaders.Where(x => x.FarmYieldHeaderID == id).SingleOrDefault();
         }
-
+        public FarmYieldHeader GetByDate(DateTime reportDate)
+        {
+            DateTime endDate = reportDate.AddDays(1);
+            return DbContext.FarmYieldHeaders.Where(x => x.YieldDate > reportDate && x.YieldDate < endDate).SingleOrDefault();
+        }
 
     }
 
