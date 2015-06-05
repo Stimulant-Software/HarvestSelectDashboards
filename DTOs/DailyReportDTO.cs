@@ -35,11 +35,6 @@ namespace SGApp.DTOs
             get;
             set;
         }
-        public virtual ICollection<Dictionary<string, List<object>>> ReturnData4
-        {
-            get;
-            set;
-        }
         public virtual ICollection<Dictionary<string, string>> Finish
         {
             get;
