@@ -720,7 +720,7 @@ function weeklyReport() {
                         localStorage['CT_key'] = msg['Key'];
                         startTimer(msg.Key);
                         //console.log(msg);
-                        var $employeesHtml = '<ul class="list-unstyled">', $employeesData = msg.Employees[0], $finishedHtml = '<ul class="list-unstyled">', $finishedData = msg.Finish[0], $freezingsHtml = '<ul class="list-unstyled">', $freezingsData = msg.Freezing[0], $samplingsHtml = '<ul class="list-unstyled">', $samplingsData = msg.Samplings[0], $headerData = msg.Header[0], $pondsData = msg.Ponds, $pondsHtml = '<ul class="list-unstyled"><li class="row header"><span class="col-xs-3 date">Farm</span><span class="col-xs-3 pond">Pond</span><span class="col-xs-3 pounds">Pounds</span><span class="col-xs-3 yield">Yield</span></li>', $totalPounds = 0, $totalPct = 0;
+                        var $employeesHtml = '<ul class="list-unstyled">', $employeesData = msg.Employees[0], $finishedHtml = '<ul class="list-unstyled">', $finishedData = msg.Finish[0], $freezingsHtml = '<ul class="list-unstyled">', $freezingsData = msg.Freezing[0], $samplingsSeries = [{}], $samplingsSeriesAvg = [{}], $samplingsSeriesPct = [{}], $samplingsData = msg.Samplings[0], $headerData = msg.Header[0], $pondsData = msg.Ponds, $pondsHtml = '<ul class="list-unstyled"><li class="row header"><span class="col-xs-3 date">Farm</span><span class="col-xs-3 pond">Pond</span><span class="col-xs-3 pounds">Pounds</span><span class="col-xs-3 yield">Yield</span></li>', $totalPounds = 0, $totalPct = 0;
                         
                         $('#pondWeight').empty().append($headerData.PondWeight != "" ? $headerData.PondWeight : "Not Entered");
                         $('#weighBacks').empty().append($headerData.WeighBacks != "" ? $headerData.WeighBacks : "Not Entered");
@@ -753,19 +753,66 @@ function weeklyReport() {
                         $finishedHtml += "</ul>";
                         $('.reports .finished').append($finishedHtml);
 
-                        for (var key in $samplingsData) {
-                            if ($samplingsData.hasOwnProperty(key)) {
-                                $samplingsHtml += "<li><strong>" + key + ":</strong> " + $samplingsData[key] + "</li>";
+                        for (var obj in $samplingsData) {
+                            if ($samplingsData.hasOwnProperty(obj)) {
+                                if(obj.substring(0,3) == "Avg") {
+                                    var newobj = [obj, parseFloat($samplingsData[obj])];
+                                    $samplingsSeriesAvg.push(newobj);
+                                } else if (obj.substring(0, 3) == "Pct") {
+                                    var newobj = [obj, parseFloat($samplingsData[obj])];
+                                    $samplingsSeriesPct.push(newobj);
+                                }
                             }
                         }
-                        $samplingsHtml += "</ul>";
-                        $('.reports .samplings').append($samplingsHtml);
+                        for (var i = 0; i < $samplingsSeriesPct.length; i++) {
+                            if (typeof $samplingsSeriesPct[i][0] !== "undefined") {
+                                var obj = {
+                                    name: $samplingsSeriesPct[i][0].replace("Pct", ""),
+                                    y: $samplingsSeriesPct[i][1],
+                                    tooltip: $samplingsSeriesAvg[i][1]
+                                }
+                                $samplingsSeries.push(obj);
+                            }
+                        }
+                        console.log($samplingsSeries);
+                        $(function () {
+                            $('.reports .samplings').highcharts({
+                                chart: {
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: null,
+                                    plotShadow: false
+                                },
+                                title: {
+                                    text: 'Samplings'
+                                },
+                                tooltip: {
+                                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        allowPointSelect: true,
+                                        cursor: 'pointer',
+                                        dataLabels: {
+                                            enabled: true,
+                                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                            style: {
+                                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                            }
+                                        }
+                                    }
+                                },
+                                series: [{
+                                    type: 'pie',
+                                    name: 'Browser share',
+                                    data: $samplingsSeries
+                                }]
+                            });
+                        });
 
                         for (var pond in $pondsData) {
-                            $pondsHtml += '<li class="row"><span class="col-xs-3 farm">' + $pondsData[pond].FarmID + '</span><span class="col-xs-3 pond">' + $pondsData[pond].PondName + '</span><span class="col-xs-3 pounds"' + $pondsData[pond].PoundsYielded + '></span><span class="col-xs-3 yield">' + $pondsData[pond].PercentYield + '</span></li>';
+                            $pondsHtml += '<li class="row"><span class="col-xs-3 farm">' + $pondsData[pond].FarmID + '</span><span class="col-xs-3 pond">' + $pondsData[pond].PondName + '</span><span class="col-xs-3 pounds">' + $pondsData[pond].PoundsYielded + '</span><span class="col-xs-3 yield">' + $pondsData[pond].PercentYield + '</span></li>';
                             $totalPounds += parseFloat($pondsData[pond].PoundsYielded);
                             $totalPct += parseFloat($pondsData[pond].PercentYield);
-                            console.log($totalPounds + "/" + $totalPct);
                         }
                         var $avgYield = $totalPct / $pondsData.length;
                         var $whatToCallMe = $totalPounds * ($avgYield/100);
@@ -773,7 +820,6 @@ function weeklyReport() {
                         $pondsHtml += '<span class="col-xs-4"><strong>Avg Yield:</strong> ' + $avgYield + '</span>';
                         $pondsHtml += '<span class="col-xs-4"><strong>Sum*Avg Yield:</strong> ' + $whatToCallMe + '</span></li><ul>';
                         $('.farm-yields').append($pondsHtml);
-                        console.log($pondsData);
 
                         hideProgress();
                         $('#calendarModal').modal('hide');
