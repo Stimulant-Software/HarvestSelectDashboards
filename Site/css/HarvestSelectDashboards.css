@@ -34,7 +34,7 @@ input[type="text"], input[type="time"], input[type="number"] { width: 20%; font-
 
 .fc-event { cursor: pointer; }
 
-.farm-yields .pondsDDL, .farm-yields .pounds, .farm-yields .plantpounds, .farm-yields .yield-labels, .farm-yields .headedpounds, .farm-yields .pctyield1, .pctyield2, .farm-yields .add-row, .farm-yields .delete-row { opacity: 0; }
+.farm-yields .pondsDDL, .farm-yields>.pounds, .farm-yields .plantpounds, .farm-yields .yield-labels, .farm-yields .headedpounds, .farm-yields .pctyield1, .pctyield2, .farm-yields .add-row, .farm-yields .delete-row { opacity: 0; }
 .farm-yields .farm-yield-header { border-bottom: 1px solid #bdbdbd; margin-bottom: 20px; padding-bottom: 10px; }
 .farm-yields label.plantpounds  { width: 130px; }
 .farm-yields input.plantpounds { width: 100px; margin-right: 10px; }
