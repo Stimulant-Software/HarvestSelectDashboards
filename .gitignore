@@ -45,3 +45,9 @@ obj/Debug/edmxResourcesToEmbed/Models/EF/App.csdl
 *.csdl
 obj/Debug/edmxResourcesToEmbed/Models/EF/App.csdl
 obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+bin/SGApp.dll
+bin/SGApp.pdb
+obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+obj/Debug/SGApp.pdb
+bin/SGApp.pdb
+obj/Debug/SGApp.dll

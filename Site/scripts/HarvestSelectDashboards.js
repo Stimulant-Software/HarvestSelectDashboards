@@ -14,6 +14,7 @@ $(function () {
     if ($('.farm-yields').length > 0) { showProgress(); farmYields(); }
     if ($('.shift-end').length > 0) { showProgress(); shiftEnd(); }
     if ($('.live-sample').length > 0) { showProgress(); liveSample(); }
+    if ($('.weekly-report').length > 0) { showProgress(); weeklyReport(); }
 });
 
 /* Login page */
@@ -622,3 +623,197 @@ function liveSample() {
         })).then(function () { $('input').val(""); $('.row.fields, .row.buttons').css('opacity',1); });
     });
 }
+
+/* WEEKLY REPORTS */
+function weeklyReport() {
+    var calFlag, date, i, tdate = getTodaysMonth(), startDateMonth = tdate.month, startDateYear = tdate.year;
+    $('#shiftDate').unbind().click(function () {
+        if (calFlag != "created") loadCalendar(startDateMonth, startDateYear);
+        //else { $('#calendarModal').modal(); return; }
+    });
+
+    function loadCalendar() {
+        //var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), samplingDates = [];
+
+        $('#calendarModal .modal-body').fullCalendar({
+            /*events: function (start, end, timezone, refetchEvents) {
+                $.when(hideProgress()).then(function () {
+                    showProgress('body');
+                    var view = $('#calendarModal .modal-body').fullCalendar('getView');
+
+                    stateDateYear = view.start._d.getFullYear();
+                    if (view.start._d.getMonth() == 11) { startDateMonth = 1; startDateYear = view.start._d.getFullYear() - 1; } // looking at January
+                    else if (view.start._d.getMonth() == 10) startDateMonth == 12; // looking at December
+                    else startDateMonth = view.start._d.getMonth() + 2; // adding one for javascript month representation, 1 for view starting 10 days prior to viewed month
+
+                    var results = [], searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery);
+                    $.when($.ajax('../api/LiveFishSampling/LiveFishSamplingList', {
+                        type: 'POST',
+                        data: data,
+                        success: function (msg) {
+                            localStorage['CT_key'] = msg['Key'];
+                            startTimer(msg.Key);
+                            sampleList = msg['ReturnData'];
+                            for (var i = 0; i < sampleList.length; i++) {
+                                var sampleDate = sampleList[i].SamplingDate.split(" ")[0];
+                                results.push(sampleDate);
+                            }
+                        }
+                    })).then(function () {
+                        hideProgress();
+                        $('#calendarModal').modal();
+                        var events = [];
+                        for (var event in results) {
+                            var obj = {
+                                title: "EDIT",
+                                start: results[event],
+                                end: results[event],
+                                allDay: true
+                            };
+                            events.push(obj);
+                        }
+                        refetchEvents(events);
+                    });
+                });
+            },
+            eventClick: function (event) {
+                date = event.start._i, searchQuery = { "Key": _key, "SamplingDate": date }, data = JSON.stringify(searchQuery);
+                $.when($.ajax('../api/LiveFishSampling/LiveFishSamplingList', {
+                    type: 'POST',
+                    data: data,
+                    success: function (msg) {
+                        localStorage['CT_key'] = msg['Key'];
+                        startTimer(msg.Key);
+                        sampleData = msg['ReturnData'][0];
+                        $('#rowContainer').empty();
+                        $('.date-select h3').remove();
+                        $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                        $('#Pct0_125').val(sampleData.Pct0_125);
+                        $('#Avg0_125').val(sampleData.Avg0_125);
+                        $('#Pct125_225').val(sampleData.Pct125_225);
+                        $('#Avg125_225').val(sampleData.Avg125_225);
+                        $('#Pct225_3').val(sampleData.Pct225_3);
+                        $('#Avg225_3').val(sampleData.Avg225_3);
+                        $('#Pct3_5').val(sampleData.Pct3_5);
+                        $('#Avg3_5').val(sampleData.Avg3_5);
+                        $('#Pct5_Up').val(sampleData.Pct5_Up);
+                        $('#Avg5_Up').val(sampleData.Avg5_Up);
+                        addOrEdit = sampleData.SamplingID;
+                    }
+                })).then(function () {
+                    $('#calendarModal').modal('hide');
+                    $('.row.fields, .row.buttons').css('opacity', 1);
+                });
+            },*/
+            dayClick: function () {
+                showProgress('body');
+                $('#rowContainer').empty();
+                date = $(this).data('date');
+                $('.date-select h3').remove();
+                $('.date-select').append("<h3><strong>" + date + "</strong></h3>");
+                searchQuery = { "Key": _key, "ReportDate": date }, data = JSON.stringify(searchQuery);
+
+                $.ajax('../api/Reports/DailyReport', {
+                    type: 'POST',
+                    data: data,
+                    success: function (msg) {
+                        localStorage['CT_key'] = msg['Key'];
+                        startTimer(msg.Key);
+                        //console.log(msg);
+                        var $employeesHtml = '<ul class="list-unstyled">', $employeesData = msg.Employees[0], $finishedHtml = '<ul class="list-unstyled">', $finishedData = msg.Finish[0], $freezingsHtml = '<ul class="list-unstyled">', $freezingsData = msg.Freezing[0], $samplingsHtml = '<ul class="list-unstyled">', $samplingsData = msg.Samplings[0], $headerData = msg.Header[0], $pondsData = msg.Ponds, $pondsHtml = '<ul class="list-unstyled"><li class="row header"><span class="col-xs-3 date">Farm</span><span class="col-xs-3 pond">Pond</span><span class="col-xs-3 pounds">Pounds</span><span class="col-xs-3 yield">Yield</span></li>', $totalPounds = 0, $totalPct = 0;
+                        
+                        $('#pondWeight').empty().append($headerData.PondWeight != "" ? $headerData.PondWeight : "Not Entered");
+                        $('#weighBacks').empty().append($headerData.WeighBacks != "" ? $headerData.WeighBacks : "Not Entered");
+                        $('#plantWeight').empty().append($headerData.PlantWeight != "" ? $headerData.PlantWeight : "Not Entered");
+                        $('#totalPounds').empty().append($headerData.TotalPounds != "" ? $headerData.TotalPounds : "Not Entered");
+                        $('#difference').empty().append($headerData.Variance != "" ? $headerData.Variance : "--");
+                        $('#downTime').empty().append($headerData.DownTime != "" ? $headerData.DownTime : "Not Entered");
+
+                        for (var key in $employeesData) {
+                            if ($employeesData.hasOwnProperty(key)) {
+                                $employeesHtml += "<li><strong>" + key + ":</strong> " + $employeesData[key] + "</li>";
+                            }
+                        }
+                        $employeesHtml += "</ul>";
+                        $('.reports .employees').append($employeesHtml);
+
+                        for (var key in $freezingsData) {
+                            if ($freezingsData.hasOwnProperty(key)) {
+                                $freezingsHtml += "<li><strong>" + key + ":</strong> " + $freezingsData[key] + "</li>";
+                            }
+                        }
+                        $freezingsHtml += "</ul>";
+                        $('.reports .freezings').append($freezingsHtml);
+
+                        for (var key in $finishedData) {
+                            if ($finishedData.hasOwnProperty(key)) {
+                                $finishedHtml += "<li><strong>" + key + ":</strong> " + $finishedData[key] + "</li>";
+                            }
+                        }
+                        $finishedHtml += "</ul>";
+                        $('.reports .finished').append($finishedHtml);
+
+                        for (var key in $samplingsData) {
+                            if ($samplingsData.hasOwnProperty(key)) {
+                                $samplingsHtml += "<li><strong>" + key + ":</strong> " + $samplingsData[key] + "</li>";
+                            }
+                        }
+                        $samplingsHtml += "</ul>";
+                        $('.reports .samplings').append($samplingsHtml);
+
+                        for (var pond in $pondsData) {
+                            $pondsHtml += '<li class="row"><span class="col-xs-3 farm">' + $pondsData[pond].FarmID + '</span><span class="col-xs-3 pond">' + $pondsData[pond].PondName + '</span><span class="col-xs-3 pounds"' + $pondsData[pond].PoundsYielded + '></span><span class="col-xs-3 yield">' + $pondsData[pond].PercentYield + '</span></li>';
+                            $totalPounds += parseFloat($pondsData[pond].PoundsYielded);
+                            $totalPct += parseFloat($pondsData[pond].PercentYield);
+                            console.log($totalPounds + "/" + $totalPct);
+                        }
+                        var $avgYield = $totalPct / $pondsData.length;
+                        var $whatToCallMe = $totalPounds * ($avgYield/100);
+                        $pondsHtml += '<li><span class="col-xs-4"><strong>Total Pounds:</strong> ' + $totalPounds + '</span>';
+                        $pondsHtml += '<span class="col-xs-4"><strong>Avg Yield:</strong> ' + $avgYield + '</span>';
+                        $pondsHtml += '<span class="col-xs-4"><strong>Sum*Avg Yield:</strong> ' + $whatToCallMe + '</span></li><ul>';
+                        $('.farm-yields').append($pondsHtml);
+                        console.log($pondsData);
+
+                        hideProgress();
+                        $('#calendarModal').modal('hide');
+                    }
+                });
+            }
+        });
+    }
+}
+
+// For eventual use in accordion?
+/*$pondsHtml += '<div class="panel panel-default">';
+                            $pondsHtml += '<div class="panel-heading" role="tab" id="farmOneHeader">';
+                            $pondsHtml += '<h4 class="panel-title">';
+                            $pondsHtml += '<a data-toggle="collapse" data-parent="#accordion" href="#farmOne" aria-expanded="true" aria-controls="farmOne">';
+                            $pondsHtml += 'Farm One';
+                            $pondsHtml += '</a>';
+                            $pondsHtml += '</h4>';
+                            $pondsHtml += '</div>';
+                            $pondsHtml += '<div id="Farm One" class="panel-collapse collapse" role="tabpanel" aria-labelledby="farmOneHeader">';
+                            $pondsHtml += '<div class="panel-body">';
+                            $pondsHtml += '<header class="row">';
+                            $pondsHtml += '<span class="col-xs-3 date">Date</span>';
+                            $pondsHtml += '<span class="col-xs-3 pond">Pond</span>';
+                            $pondsHtml += '<span class="col-xs-3 pounds">Pounds</span>';
+                            $pondsHtml += '<span class="col-xs-3 yield">Yield</span>';
+                            $pondsHtml += '</header>';
+                            $pondsHtml += '<ul>';
+                            $pondsHtml += '<li class="row">';
+                            $pondsHtml += '<span class="col-xs-3 date">'++'</span>';
+                            $pondsHtml += '<span class="col-xs-3 pond">'++'</span>';
+                            $pondsHtml += '<span class="col-xs-3 pounds"'++'></span>';
+                            $pondsHtml += '<span class="col-xs-3 yield">'++'</span>';
+                            $pondsHtml += '</li>';
+                            $pondsHtml += '</ul>';
+                            $pondsHtml += '<footer>';
+                            $pondsHtml += '<span class="col-xs-4">Total Pounds <span></span></span>';
+                            $pondsHtml += '<span class="col-xs-4">Avg Yield <span></span></span>';
+                            $pondsHtml += '<span class="col-xs-4">Sum*Avg  Yield <span></span></span>';
+                            $pondsHtml += '</footer>';
+                            $pondsHtml += '</div>';
+                            $pondsHtml += '</div>';
+                            $pondsHtml += '</div>';*/
