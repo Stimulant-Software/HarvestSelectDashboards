@@ -65,6 +65,7 @@ input[type="text"], input[type="time"], input[type="number"] { width: 20%; font-
 .weekly-report li.header { font-weight: bold; margin: 0; padding: 0; border-bottom: none; }
 .weekly-report .reports section { border: 1px solid #747474; }
 .weekly-report .reports header { font-weight: bold; text-align: center; font-size: 1.2em; padding: 0; margin-bottom: 5px; }
+.weekly-report  .data img {height: 50px; }
 
 #calendarModal { width: 90%; margin: 0 auto; top: 5%; left: 5%; z-index: -1; position: fixed; }
 #calendarModal.in { z-index: 3000; }
