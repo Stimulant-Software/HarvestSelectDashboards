@@ -720,7 +720,7 @@ function weeklyReport() {
                         localStorage['CT_key'] = msg['Key'];
                         startTimer(msg.Key);
                         //console.log(msg);
-                        var $employeesHtml = '<ul class="list-unstyled">', $employeesData = msg.Employees[0], $finishedHtml = '<ul class="list-unstyled">', $finishedData = msg.Finish[0], $freezingsHtml = '<ul class="list-unstyled">', $freezingsData = msg.Freezing[0], $samplingsSeries = [{}], $samplingsSeriesAvg = [{}], $samplingsSeriesPct = [{}], $samplingsData = msg.Samplings[0], $headerData = msg.Header[0], $pondsData = msg.Ponds, $pondsHtml = '<ul class="list-unstyled"><li class="row header"><span class="col-xs-3 date">Farm</span><span class="col-xs-3 pond">Pond</span><span class="col-xs-3 pounds">Pounds</span><span class="col-xs-3 yield">Yield</span></li>', $totalPounds = 0, $totalPct = 0;
+                        var $employeesHtml = '', $employeesData = msg.Employees[0], $finishedHtml = '<ul class="list-unstyled">', $finishedData = msg.Finish[0], $freezingsHtml = '<ul class="list-unstyled">', $freezingsData = msg.Freezing[0], $samplingsSeries = [{}], $samplingsSeriesAvg = [{}], $samplingsSeriesPct = [{}], $samplingsData = msg.Samplings[0], $headerData = msg.Header[0], $pondsData = msg.Ponds, $pondsHtml = '<ul class="list-unstyled"><li class="row header"><span class="col-xs-3 date">Farm</span><span class="col-xs-3 pond">Pond</span><span class="col-xs-3 pounds">Pounds</span><span class="col-xs-3 yield">Yield</span></li>', $totalPounds = 0, $totalPct = 0;
                         
                         $('#pondWeight').empty().append($headerData.PondWeight != "" ? $headerData.PondWeight : "Not Entered");
                         $('#weighBacks').empty().append($headerData.WeighBacks != "" ? $headerData.WeighBacks : "Not Entered");
@@ -729,12 +729,22 @@ function weeklyReport() {
                         $('#difference').empty().append($headerData.Variance != "" ? $headerData.Variance : "--");
                         $('#downTime').empty().append($headerData.DownTime != "" ? $headerData.DownTime : "Not Entered");
 
-                        for (var key in $employeesData) {
-                            if ($employeesData.hasOwnProperty(key)) {
-                                $employeesHtml += "<li><strong>" + key + ":</strong> " + $employeesData[key] + "</li>";
-                            }
-                        }
-                        $employeesHtml += "</ul>";
+                        //for (var key in $employeesData) {
+                        //    if ($employeesData.hasOwnProperty(key)) {
+                        //        $employeesHtml += "<li><strong>" + key + ":</strong> " + $employeesData[key] + "</li>";
+                        //    }
+                        //}
+                        //$employeesHtml += "</ul>";
+                        var regTotal = parseFloat($employeesData.RegEmpOut) + parseFloat($employeesData.RegEmpLate) + parseFloat($employeesData.RegEmplLeftEarly) + parseFloat($employeesData.EmployeesOnVacation);
+                        var inmateTotal = parseFloat($employeesData.InLateOut) + parseFloat($employeesData.InmateLeftEarly);
+                        var outTotal = parseFloat($employeesData.RegEmpOut) + parseFloat($employeesData.TempEmpOut) + parseFloat($employeesData.InLateOut);
+                        var leftEarlyTotal = parseFloat($employeesData.RegEmplLeftEarly) + parseFloat($employeesData.InmateLeftEarly);
+                        var allTotal = regTotal + inmateTotal + outTotal + leftEarlyTotal + parseFloat($employeesData.TempEmpOut) + parseFloat($employeesData.RegEmpLate) + parseFloat($employeesData.EmployeesOnVacation);
+                        $employeesHtml = "<table><tr><th></th><th>OUT</th><th>LATE</th><th>LEFT EARLY</th><th>VAC</th><th>TOTAL</th></tr>";
+                        $employeesHtml += "<tr><th>REG</th><td>" + $employeesData.RegEmpOut + "</td><td>" + $employeesData.RegEmpLate + "</td><td>" + $employeesData.RegEmplLeftEarly + "</td><td>" + $employeesData.EmployeesOnVacation + "</td><td>" + regTotal.toString() + "</td></tr>";
+                        $employeesHtml += "<tr><th>TEMP</th><td>" + $employeesData.TempEmpOut + "</td><td>" + "-" + "</td><td>" + "-" + "</td><td>" + "-" + "</td><td>" + $employeesData.TempEmpOut + "</td></tr>";
+                        $employeesHtml += "<tr><th>INMATE</th><td>" + $employeesData.InLateOut + "</td><td>" + "-" + "</td><td>" + $employeesData.InmateLeftEarly + "</td><td>" + "-" + "</td><td>" + inmateTotal.toString() + "</td></tr>";
+                        $employeesHtml += "<tr><th>TOTAL</th><td>" + outTotal.toString() + "</td><td>" + $employeesData.RegEmpLate + "</td><td>" + leftEarlyTotal.toString() + "</td><td>" + $employeesData.EmployeesOnVacation + "</td><td>" + allTotal.toString() + "</td></tr></table>";
                         $('.reports .employees').append($employeesHtml);
 
                         for (var key in $freezingsData) {
@@ -745,70 +755,164 @@ function weeklyReport() {
                         $freezingsHtml += "</ul>";
                         $('.reports .freezings').append($freezingsHtml);
 
-                        for (var key in $finishedData) {
-                            if ($finishedData.hasOwnProperty(key)) {
-                                $finishedHtml += "<li><strong>" + key + ":</strong> " + $finishedData[key] + "</li>";
-                            }
-                        }
-                        $finishedHtml += "</ul>";
-                        $('.reports .finished').append($finishedHtml);
+                        //for (var key in $finishedData) {
+                        //    if ($finishedData.hasOwnProperty(key)) {
+                        //        $finishedHtml += "<li><strong>" + key + ":</strong> " + $finishedData[key] + "</li>";
+                        //    }
+                        //}
+                        //$finishedHtml += "</ul>";
+                        //$('.reports .finished').append($finishedHtml);
 
-                        for (var obj in $samplingsData) {
-                            if ($samplingsData.hasOwnProperty(obj)) {
-                                if(obj.substring(0,3) == "Avg") {
-                                    var newobj = [obj, parseFloat($samplingsData[obj])];
-                                    $samplingsSeriesAvg.push(newobj);
-                                } else if (obj.substring(0, 3) == "Pct") {
-                                    var newobj = [obj, parseFloat($samplingsData[obj])];
-                                    $samplingsSeriesPct.push(newobj);
-                                }
-                            }
-                        }
-                        for (var i = 0; i < $samplingsSeriesPct.length; i++) {
-                            if (typeof $samplingsSeriesPct[i][0] !== "undefined") {
-                                var obj = {
-                                    name: $samplingsSeriesPct[i][0].replace("Pct", ""),
-                                    y: $samplingsSeriesPct[i][1],
-                                    tooltip: $samplingsSeriesAvg[i][1]
-                                }
-                                $samplingsSeries.push(obj);
-                            }
-                        }
-                        console.log($samplingsSeries);
-                        $(function () {
-                            $('.reports .samplings').highcharts({
-                                chart: {
-                                    plotBackgroundColor: null,
-                                    plotBorderWidth: null,
-                                    plotShadow: false
+                        //for (var obj in $samplingsData) {
+                        //    if ($samplingsData.hasOwnProperty(obj)) {
+                        //        if(obj.substring(0,3) == "Avg") {
+                        //            var newobj = [obj, parseFloat($samplingsData[obj])];
+                        //            $samplingsSeriesAvg.push(newobj);
+                        //        } else if (obj.substring(0, 3) == "Pct") {
+                        //            var newobj = [obj, parseFloat($samplingsData[obj])];
+                        //            $samplingsSeriesPct.push(newobj);
+                        //        }
+                        //    }
+                        //}
+                        //for (var i = 0; i < $samplingsSeriesPct.length; i++) {
+                        //    if (typeof $samplingsSeriesPct[i][0] !== "undefined") {
+                        //        var obj = {
+                        //            name: $samplingsSeriesPct[i][0].replace("Pct", ""),
+                        //            y: $samplingsSeriesPct[i][1],
+                        //            tooltip: $samplingsSeriesAvg[i][1]
+                        //        }
+                        //        $samplingsSeries.push(obj);
+                        //    }
+                        //}
+                        //console.log($samplingsSeries);
+                        //$(function () {
+                        //    $('.reports .samplings').highcharts({
+                        //        chart: {
+                        //            plotBackgroundColor: null,
+                        //            plotBorderWidth: null,
+                        //            plotShadow: false
+                        //        },
+                        //        title: {
+                        //            text: 'Samplings'
+                        //        },
+                        //        tooltip: {
+                        //            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                        //        },
+                        //        plotOptions: {
+                        //            pie: {
+                        //                allowPointSelect: true,
+                        //                cursor: 'pointer',
+                        //                dataLabels: {
+                        //                    enabled: true,
+                        //                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        //                    style: {
+                        //                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        //                    }
+                        //                }
+                        //            }
+                        //        },
+                        //        series: [{
+                        //            type: 'pie',
+                        //            name: 'Browser share',
+                        //            data: $samplingsSeries
+                        //        }]
+                        //    });
+                        //});
+                        $('#finishcontainer').highcharts({
+                            chart: {
+                                type: 'line'
+                            },
+                            title: {
+                                text: 'Finish'
+                            },
+
+                            xAxis: {
+                                type: 'datetime',
+                                dateTimeLabelFormats: { // don't display the dummy year
+                                    month: '%e. %b',
+                                    year: '%b'
                                 },
                                 title: {
-                                    text: 'Samplings'
+                                    text: 'Time'
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: ''
                                 },
-                                tooltip: {
-                                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                                },
-                                plotOptions: {
-                                    pie: {
-                                        allowPointSelect: true,
-                                        cursor: 'pointer',
-                                        dataLabels: {
-                                            enabled: true,
-                                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                                            style: {
-                                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                                            }
-                                        }
-                                    }
-                                },
-                                series: [{
-                                    type: 'pie',
-                                    name: 'Browser share',
-                                    data: $samplingsSeries
-                                }]
-                            });
-                        });
+                                min: 0,
+                                labels: {
+                                    enabled: false
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<b>{series.name}</b><br>',
+                                pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+                            },
 
+                            plotOptions: {
+                                spline: {
+                                    marker: {
+                                        enabled: true
+                                    }
+                                }
+                            },
+
+                            series: [{
+
+                                // Define the data points. All series have a dummy year
+                                // of 1970/71 in order to be compared on the same x axis. Note
+                                // that in JavaScript, months start at 0 for January, 1 for February etc.
+                                data: [
+                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedKill.split(":")[0]), parseFloat($finishedData.FinishedKill.split(":")[0]), 1)],
+                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedFillet.split(":")[0]), parseFloat($finishedData.FinishedFillet.split(":")[0]), 1)],
+                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedSkinning.split(":")[0]), parseFloat($finishedData.FinishedSkinning.split(":")[0]), 1)],
+                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.DayFinishedFreezing.split(":")[0]), parseFloat($finishedData.DayFinishedFreezing.split(":")[0]), 1)],
+                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.NightFinishedFreezing.split(":")[0]), parseFloat($finishedData.NightFinishedFreezing.split(":")[0]), 1)]
+                                ]
+                            }]
+                        });
+                        //for (var key in $samplingsData) {
+                        //    if ($samplingsData.hasOwnProperty(key)) {
+                        //        $samplingsHtml += "<li><strong>" + key + ":</strong> " + $samplingsData[key] + "</li>";
+                        //    }
+                        //}
+                        //$samplingsHtml += "</ul>";
+                        //$('.reports .samplings').append($samplingsHtml);
+                        $('#samplingcontainer').highcharts({
+                            chart: {
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false
+                            },
+                            title: {
+                                text: 'Samplings'
+                            },
+                            tooltip: {
+                                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: false
+                                    },
+                                    showInLegend: true
+                                }
+                            },
+                            series: [{
+                                type: 'pie',
+                                name: 'Size',
+                                data: [
+                                    ['0-1.25 lbs (Avg:' + $samplingsData.Avg0_125 + ')', parseFloat($samplingsData.Pct0_125)],
+                                    ['1.25-2.25 lbs (Avg:' + $samplingsData.Avg125_225 + ')', parseFloat($samplingsData.Pct125_225)],
+                                    ['2.25-3 lbs (Avg:' + $samplingsData.Avg225_3 + ')', parseFloat($samplingsData.Pct225_3)],
+                                    ['3-5 lbs (Avg:' + $samplingsData.Avg3_5 + ')', parseFloat($samplingsData.Pct3_5)],
+                                    ['5 lbs & up (Avg:' + $samplingsData.Avg5_Up + ')', parseFloat($samplingsData.Pct5_Up)]
+                                ]
+                            }]
+                        });
                         for (var pond in $pondsData) {
                             $pondsHtml += '<li class="row"><span class="col-xs-3 farm">' + $pondsData[pond].FarmID + '</span><span class="col-xs-3 pond">' + $pondsData[pond].PondName + '</span><span class="col-xs-3 pounds">' + $pondsData[pond].PoundsYielded + '</span><span class="col-xs-3 yield">' + $pondsData[pond].PercentYield + '</span></li>';
                             $totalPounds += parseFloat($pondsData[pond].PoundsYielded);
@@ -820,7 +924,23 @@ function weeklyReport() {
                         $pondsHtml += '<span class="col-xs-4"><strong>Avg Yield:</strong> ' + $avgYield + '</span>';
                         $pondsHtml += '<span class="col-xs-4"><strong>Sum*Avg Yield:</strong> ' + $whatToCallMe + '</span></li><ul>';
                         $('.farm-yields').append($pondsHtml);
+                        $('.farm-yields').hide();
+                        $('.hideYields').hide();
+                        
 
+
+                        $('.showYields').unbind().click(function (e) {
+                            e.preventDefault();
+                            $('.farm-yields').slideDown("slow");
+                            $('.showYields').hide();
+                            $('.hideYields').show();
+                        });
+                        $('.hideYields').unbind().click(function (e) {
+                            e.preventDefault();
+                            $('.farm-yields').hide();
+                            $('.showYields').show();
+                            $('.hideYields').hide();
+                        });
                         hideProgress();
                         $('#calendarModal').modal('hide');
                     }
