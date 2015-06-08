@@ -151,7 +151,7 @@ function farmYields() {
                         else startDateMonth = view.start._d.getMonth() + 2; // adding one for javascript month representation, 1 for view starting 10 days prior to viewed month
                         
                         var results = [], searchQuery = { "Key": _key, "StartDateMonth": startDateMonth, "StartDateYear": startDateYear }, data = JSON.stringify(searchQuery);
-                        $.when($.ajax('../api/FarmYield/FarmYieldList', {
+                        $.when($.ajax('../api/FarmYield/FarmYieldDates', {
                             type: 'POST',
                             data: data,
                             success: function (msg) {
