@@ -207,6 +207,78 @@ namespace SGApp.Controllers
         {
             return FarmYields(Request, cqDTO);
         }
+
+        [HttpPost]
+        public HttpResponseMessage FarmYieldDates([FromBody] FarmYieldDTO cqDTO)
+        {
+            return FarmYieldDates(Request, cqDTO);
+        }
+        internal HttpResponseMessage FarmYieldDates(HttpRequestMessage request, FarmYieldDTO cqDTO)
+        {
+            string key;
+            var aur = new AppUserRepository();
+            var companyId = 0;
+            var userId = aur.ValidateUser(cqDTO.Key, out key, ref companyId);
+            if (userId > 0)
+            {
+                var ur = new FarmYieldRepository();
+                var u = new FarmYield();
+                if (cqDTO.YieldDate != null)
+                {
+                    cqDTO.Start_YieldDate = DateTime.Parse(cqDTO.YieldDate).ToString();
+                    cqDTO.End_YieldDate = DateTime.Parse(cqDTO.YieldDate).AddDays(1).ToString();
+                }
+                else
+                {
+                    int sm = int.Parse(cqDTO.StartDateMonth);
+                    if (sm == 1)
+                    {
+                        cqDTO.Start_YieldDate = DateTime.Parse("12/23/" + (int.Parse(cqDTO.StartDateYear) - 1).ToString()).ToString();
+                        cqDTO.End_YieldDate = DateTime.Parse("2/14/" + cqDTO.StartDateYear).ToString();
+                    }
+                    else if (sm == 12)
+                    {
+                        cqDTO.Start_YieldDate = DateTime.Parse("11/23/" + cqDTO.StartDateYear).ToString();
+                        cqDTO.End_YieldDate = DateTime.Parse("1/14/" + (int.Parse(cqDTO.StartDateYear) + 1).ToString()).ToString();
+                    }
+                    else
+                    {
+                        cqDTO.Start_YieldDate = DateTime.Parse((int.Parse(cqDTO.StartDateMonth) - 1).ToString() + "/23/" + cqDTO.StartDateYear).ToString();
+                        cqDTO.End_YieldDate = DateTime.Parse((int.Parse(cqDTO.StartDateMonth) + 1).ToString() + "/14/" + cqDTO.StartDateYear).ToString();
+                    }
+
+                    cqDTO.StartDateMonth = null;
+                    cqDTO.StartDateYear = null;
+                }
+                var predicate = ur.GetPredicate(cqDTO, u, companyId);
+                var data = ur.GetByPredicate(predicate);
+                var col = new Collection<Dictionary<string, string>>();
+                data = data.GroupBy(x => x.YieldDate).Select(x => x.First()).OrderBy(x => x.YieldDate).ToList();
+                foreach (var item in data)
+                {
+
+                    var dic = new Dictionary<string, string>();
+
+
+                    dic.Add("YieldDate", item.YieldDate.ToShortDateString());
+
+                    col.Add(dic);
+                    var ufdic = new Dictionary<string, string>();
+
+
+                }
+
+                var retVal = new GenericDTO
+                {
+                    Key = key,
+                    ReturnData = col
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, retVal);
+            }
+            var message = "validation failed";
+            return request.CreateResponse(HttpStatusCode.NotFound, message);
+
+        }
     }
 
 }
