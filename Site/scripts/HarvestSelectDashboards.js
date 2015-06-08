@@ -230,7 +230,7 @@ function farmYields() {
                 plantPoundsData = msg['ReturnData'];
                 var plantWeight = typeof plantPoundsData[0] !== "undefined" ? plantPoundsData[0].PlantWeight : 0;
                 var weighBacks = typeof plantPoundsData[0] !== "undefined" ? plantPoundsData[0].WeighBacks : 0;
-                var farmYieldHeaderID = typeof plantPoundsData[0] !== "undefined" ? plantPoundsData[0].FarmYieldHeaderID : 0;
+                var farmYieldHeaderID = typeof plantPoundsData[0] !== "undefined" ? plantPoundsData[0].FarmYieldHeaderID : -1;
                 $('#plantpounds').val(plantWeight);
                 $('#plantPoundsID').val(farmYieldHeaderID);
                 $('#weighbacks').val(weighBacks);
@@ -762,13 +762,19 @@ function weeklyReport() {
                         $('.reports .freezings .report-container').append($freezingsHtml);
 
                         /* FINISHED */
-                        for (var key in $finishedData) {
-                            if ($finishedData.hasOwnProperty(key)) {
-                                $finishedHtml += '<li><strong>' + key + ':</strong><span class="pull-right">' + $finishedData[key] + '</span></li>';
-                            }
-                        }
-                        $finishedHtml += "</ul>";
-                        $('.reports .finished .report-container').append($finishedHtml);
+                        //for (var key in $finishedData) {
+                        //    if ($finishedData.hasOwnProperty(key)) {
+                        //        $finishedHtml += '<li><strong>' + key + ':</strong><span class="pull-right">' + $finishedData[key] + '</span></li>';
+                        //    }
+                        //}
+                        //$finishedHtml += "</ul>";
+                        
+                        //$('#finishData').append("2015-01-01 " + $finishedData.NightFinishedFreezing + ", 1, Night Finished Freezing");
+                        //$('#finishData').append("2015-01-01 " + $finishedData.FinishedKill + ", 1, Finished Kill");
+                        //$('#finishData').append("2015-01-01 " + $finishedData.FinishedSkinning + ", 1, Finished Skinning");
+                        //$('#finishData').append("2015-01-01 " + $finishedData.FinishedFillet + ", 1, Finished Filet");
+                        //$('#finishData').append("2015-01-01 " + $finishedData.DayFinishedFreezing + ", 1, Day Finished Freezing");
+                        //$('.reports .finished .report-container').append($finishedHtml);
 
                         //for (var obj in $samplingsData) {
                         //    if ($samplingsData.hasOwnProperty(obj)) {
@@ -825,62 +831,60 @@ function weeklyReport() {
                         //        }]
                         //    });
                         //});
-                        //$('#finishcontainer').highcharts({
-                        //    chart: {
-                        //        type: 'line'
-                        //    },
-                        //    title: {
-                        //        text: 'Finish'
-                        //    },
+                         var finishcsv = "Date,Distance,Label\n2015-01-01 " + $finishedData.NightFinishedFreezing + ", 1, Night Finished Freezing\n2015-01-01 " + $finishedData.FinishedKill + ", 1, Finished Kill\n2015-01-01 " + $finishedData.FinishedSkinning + ", 1, Finished Skinning\n2015-01-01 " + $finishedData.FinishedFillet + ", 1, Finished Filet\n2015-01-01 " + $finishedData.DayFinishedFreezing + ", 1, Day Finished Freezing";
+                        console.log(finishcsv);
+                         $('#finishcontainer').highcharts({
 
-                        //    xAxis: {
-                        //        type: 'datetime',
-                        //        dateTimeLabelFormats: { // don't display the dummy year
-                        //            month: '%e. %b',
-                        //            year: '%b'
-                        //        },
-                        //        pointStart: Date.UTC(1970, 10, 1),
-                        //        pointInterval: 3600 * 1000, // one day
-                        //        title: {
-                        //            text: 'Time'
-                        //        }
-                        //    },
-                        //    yAxis: {
-                        //        title: {
-                        //            text: ''
-                        //        },
-                        //        min: 0,
-                        //        labels: {
-                        //            enabled: false
-                        //        }
-                        //    },
-                        //    tooltip: {
-                        //        headerFormat: '<b>{series.name}</b><br>',
-                        //        pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
-                        //    },
+                             data: {
+                                 csv: finishcsv,
+                                 seriesMapping: [{
+                                     // x: 0, // X values are pulled from column 0 by default
+                                     // y: 1, // Y values are pulled from column 1 by default
+                                     label: 2 // Labels are pulled from column 2 and picked up in the dataLabels.format below
+                                 }]
+                             },
+                             chart: {
+                                 type: 'line'
+                             },
+                             title: {
+                                 text: ''
+                             },
+                             xAxis: {
+                                 minTickInterval: 36e5,
+                                 format: '%H:%M',
+                                 startOnTick: false,
+                                 endOnTick: false,
+                                 minPadding: 0.2,
+                                 maxPadding: 0.2
+                             },
+                             yAxis: {
+                                 title: {
+                                     enabled: false
+                                 },
+                                 labels: {
+                                     enabled: false
+                                 }
+                             },
+                             legend: {
+                                 enabled: false
+                             },
+                             plotOptions: {
+                                 series: {
+                                     dataLabels: {
+                                         enabled: true,
+                                         format: '{point.label}',
+                                         rotation: -75
+                                     },
+                                     tooltip: {
+                                         pointFormat: '{point.label}',
+                                         headerFormat: '{point.key: %H:%M}<br>',
+                                         
+                                     }
+                                 }
+                             }
 
-                        //    plotOptions: {
-                        //        spline: {
-                        //            marker: {
-                        //                enabled: true
-                        //            }
-                        //        }
-                        //    },
 
-                        //    series: [{
-
-                        //        // Define the data points. All series have a dummy year
-                        //        // of 1970/71 in order to be compared on the same x axis. Note
-                        //        // that in JavaScript, months start at 0 for January, 1 for February etc.
-                        //        data: [
-                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedKill.split(":")[0]), parseFloat($finishedData.FinishedKill.split(":")[1]), 1)],
-                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedFillet.split(":")[0]), parseFloat($finishedData.FinishedFillet.split(":")[1]), 1)],
-                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedSkinning.split(":")[0]), parseFloat($finishedData.FinishedSkinning.split(":")[1]), 1)],
-                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.DayFinishedFreezing.split(":")[0]), parseFloat($finishedData.DayFinishedFreezing.split(":")[1]), 1)],
-                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.NightFinishedFreezing.split(":")[0]), parseFloat($finishedData.NightFinishedFreezing.split(":")[1]), 1)]
-                        //        ]
-                        //    }]
-                        //});
+                        });
                         //for (var key in $samplingsData) {
                         //    if ($samplingsData.hasOwnProperty(key)) {
                         //        $samplingsHtml += "<li><strong>" + key + ":</strong> " + $samplingsData[key] + "</li>";
