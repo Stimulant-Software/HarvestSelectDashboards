@@ -626,6 +626,7 @@ function liveSample() {
 
 /* WEEKLY REPORTS */
 function weeklyReport() {
+    $('#mainContent').hide();
     var calFlag, date, i, tdate = getTodaysMonth(), startDateMonth = tdate.month, startDateYear = tdate.year;
     $('#shiftDate').unbind().click(function () {
         if (calFlag != "created") loadCalendar(startDateMonth, startDateYear);
@@ -634,7 +635,8 @@ function weeklyReport() {
 
     function loadCalendar() {
         //var searchQuery = { "Key": _key }, data = JSON.stringify(searchQuery), samplingDates = [];
-
+        
+        $('#mainContent').hide();
         $('#calendarModal .modal-body').fullCalendar({
             /*events: function (start, end, timezone, refetchEvents) {
                 $.when(hideProgress()).then(function () {
@@ -720,10 +722,12 @@ function weeklyReport() {
                         localStorage['CT_key'] = msg['Key'];
                         startTimer(msg.Key);
                         //console.log(msg);
-                        var $employeesHtml = '', $employeesData = msg.Employees[0], $finishedHtml = '<ul class="list-unstyled">', $finishedData = msg.Finish[0], $freezingsHtml = '<ul class="list-unstyled">', $freezingsData = msg.Freezing[0], $samplingsSeries = [{}], $samplingsSeriesAvg = [{}], $samplingsSeriesPct = [{}], $samplingsData = msg.Samplings[0], $headerData = msg.Header[0], $pondsData = msg.Ponds, $pondsHtml = '<ul class="list-unstyled"><li class="row header"><span class="col-xs-3 date">Farm</span><span class="col-xs-3 pond">Pond</span><span class="col-xs-3 pounds">Pounds</span><span class="col-xs-3 yield">Yield</span></li>', $totalPounds = 0, $totalPct = 0;
+                        var $employeesHtml, $employeesData = msg.Employees[0], $finishedHtml = '<ul class="list-unstyled">', $finishedData = msg.Finish[0], $freezingsHtml = '<ul class="list-unstyled clearfix">', $freezingsData = msg.Freezing[0], $samplingsSeries = [{}], $samplingsSeriesAvg = [{}], $samplingsSeriesPct = [{}], $samplingsData = msg.Samplings[0], $headerData = msg.Header[0], $pondsData = msg.Ponds, $pondsHtml = '<ul class="list-unstyled"><li class="row header"><span class="col-xs-3 date">Farm</span><span class="col-xs-3 pond">Pond</span><span class="col-xs-3 pounds">Pounds</span><span class="col-xs-3 yield">Yield</span></li>', $totalPounds = 0, $totalPct = 0;
                         //console.log(Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedKill.split(":")[0]), parseFloat($finishedData.FinishedKill.split(":")[1]), 1));
                         //console.log(1970, 10, 1, parseFloat($finishedData.FinishedKill.split(":")[0]), parseFloat($finishedData.FinishedKill.split(":")[1]), 1);
                         //console.log($finishedData.FinishedKill);
+
+                        /* SUMMARY */
                         $('#pondWeight').empty().append($headerData.PondWeight != "" ? $headerData.PondWeight : "Not Entered");
                         $('#weighBacks').empty().append($headerData.WeighBacks != "" ? $headerData.WeighBacks : "Not Entered");
                         $('#plantWeight').empty().append($headerData.PlantWeight != "" ? $headerData.PlantWeight : "Not Entered");
@@ -731,39 +735,40 @@ function weeklyReport() {
                         $('#difference').empty().append($headerData.Variance != "" ? $headerData.Variance : "--");
                         $('#downTime').empty().append($headerData.DownTime != "" ? $headerData.DownTime : "Not Entered");
 
-                        //for (var key in $employeesData) {
-                        //    if ($employeesData.hasOwnProperty(key)) {
-                        //        $employeesHtml += "<li><strong>" + key + ":</strong> " + $employeesData[key] + "</li>";
-                        //    }
-                        //}
-                        //$employeesHtml += "</ul>";
+                        /* EMPLOYEE DATA */
                         var regTotal = parseFloat($employeesData.RegEmpOut) + parseFloat($employeesData.RegEmpLate) + parseFloat($employeesData.RegEmplLeftEarly) + parseFloat($employeesData.EmployeesOnVacation);
                         var inmateTotal = parseFloat($employeesData.InLateOut) + parseFloat($employeesData.InmateLeftEarly);
                         var outTotal = parseFloat($employeesData.RegEmpOut) + parseFloat($employeesData.TempEmpOut) + parseFloat($employeesData.InLateOut);
                         var leftEarlyTotal = parseFloat($employeesData.RegEmplLeftEarly) + parseFloat($employeesData.InmateLeftEarly);
                         var allTotal = regTotal + inmateTotal + outTotal + leftEarlyTotal + parseFloat($employeesData.TempEmpOut) + parseFloat($employeesData.RegEmpLate) + parseFloat($employeesData.EmployeesOnVacation);
-                        $employeesHtml = "<table><tr><th></th><th>OUT</th><th>LATE</th><th>LEFT EARLY</th><th>VAC</th><th>TOTAL</th></tr>";
-                        $employeesHtml += "<tr><th>REG</th><td>" + $employeesData.RegEmpOut + "</td><td>" + $employeesData.RegEmpLate + "</td><td>" + $employeesData.RegEmplLeftEarly + "</td><td>" + $employeesData.EmployeesOnVacation + "</td><td>" + regTotal.toString() + "</td></tr>";
-                        $employeesHtml += "<tr><th>TEMP</th><td>" + $employeesData.TempEmpOut + "</td><td>" + "-" + "</td><td>" + "-" + "</td><td>" + "-" + "</td><td>" + $employeesData.TempEmpOut + "</td></tr>";
-                        $employeesHtml += "<tr><th>INMATE</th><td>" + $employeesData.InLateOut + "</td><td>" + "-" + "</td><td>" + $employeesData.InmateLeftEarly + "</td><td>" + "-" + "</td><td>" + inmateTotal.toString() + "</td></tr>";
-                        $employeesHtml += "<tr><th>TOTAL</th><td>" + outTotal.toString() + "</td><td>" + $employeesData.RegEmpLate + "</td><td>" + leftEarlyTotal.toString() + "</td><td>" + $employeesData.EmployeesOnVacation + "</td><td>" + allTotal.toString() + "</td></tr></table>";
-                        $('.reports .employees').append($employeesHtml);
+                        $employeesHtml = '<table><tr><th></th><th>OUT</th><th>LATE</th><th>LEFT EARLY</th><th>VAC</th><th class="total">TOTAL</th></tr>';
+                        $employeesHtml += '<tr><th>REG</th><td class="tablenumbers">' + $employeesData.RegEmpOut + '</td><td class="tablenumbers">' + $employeesData.RegEmpLate + '</td><td class="tablenumbers">' + $employeesData.RegEmplLeftEarly + '</td><td class="tablenumbers">' + $employeesData.EmployeesOnVacation + '</td><td class="tablenumbers total">' + regTotal.toString() + '</td></tr>';
+                        $employeesHtml += '<tr><th>TEMP</th><td class="tablenumbers">' + $employeesData.TempEmpOut + '</td><td class="tablenumbers">' + '-' + '</td><td class="tablenumbers">' + '-' + '</td><td class="tablenumbers">' + '-' + '</td><td class="tablenumbers total">' + $employeesData.TempEmpOut + '</td></tr>';
+                        $employeesHtml += '<tr><th>INMATE</th><td class="tablenumbers">' + $employeesData.InLateOut + '</td><td class="tablenumbers">' + '-' + '</td><td class="tablenumbers">' + $employeesData.InmateLeftEarly + '</td><td class="tablenumbers">' + '-' + '</td><td class="tablenumbers total">' + inmateTotal.toString() + '</td></tr>';
+                        $employeesHtml += '<tr><th class="total">TOTAL</th><td class="tablenumbers total">' + outTotal.toString() + '</td><td class="tablenumbers total">' + $employeesData.RegEmpLate + '</td><td class="tablenumbers total">' + leftEarlyTotal.toString() + '</td><td class="tablenumbers total">' + $employeesData.EmployeesOnVacation + '</td><td class="tablenumbers total">' + allTotal.toString() + '</td></tr></table>';
+                        $('.reports .employees .report-container').append($employeesHtml);
 
+                        /* FREEZINGS */
                         for (var key in $freezingsData) {
                             if ($freezingsData.hasOwnProperty(key)) {
-                                $freezingsHtml += "<li><strong>" + key + ":</strong> " + $freezingsData[key] + "</li>";
+                                function UpperCaseArray(input) {
+                                    var result = input.replace(/([A-Z]+)/g, ",$1").replace(/^,/, "").replace(/,/g, ' ');
+                                    return result;
+                                }
+                                $freezingsHtml += '<li class="col-xs-4"><div><strong>' + UpperCaseArray(key) + ':</strong><span>' + $freezingsData[key] + '</span></div></li>';
                             }
                         }
                         $freezingsHtml += "</ul>";
-                        $('.reports .freezings').append($freezingsHtml);
-                        $('#mainContent').slideDown("slow");
+                        $('.reports .freezings .report-container').append($freezingsHtml);
+
+                        /* FINISHED */
                         for (var key in $finishedData) {
                             if ($finishedData.hasOwnProperty(key)) {
-                                $finishedHtml += "<li><strong>" + key + ":</strong> " + $finishedData[key] + "</li>";
+                                $finishedHtml += '<li><strong>' + key + ':</strong><span class="pull-right">' + $finishedData[key] + '</span></li>';
                             }
                         }
                         $finishedHtml += "</ul>";
-                        $('.reports .finished').append($finishedHtml);
+                        $('.reports .finished .report-container').append($finishedHtml);
 
                         //for (var obj in $samplingsData) {
                         //    if ($samplingsData.hasOwnProperty(obj)) {
@@ -883,14 +888,16 @@ function weeklyReport() {
                         //}
                         //$samplingsHtml += "</ul>";
                         //$('.reports .samplings').append($samplingsHtml);
-                        $('#samplingcontainer').highcharts({
+                        
+                        /* SAMPLINGS */
+                        $('#samplingContainer').highcharts({
                             chart: {
                                 plotBackgroundColor: null,
                                 plotBorderWidth: null,
                                 plotShadow: false
                             },
                             title: {
-                                text: 'Samplings'
+                                text: ''
                             },
                             tooltip: {
                                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -917,6 +924,8 @@ function weeklyReport() {
                                 ]
                             }]
                         });
+                        
+                        /* PONDS / FARM YIELDS */
                         for (var pond in $pondsData) {
                             $pondsHtml += '<li class="row"><span class="col-xs-3 farm">' + $pondsData[pond].FarmID + '</span><span class="col-xs-3 pond">' + $pondsData[pond].PondName + '</span><span class="col-xs-3 pounds">' + $pondsData[pond].PoundsYielded + '</span><span class="col-xs-3 yield">' + $pondsData[pond].PercentYield + '</span></li>';
                             $totalPounds += parseFloat($pondsData[pond].PoundsYielded);
@@ -924,67 +933,26 @@ function weeklyReport() {
                         }
                         var $avgYield = $totalPct / $pondsData.length;
                         var $whatToCallMe = $totalPounds * ($avgYield/100);
-                        $pondsHtml += '<li><span class="col-xs-4"><strong>Total Pounds:</strong> ' + $totalPounds + '</span>';
-                        $pondsHtml += '<span class="col-xs-4"><strong>Avg Yield:</strong> ' + $avgYield + '</span>';
-                        $pondsHtml += '<span class="col-xs-4"><strong>Sum*Avg Yield:</strong> ' + $whatToCallMe + '</span></li><ul>';
-                        $('.farm-yields').append($pondsHtml);
-                        $('.farm-yields').hide();
-                        $('.hideYields').hide();
-                        
-
-
-                        $('.showYields').unbind().click(function (e) {
+                        $pondsHtml += '<li class="totals"><span class="col-xs-4"><strong>Total Pounds:</strong><span class="pull-right">' + $totalPounds + '</span></span>';
+                        $pondsHtml += '<span class="col-xs-4"><strong>Avg Yield:</strong><span class="pull-right">' + $avgYield + '</span></span>';
+                        $pondsHtml += '<span class="col-xs-4"><strong>Sum*Avg Yield:</strong><span class="pull-right">' + $whatToCallMe + '</span></span></li><ul>';
+                        $('.farm-yields').append($pondsHtml).hide();
+                        $('.farm-yields-report').unbind().click(function (e) {
                             e.preventDefault();
-                            $('.farm-yields').slideDown("slow");
-                            $('.showYields').hide();
-                            $('.hideYields').show();
-                        });
-                        $('.hideYields').unbind().click(function (e) {
-                            e.preventDefault();
-                            $('.farm-yields').hide();
-                            $('.showYields').show();
-                            $('.hideYields').hide();
+                            if($(this).hasClass('open')){
+                                $('.farm-yields').slideUp(250);
+                                $(this).removeClass('open');
+                            } else {
+                                $('.farm-yields').slideDown(250);
+                                $(this).addClass('open');
+                            }
                         });
                         hideProgress();
+                        $('#mainContent').show();
                         $('#calendarModal').modal('hide');
-                        
                     }
                 });
             }
         });
     }
 }
-
-// For eventual use in accordion?
-/*$pondsHtml += '<div class="panel panel-default">';
-                            $pondsHtml += '<div class="panel-heading" role="tab" id="farmOneHeader">';
-                            $pondsHtml += '<h4 class="panel-title">';
-                            $pondsHtml += '<a data-toggle="collapse" data-parent="#accordion" href="#farmOne" aria-expanded="true" aria-controls="farmOne">';
-                            $pondsHtml += 'Farm One';
-                            $pondsHtml += '</a>';
-                            $pondsHtml += '</h4>';
-                            $pondsHtml += '</div>';
-                            $pondsHtml += '<div id="Farm One" class="panel-collapse collapse" role="tabpanel" aria-labelledby="farmOneHeader">';
-                            $pondsHtml += '<div class="panel-body">';
-                            $pondsHtml += '<header class="row">';
-                            $pondsHtml += '<span class="col-xs-3 date">Date</span>';
-                            $pondsHtml += '<span class="col-xs-3 pond">Pond</span>';
-                            $pondsHtml += '<span class="col-xs-3 pounds">Pounds</span>';
-                            $pondsHtml += '<span class="col-xs-3 yield">Yield</span>';
-                            $pondsHtml += '</header>';
-                            $pondsHtml += '<ul>';
-                            $pondsHtml += '<li class="row">';
-                            $pondsHtml += '<span class="col-xs-3 date">'++'</span>';
-                            $pondsHtml += '<span class="col-xs-3 pond">'++'</span>';
-                            $pondsHtml += '<span class="col-xs-3 pounds"'++'></span>';
-                            $pondsHtml += '<span class="col-xs-3 yield">'++'</span>';
-                            $pondsHtml += '</li>';
-                            $pondsHtml += '</ul>';
-                            $pondsHtml += '<footer>';
-                            $pondsHtml += '<span class="col-xs-4">Total Pounds <span></span></span>';
-                            $pondsHtml += '<span class="col-xs-4">Avg Yield <span></span></span>';
-                            $pondsHtml += '<span class="col-xs-4">Sum*Avg  Yield <span></span></span>';
-                            $pondsHtml += '</footer>';
-                            $pondsHtml += '</div>';
-                            $pondsHtml += '</div>';
-                            $pondsHtml += '</div>';*/

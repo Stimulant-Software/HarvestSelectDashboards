@@ -14,43 +14,51 @@
             <a href="index.html"><img src="img/logo.gif" alt="Harvest Select Logo" /></a>
         </div>
         <div class="pull-right">
-            <span>Weekly Report</span><img src="img/weekly-report.png" alt="Weekly Report icon" />
+            <span>Weekly Report</span><img src="img/reports.png" alt="Weekly Report icon" />
         </div>
     </header>
     <section class="row date-select">
             <!-- pull in string of dates - need range, method -->
             <button id="shiftDate" data-toggle="modal" data-target="#calendarModal">Select a date to view report</button>
         </section>
-    <section id="mainContent" class="container" style="display:none;">
-        
+    <section id="mainContent" class="container">
         <section class="row header">
-            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Pond Weight</strong><br><span id="pondWeight"></span></div>
-            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Weighbacks</strong><br><span id="weighBacks"></span></div>
-            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Plant</strong><br><span id="plantWeight"></span></div>
-            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Total Pounds</strong><br><span id="totalPounds"></span></div>
-            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Variance</strong><br><span id="difference"></span></div>
-            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Downtime</strong><br><span id="downTime"></span></div>
+            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Pond Weight</strong><br><span id="pondWeight" class="pull-right"></span></div>
+            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Weighbacks</strong><br><span id="weighBacks" class="pull-right"></span></div>
+            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Plant</strong><br><span id="plantWeight" class="pull-right"></span></div>
+            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Total Pounds</strong><br><span id="totalPounds" class="pull-right"></span></div>
+            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Variance</strong><br><span id="difference" class="pull-right"></span></div>
+            <div class="col-xs-12 col-sm-4 col-md-2"><strong>Downtime</strong><br><span id="downTime" class="pull-right"></span></div>
         </section>
         <!--<div class="panel-group" id="farmAccordion" role="tablist" aria-multiselectable="true"></div>-->
         <section class="row reports data">
-            <section id="farm-yieldsContainer" class="col-xs-12">
-             <a href="#" class="showYields" style="opacity: 1;"><img src="img/plus.png"></a><a href="#" class="hideYields" style="opacity: 1;"><img src="img/close.png"></a><span id="farmYieldTitle">Farm Yields</span>
-            <section id="farm-yieldsSection" class="farm-yields col-xs-12">
-                
+            <section class="farm-yields-report col-xs-12">
+                <div class="report-container">
+                    <header><img class="open" src="img/minus.png" /><img class="closed" src="img/plus.png" />Farm Yields</header>
+                    <div id="farmYieldsSection" class="farm-yields"></div>
+                </div>
             </section>
-               </section>
             <section class="employees col-xs-12 col-sm-6">
-                <header>Employees</header>
+                <div class="report-container">
+                    <header>Employees</header>
+                </div>
             </section>
             <section class="samplings col-xs-12 col-sm-6">
-               <div id="samplingcontainer" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+                <div class="report-container">
+                    <header>Samplings</header>
+                    <div id="samplingContainer"></div>
+                </div>
             </section>
             <section class="freezings col-xs-12 col-sm-6">
-                <header>Freezing</header>
+                <div class="report-container">
+                    <header>Freezing</header>
+                </div>
             </section>
             <section class="finished col-xs-12 col-sm-6">
-                <header>Freezing</header>
-                <!--<div id="finishcontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>-->
+                <div class="report-container">
+                    <header>Finish</header>
+                    <!--<div id="finishcontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>-->
+                </div>
             </section>
         </section>
     </section>

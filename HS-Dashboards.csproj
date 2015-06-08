@@ -366,6 +366,7 @@
     <Content Include="Site\img\logo.gif" />
     <Content Include="Site\img\minus.png" />
     <Content Include="Site\img\plus.png" />
+    <Content Include="Site\img\reports.png" />
     <Content Include="Site\img\shift-end.png" />
     <Content Include="Site\index.html" />
     <Content Include="Site\live-sampling.html" />
