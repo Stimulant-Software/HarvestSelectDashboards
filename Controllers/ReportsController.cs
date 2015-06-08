@@ -51,9 +51,16 @@ namespace SGApp.Controllers
                 fyh = fyhr.GetByDate(reportDate);
                 pondWeight = fyr.GetPondWeightByDate(reportDate);
                 se = ser.GetByDate(reportDate);
+                string downtime = "";
                 lfs = lfsr.GetByDate(reportDate);
-                string downtime = String.Format((se.DowntimeMinutes / 60).ToString(), "{0, D2}") + ":" + String.Format((se.DowntimeMinutes % 60).ToString(), "{0, D2}");
-
+                if (se != null && se.DowntimeMinutes != null)
+                {
+                    downtime = String.Format((se.DowntimeMinutes / 60).ToString(), "{0, D2}") + ":" + String.Format((se.DowntimeMinutes % 60).ToString(), "{0, D2}");
+                }
+                else
+                {
+                    downtime = "";
+                }
                     var col = new Collection<Dictionary<string, string>>();
                     var dic = new Dictionary<string, string>();
 
@@ -72,10 +79,11 @@ namespace SGApp.Controllers
 
                         var dic1 = new Dictionary<string, string>();
 
-                        dic1.Add("YieldId", item.YieldID.ToString());
-                        dic1.Add("PondID", item.PondID.ToString());
+                        dic1.Add("YieldId", string.IsNullOrEmpty(item.YieldID.ToString()) ? "" : (item.YieldID.ToString()));
+
+                        dic1.Add("PondID", string.IsNullOrEmpty(item.PondID.ToString()) ? "" : (item.PondID.ToString()));
                         dic1.Add("PondName", item.Pond.PondName);
-                        dic1.Add("FarmID", item.Pond.FarmId.ToString());
+                        dic1.Add("FarmID", item.Pond.Farm.FarmName.ToString());
                         dic1.Add("YieldDate", item.YieldDate.ToShortDateString());
                         dic1.Add("PoundsYielded", item.PoundsYielded.ToString());
                         dic1.Add("PoundsPlant", item.PoundsPlant.ToString());

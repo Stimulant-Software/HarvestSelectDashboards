@@ -65,7 +65,7 @@ namespace SGApp.Repository.Application
         public  LiveFishSampling GetByDate(DateTime reportDate)
         {
             DateTime endDate = reportDate.AddDays(2);
-            return DbContext.LiveFishSamplings.Where(x => x.SamplingDate > reportDate && x.SamplingDate < endDate).First();
+            return DbContext.LiveFishSamplings.Where(x => x.SamplingDate > reportDate && x.SamplingDate < endDate).FirstOrDefault();
         }
 
     }

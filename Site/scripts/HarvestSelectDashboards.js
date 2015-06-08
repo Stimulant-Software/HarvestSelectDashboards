@@ -721,7 +721,9 @@ function weeklyReport() {
                         startTimer(msg.Key);
                         //console.log(msg);
                         var $employeesHtml = '', $employeesData = msg.Employees[0], $finishedHtml = '<ul class="list-unstyled">', $finishedData = msg.Finish[0], $freezingsHtml = '<ul class="list-unstyled">', $freezingsData = msg.Freezing[0], $samplingsSeries = [{}], $samplingsSeriesAvg = [{}], $samplingsSeriesPct = [{}], $samplingsData = msg.Samplings[0], $headerData = msg.Header[0], $pondsData = msg.Ponds, $pondsHtml = '<ul class="list-unstyled"><li class="row header"><span class="col-xs-3 date">Farm</span><span class="col-xs-3 pond">Pond</span><span class="col-xs-3 pounds">Pounds</span><span class="col-xs-3 yield">Yield</span></li>', $totalPounds = 0, $totalPct = 0;
-                        
+                        //console.log(Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedKill.split(":")[0]), parseFloat($finishedData.FinishedKill.split(":")[1]), 1));
+                        //console.log(1970, 10, 1, parseFloat($finishedData.FinishedKill.split(":")[0]), parseFloat($finishedData.FinishedKill.split(":")[1]), 1);
+                        //console.log($finishedData.FinishedKill);
                         $('#pondWeight').empty().append($headerData.PondWeight != "" ? $headerData.PondWeight : "Not Entered");
                         $('#weighBacks').empty().append($headerData.WeighBacks != "" ? $headerData.WeighBacks : "Not Entered");
                         $('#plantWeight').empty().append($headerData.PlantWeight != "" ? $headerData.PlantWeight : "Not Entered");
@@ -754,14 +756,14 @@ function weeklyReport() {
                         }
                         $freezingsHtml += "</ul>";
                         $('.reports .freezings').append($freezingsHtml);
-
-                        //for (var key in $finishedData) {
-                        //    if ($finishedData.hasOwnProperty(key)) {
-                        //        $finishedHtml += "<li><strong>" + key + ":</strong> " + $finishedData[key] + "</li>";
-                        //    }
-                        //}
-                        //$finishedHtml += "</ul>";
-                        //$('.reports .finished').append($finishedHtml);
+                        $('#mainContent').slideDown("slow");
+                        for (var key in $finishedData) {
+                            if ($finishedData.hasOwnProperty(key)) {
+                                $finishedHtml += "<li><strong>" + key + ":</strong> " + $finishedData[key] + "</li>";
+                            }
+                        }
+                        $finishedHtml += "</ul>";
+                        $('.reports .finished').append($finishedHtml);
 
                         //for (var obj in $samplingsData) {
                         //    if ($samplingsData.hasOwnProperty(obj)) {
@@ -818,60 +820,62 @@ function weeklyReport() {
                         //        }]
                         //    });
                         //});
-                        $('#finishcontainer').highcharts({
-                            chart: {
-                                type: 'line'
-                            },
-                            title: {
-                                text: 'Finish'
-                            },
+                        //$('#finishcontainer').highcharts({
+                        //    chart: {
+                        //        type: 'line'
+                        //    },
+                        //    title: {
+                        //        text: 'Finish'
+                        //    },
 
-                            xAxis: {
-                                type: 'datetime',
-                                dateTimeLabelFormats: { // don't display the dummy year
-                                    month: '%e. %b',
-                                    year: '%b'
-                                },
-                                title: {
-                                    text: 'Time'
-                                }
-                            },
-                            yAxis: {
-                                title: {
-                                    text: ''
-                                },
-                                min: 0,
-                                labels: {
-                                    enabled: false
-                                }
-                            },
-                            tooltip: {
-                                headerFormat: '<b>{series.name}</b><br>',
-                                pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
-                            },
+                        //    xAxis: {
+                        //        type: 'datetime',
+                        //        dateTimeLabelFormats: { // don't display the dummy year
+                        //            month: '%e. %b',
+                        //            year: '%b'
+                        //        },
+                        //        pointStart: Date.UTC(1970, 10, 1),
+                        //        pointInterval: 3600 * 1000, // one day
+                        //        title: {
+                        //            text: 'Time'
+                        //        }
+                        //    },
+                        //    yAxis: {
+                        //        title: {
+                        //            text: ''
+                        //        },
+                        //        min: 0,
+                        //        labels: {
+                        //            enabled: false
+                        //        }
+                        //    },
+                        //    tooltip: {
+                        //        headerFormat: '<b>{series.name}</b><br>',
+                        //        pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+                        //    },
 
-                            plotOptions: {
-                                spline: {
-                                    marker: {
-                                        enabled: true
-                                    }
-                                }
-                            },
+                        //    plotOptions: {
+                        //        spline: {
+                        //            marker: {
+                        //                enabled: true
+                        //            }
+                        //        }
+                        //    },
 
-                            series: [{
+                        //    series: [{
 
-                                // Define the data points. All series have a dummy year
-                                // of 1970/71 in order to be compared on the same x axis. Note
-                                // that in JavaScript, months start at 0 for January, 1 for February etc.
-                                data: [
-                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedKill.split(":")[0]), parseFloat($finishedData.FinishedKill.split(":")[0]), 1)],
-                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedFillet.split(":")[0]), parseFloat($finishedData.FinishedFillet.split(":")[0]), 1)],
-                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedSkinning.split(":")[0]), parseFloat($finishedData.FinishedSkinning.split(":")[0]), 1)],
-                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.DayFinishedFreezing.split(":")[0]), parseFloat($finishedData.DayFinishedFreezing.split(":")[0]), 1)],
-                                    [Date.UTC(1970, 10, 1, parseFloat($finishedData.NightFinishedFreezing.split(":")[0]), parseFloat($finishedData.NightFinishedFreezing.split(":")[0]), 1)]
-                                ]
-                            }]
-                        });
+                        //        // Define the data points. All series have a dummy year
+                        //        // of 1970/71 in order to be compared on the same x axis. Note
+                        //        // that in JavaScript, months start at 0 for January, 1 for February etc.
+                        //        data: [
+                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedKill.split(":")[0]), parseFloat($finishedData.FinishedKill.split(":")[1]), 1)],
+                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedFillet.split(":")[0]), parseFloat($finishedData.FinishedFillet.split(":")[1]), 1)],
+                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.FinishedSkinning.split(":")[0]), parseFloat($finishedData.FinishedSkinning.split(":")[1]), 1)],
+                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.DayFinishedFreezing.split(":")[0]), parseFloat($finishedData.DayFinishedFreezing.split(":")[1]), 1)],
+                        //            [Date.UTC(1970, 10, 1, parseFloat($finishedData.NightFinishedFreezing.split(":")[0]), parseFloat($finishedData.NightFinishedFreezing.split(":")[1]), 1)]
+                        //        ]
+                        //    }]
+                        //});
                         //for (var key in $samplingsData) {
                         //    if ($samplingsData.hasOwnProperty(key)) {
                         //        $samplingsHtml += "<li><strong>" + key + ":</strong> " + $samplingsData[key] + "</li>";
@@ -943,6 +947,7 @@ function weeklyReport() {
                         });
                         hideProgress();
                         $('#calendarModal').modal('hide');
+                        
                     }
                 });
             }

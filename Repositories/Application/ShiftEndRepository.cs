@@ -64,7 +64,7 @@ namespace SGApp.Repository.Application
         public ShiftEnd GetByDate(DateTime reportDate)
         {
             DateTime endDate = reportDate.AddDays(2);
-            return DbContext.ShiftEnds.Where(x => x.ShiftDate > reportDate && x.ShiftDate < endDate).First();
+            return DbContext.ShiftEnds.Where(x => x.ShiftDate > reportDate && x.ShiftDate < endDate).FirstOrDefault();
         }
     }
 

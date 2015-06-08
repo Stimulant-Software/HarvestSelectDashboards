@@ -65,7 +65,7 @@ namespace SGApp.Repository.Application
         public FarmYieldHeader GetByDate(DateTime reportDate)
         {
             DateTime endDate = reportDate.AddDays(2);
-            return DbContext.FarmYieldHeaders.Where(x => x.YieldDate > reportDate && x.YieldDate < endDate).First();
+            return DbContext.FarmYieldHeaders.Where(x => x.YieldDate > reportDate && x.YieldDate < endDate).FirstOrDefault();
         }
 
     }

@@ -17,11 +17,12 @@
             <span>Weekly Report</span><img src="img/weekly-report.png" alt="Weekly Report icon" />
         </div>
     </header>
-    <section id="mainContent" class="container">
-        <section class="row date-select">
+    <section class="row date-select">
             <!-- pull in string of dates - need range, method -->
-            <button id="shiftDate" data-toggle="modal" data-target="#calendarModal">Select a date to add or edit information</button>
+            <button id="shiftDate" data-toggle="modal" data-target="#calendarModal">Select a date to view report</button>
         </section>
+    <section id="mainContent" class="container" style="display:none;">
+        
         <section class="row header">
             <div class="col-xs-12 col-sm-4 col-md-2"><strong>Pond Weight</strong><br><span id="pondWeight"></span></div>
             <div class="col-xs-12 col-sm-4 col-md-2"><strong>Weighbacks</strong><br><span id="weighBacks"></span></div>
@@ -32,10 +33,12 @@
         </section>
         <!--<div class="panel-group" id="farmAccordion" role="tablist" aria-multiselectable="true"></div>-->
         <section class="row reports data">
-             <a href="#" class="showYields" style="opacity: 1;"><img src="img/plus.png"></a><a href="#" class="hideYields" style="opacity: 1;"><img src="img/close.png"></a><header>Farm Yields</header>
-            <section class="farm-yields col-xs-12">
+            <section id="farm-yieldsContainer" class="col-xs-12">
+             <a href="#" class="showYields" style="opacity: 1;"><img src="img/plus.png"></a><a href="#" class="hideYields" style="opacity: 1;"><img src="img/close.png"></a><span id="farmYieldTitle">Farm Yields</span>
+            <section id="farm-yieldsSection" class="farm-yields col-xs-12">
                 
             </section>
+               </section>
             <section class="employees col-xs-12 col-sm-6">
                 <header>Employees</header>
             </section>
@@ -46,7 +49,8 @@
                 <header>Freezing</header>
             </section>
             <section class="finished col-xs-12 col-sm-6">
-                <div id="finishcontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                <header>Freezing</header>
+                <!--<div id="finishcontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>-->
             </section>
         </section>
     </section>
