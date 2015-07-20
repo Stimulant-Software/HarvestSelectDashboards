@@ -137,6 +137,7 @@
     <Compile Include="Controllers\FarmController.cs" />
     <Compile Include="Controllers\FarmYieldController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\JMremoteController.cs" />
     <Compile Include="Controllers\LiveFishSamplingController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PondController.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Controllers\FarmYieldHeaderController.cs" />
     <Compile Include="DTOs\FarmYieldHeaderDTO.cs" />
     <Compile Include="DTOs\GenericDTO.cs" />
+    <Compile Include="DTOs\InnovaDto.cs" />
     <Compile Include="DTOs\KeyDTO.cs" />
     <Compile Include="DTOs\LiveFishSamplingDTOcs.cs" />
     <Compile Include="DTOs\LoginDTO.cs" />
@@ -351,6 +353,8 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\underscore.js" />
+    <Content Include="Scripts\underscore.min.js" />
     <Content Include="Site\admin-farm.html" />
     <Content Include="Site\admin-pond.html" />
     <Content Include="Site\admin-user.html" />
@@ -371,6 +375,7 @@
     <Content Include="Site\index.html" />
     <Content Include="Site\live-sampling.html" />
     <Content Include="Site\login.html" />
+    <Content Include="Site\remoteTest.html" />
     <Content Include="Site\scripts\admin-functions.js" />
     <Content Include="Site\scripts\HarvestSelectDashboards.js" />
     <Content Include="Site\shift-times.html" />
@@ -402,6 +407,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Scripts\underscore.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

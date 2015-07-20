@@ -91,3 +91,23 @@ C:\Users\kennm\Desktop\Projects\HarvestSelectDashboards\obj\Debug\HS-Dashboards.
 C:\Users\kennm\Desktop\Projects\HarvestSelectDashboards\obj\Debug\SGApp.dll
 C:\Users\kennm\Desktop\Projects\HarvestSelectDashboards\obj\Debug\SGApp.pdb
 C:\Users\Kenn\Desktop\SG Web Projecsts\HarvestSelectDashboards\obj\Debug\HS-Dashboards.csprojResolveAssemblyReference.cache
+F:\HarvestSelect\HarvestSelectDashboards\bin\SGApp.dll.config
+F:\HarvestSelect\HarvestSelectDashboards\bin\SGApp.dll
+F:\HarvestSelect\HarvestSelectDashboards\bin\SGApp.pdb
+F:\HarvestSelect\HarvestSelectDashboards\bin\Microsoft.Web.Infrastructure.dll
+F:\HarvestSelect\HarvestSelectDashboards\bin\Newtonsoft.Json.dll
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.Helpers.dll
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.Razor.dll
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.WebPages.Deployment.dll
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.WebPages.dll
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.WebPages.Razor.dll
+F:\HarvestSelect\HarvestSelectDashboards\bin\Microsoft.Web.Infrastructure.xml
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.Helpers.xml
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.Mvc.xml
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.Razor.xml
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.WebPages.xml
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.WebPages.Deployment.xml
+F:\HarvestSelect\HarvestSelectDashboards\bin\System.Web.WebPages.Razor.xml
+F:\HarvestSelect\HarvestSelectDashboards\obj\Debug\HS-Dashboards.csprojResolveAssemblyReference.cache
+F:\HarvestSelect\HarvestSelectDashboards\obj\Debug\SGApp.dll
+F:\HarvestSelect\HarvestSelectDashboards\obj\Debug\SGApp.pdb
